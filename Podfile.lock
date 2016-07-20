@@ -1,0 +1,26 @@
+PODS:
+  - BTree (2.1.0)
+  - M13ProgressSuite (1.2.7)
+  - MessageBarManager (1.1.0)
+  - Realm (1.0.2):
+    - Realm/Headers (= 1.0.2)
+  - Realm/Headers (1.0.2)
+  - RealmSwift (1.0.2):
+    - Realm (= 1.0.2)
+
+DEPENDENCIES:
+  - BTree (= 2.1.0)
+  - M13ProgressSuite (= 1.2.7)
+  - MessageBarManager
+  - RealmSwift (= 1.0.2)
+
+SPEC CHECKSUMS:
+  BTree: 222c6467bfce63490dfe0b588dd2a61d9e0c54bd
+  M13ProgressSuite: 03d194af6359da440641ba758aed5a18b0386a86
+  MessageBarManager: 168344bc3b916f1761c87c3fcf3cec4d6ec360e6
+  Realm: 9d5c46a4d7d27958530a8dfc58f63a99e5c2cba3
+  RealmSwift: 82f3ac5e24530143dddfde2033acc0d308f27d96
+
+PODFILE CHECKSUM: 7453acda7e36a2e62222d93aabb63136b03818f3
+
+COCOAPODS: 1.0.1
