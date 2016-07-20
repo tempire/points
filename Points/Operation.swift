@@ -203,7 +203,6 @@ class Operation: NSOperation {
     
     override func start() {
         state = cancelled ? .Finished : .Executing
-        print(state)
         
         if name == nil {
             name = "\(self.dynamicType)".componentsSeparatedByString(".").last

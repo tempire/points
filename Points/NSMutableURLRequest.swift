@@ -8,10 +8,10 @@
 import Foundation
 
 enum Header {
-    case Beacon(beacon: String)
-    case Date(date: NSDate)
-    case ResponseTime(interval: NSTimeInterval)
-    case BasicAuthorization(credentials: (username: String, password: String))
+    case Beacon(NSUUID)
+    case Date(NSDate)
+    case ResponseTime(NSTimeInterval)
+    case BasicAuthorization(username: String, password: String)
     
     var name: String {
         switch self {
@@ -65,7 +65,7 @@ extension NSMutableURLRequest {
         
         switch header {
         case let .Beacon(beacon):
-            value = beacon
+            value = beacon.UUIDString
             
         case let .Date(date):
             value = date.toString(format: .ISO8601)

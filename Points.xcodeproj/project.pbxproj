@@ -8,7 +8,19 @@
 
 /* Begin PBXBuildFile section */
 		C17AD6A0282C0536F97F6721 /* Pods_cli.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 49CBE127983671DA00FB3F3A /* Pods_cli.framework */; };
+		F131A9EB1D3CA0F700B82BB9 /* Notifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = F131A9EA1D3CA0F700B82BB9 /* Notifier.swift */; };
+		F131A9F41D3D80C000B82BB9 /* UIColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F131A9F31D3D80BF00B82BB9 /* UIColor.swift */; };
+		F131A9F81D3D95E400B82BB9 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F131A9F71D3D95E400B82BB9 /* TabBarController.swift */; };
+		F131A9FA1D3D970100B82BB9 /* UIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F131A9F91D3D970100B82BB9 /* UIViewController.swift */; };
+		F131A9FD1D3DC58C00B82BB9 /* Dancer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F131A9FC1D3DC58C00B82BB9 /* Dancer.swift */; };
+		F131AA061D3DCB4E00B82BB9 /* Competition.swift in Sources */ = {isa = PBXBuildFile; fileRef = F131AA051D3DCB4E00B82BB9 /* Competition.swift */; };
+		F131AA081D3DD02800B82BB9 /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = F131AA071D3DD02800B82BB9 /* Event.swift */; };
 		F1460D7F1D336EAB008F5ECF /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F1460D7E1D336EAB008F5ECF /* CloudKit.framework */; };
+		F15CA9261D3DF45E00B69279 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = F15CA9251D3DF45E00B69279 /* String.swift */; };
+		F15CA92F1D3DFA4F00B69279 /* DancerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F15CA92E1D3DFA4F00B69279 /* DancerVC.swift */; };
+		F17762BB1D3FE59E00ACB9A7 /* ImportVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F17762BA1D3FE59E00ACB9A7 /* ImportVC.swift */; };
+		F17762CE1D3FFEAB00ACB9A7 /* ModalPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F17762CD1D3FFEAB00ACB9A7 /* ModalPresentationController.swift */; };
+		F17762D01D3FFEED00ACB9A7 /* ModalAnimationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F17762CF1D3FFEED00ACB9A7 /* ModalAnimationController.swift */; };
 		F17FA7C21D336D46001B99AF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F17FA7C11D336D46001B99AF /* AppDelegate.swift */; };
 		F17FA7C41D336D46001B99AF /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F17FA7C31D336D46001B99AF /* ViewController.swift */; };
 		F17FA7C71D336D46001B99AF /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F17FA7C51D336D46001B99AF /* Main.storyboard */; };
@@ -50,7 +62,12 @@
 		F1A75C551D3378970070AAD8 /* WebService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F17FA7D91D336DBE001B99AF /* WebService.swift */; };
 		F1A75C561D33789E0070AAD8 /* NSMutableURLRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = F17FA7E31D336DD7001B99AF /* NSMutableURLRequest.swift */; };
 		F1A75C5A1D337E810070AAD8 /* acompetitors.data in Resources */ = {isa = PBXBuildFile; fileRef = F1A75C591D337E810070AAD8 /* acompetitors.data */; };
+		F1BB63141D3C1D2A00A1CC9D /* UITableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1BB63131D3C1D2A00A1CC9D /* UITableView.swift */; };
+		F1BB63181D3C359E00A1CC9D /* NSURLRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1BB63171D3C359E00A1CC9D /* NSURLRequest.swift */; };
 		F1DDF9751D39B6C800EEB426 /* Points.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1DDF9741D39B6C800EEB426 /* Points.swift */; };
+		F1DDF9811D3B1ECD00EEB426 /* NSData.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1DDF9801D3B1ECD00EEB426 /* NSData.swift */; };
+		F1DDF98A1D3B7CA800EEB426 /* NSError.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1DDF9891D3B7CA800EEB426 /* NSError.swift */; };
+		F1DDF98C1D3BFE9E00EEB426 /* CloudKitGetDumpOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1DDF98B1D3BFE9E00EEB426 /* CloudKitGetDumpOperation.swift */; };
 		F1EB04361D384147004EEA56 /* Storyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1EB04351D384147004EEA56 /* Storyboard.swift */; };
 		F1EB04381D3842EF004EEA56 /* AdminVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1EB04371D3842EF004EEA56 /* AdminVC.swift */; };
 		F1EB043A1D3843C3004EEA56 /* CompetitorsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1EB04391D3843C3004EEA56 /* CompetitorsVC.swift */; };
@@ -143,7 +160,19 @@
 		49CBE127983671DA00FB3F3A /* Pods_cli.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_cli.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		92FDCCA70C3E77232FDA9F24 /* Pods-Points.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Points.release.xcconfig"; path = "Pods/Target Support Files/Pods-Points/Pods-Points.release.xcconfig"; sourceTree = "<group>"; };
 		B9D07EEAA190B4FBE1F23E4F /* Pods-cli.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-cli.release.xcconfig"; path = "Pods/Target Support Files/Pods-cli/Pods-cli.release.xcconfig"; sourceTree = "<group>"; };
+		F131A9EA1D3CA0F700B82BB9 /* Notifier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Notifier.swift; sourceTree = "<group>"; };
+		F131A9F31D3D80BF00B82BB9 /* UIColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIColor.swift; sourceTree = "<group>"; };
+		F131A9F71D3D95E400B82BB9 /* TabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
+		F131A9F91D3D970100B82BB9 /* UIViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIViewController.swift; sourceTree = "<group>"; };
+		F131A9FC1D3DC58C00B82BB9 /* Dancer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Dancer.swift; sourceTree = "<group>"; };
+		F131AA051D3DCB4E00B82BB9 /* Competition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Competition.swift; sourceTree = "<group>"; };
+		F131AA071D3DD02800B82BB9 /* Event.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
 		F1460D7E1D336EAB008F5ECF /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
+		F15CA9251D3DF45E00B69279 /* String.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
+		F15CA92E1D3DFA4F00B69279 /* DancerVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DancerVC.swift; sourceTree = "<group>"; };
+		F17762BA1D3FE59E00ACB9A7 /* ImportVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImportVC.swift; sourceTree = "<group>"; };
+		F17762CD1D3FFEAB00ACB9A7 /* ModalPresentationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModalPresentationController.swift; sourceTree = "<group>"; };
+		F17762CF1D3FFEED00ACB9A7 /* ModalAnimationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModalAnimationController.swift; sourceTree = "<group>"; };
 		F17EEB8D1D33862E00E51C3A /* cli-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "cli-Bridging-Header.h"; sourceTree = "<group>"; };
 		F17FA7BE1D336D46001B99AF /* Points.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Points.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F17FA7C11D336D46001B99AF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -183,7 +212,12 @@
 		F1A75C491D33784C0070AAD8 /* cli */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = cli; sourceTree = BUILT_PRODUCTS_DIR; };
 		F1A75C4B1D33784C0070AAD8 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		F1A75C591D337E810070AAD8 /* acompetitors.data */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = acompetitors.data; sourceTree = "<group>"; };
+		F1BB63131D3C1D2A00A1CC9D /* UITableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UITableView.swift; sourceTree = "<group>"; };
+		F1BB63171D3C359E00A1CC9D /* NSURLRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSURLRequest.swift; sourceTree = "<group>"; };
 		F1DDF9741D39B6C800EEB426 /* Points.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Points.swift; sourceTree = "<group>"; };
+		F1DDF9801D3B1ECD00EEB426 /* NSData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSData.swift; sourceTree = "<group>"; };
+		F1DDF9891D3B7CA800EEB426 /* NSError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSError.swift; sourceTree = "<group>"; };
+		F1DDF98B1D3BFE9E00EEB426 /* CloudKitGetDumpOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CloudKitGetDumpOperation.swift; sourceTree = "<group>"; };
 		F1EB04351D384147004EEA56 /* Storyboard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Storyboard.swift; sourceTree = "<group>"; };
 		F1EB04371D3842EF004EEA56 /* AdminVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdminVC.swift; sourceTree = "<group>"; };
 		F1EB04391D3843C3004EEA56 /* CompetitorsVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompetitorsVC.swift; sourceTree = "<group>"; };
@@ -258,21 +292,32 @@
 			children = (
 				F17FA7E51D336DEE001B99AF /* Points.entitlements */,
 				F17FA7C11D336D46001B99AF /* AppDelegate.swift */,
+				F131A9F31D3D80BF00B82BB9 /* UIColor.swift */,
 				F17FA7C31D336D46001B99AF /* ViewController.swift */,
 				F17FA7D51D336D87001B99AF /* CloudKit.swift */,
 				F1A75C591D337E810070AAD8 /* acompetitors.data */,
+				F131A9F71D3D95E400B82BB9 /* TabBarController.swift */,
+				F131A9F91D3D970100B82BB9 /* UIViewController.swift */,
 				F17FA7D31D336D83001B99AF /* NSPredicate.swift */,
 				F17FA7D71D336DB8001B99AF /* WSDC.swift */,
 				F1DDF9741D39B6C800EEB426 /* Points.swift */,
 				F17FA7D91D336DBE001B99AF /* WebService.swift */,
 				F19512DD1D38833100EDC276 /* WSDCGetOperation.swift */,
+				F131A9EA1D3CA0F700B82BB9 /* Notifier.swift */,
+				F1DDF98B1D3BFE9E00EEB426 /* CloudKitGetDumpOperation.swift */,
 				F19512F31D394CDB00EDC276 /* WSDCTransformOperation.swift */,
+				F15CA92E1D3DFA4F00B69279 /* DancerVC.swift */,
+				F17762BA1D3FE59E00ACB9A7 /* ImportVC.swift */,
 				F19512F01D38D6AB00EDC276 /* DumpVC.swift */,
+				F1BB63131D3C1D2A00A1CC9D /* UITableView.swift */,
+				F1DDF9801D3B1ECD00EEB426 /* NSData.swift */,
+				F1DDF9891D3B7CA800EEB426 /* NSError.swift */,
 				F19512E11D3899C100EDC276 /* Swift.swift */,
 				F17FA7DB1D336DC3001B99AF /* JSON.swift */,
 				F17FA7DD1D336DC8001B99AF /* Operation.swift */,
 				F1EB043C1D3845D8004EEA56 /* Images.swift */,
 				F17FA7DF1D336DCE001B99AF /* NSDate.swift */,
+				F1BB63171D3C359E00A1CC9D /* NSURLRequest.swift */,
 				F17FA7E11D336DD3001B99AF /* NSURL.swift */,
 				F1A75C3E1D336F7E0070AAD8 /* amain.swift */,
 				F17FA7E31D336DD7001B99AF /* NSMutableURLRequest.swift */,
@@ -284,9 +329,12 @@
 				F18C97ED1D33906D00C18052 /* BZipCompression */,
 				F1EB04371D3842EF004EEA56 /* AdminVC.swift */,
 				F1EB04391D3843C3004EEA56 /* CompetitorsVC.swift */,
+				F15CA9251D3DF45E00B69279 /* String.swift */,
 				F17FA7CA1D336D46001B99AF /* LaunchScreen.storyboard */,
 				F17FA7CD1D336D46001B99AF /* Info.plist */,
 				F1A75C421D3374670070AAD8 /* Points-Bridging-Header.h */,
+				F17762CD1D3FFEAB00ACB9A7 /* ModalPresentationController.swift */,
+				F17762CF1D3FFEED00ACB9A7 /* ModalAnimationController.swift */,
 			);
 			path = Points;
 			sourceTree = "<group>";
@@ -334,6 +382,9 @@
 			isa = PBXGroup;
 			children = (
 				F19512E41D38B3C200EDC276 /* Dump.swift */,
+				F131A9FC1D3DC58C00B82BB9 /* Dancer.swift */,
+				F131AA051D3DCB4E00B82BB9 /* Competition.swift */,
+				F131AA071D3DD02800B82BB9 /* Event.swift */,
 			);
 			name = Realm;
 			sourceTree = "<group>";
@@ -613,16 +664,23 @@
 			buildActionMask = 2147483647;
 			files = (
 				F1EB04381D3842EF004EEA56 /* AdminVC.swift in Sources */,
+				F131A9F81D3D95E400B82BB9 /* TabBarController.swift in Sources */,
+				F1DDF98C1D3BFE9E00EEB426 /* CloudKitGetDumpOperation.swift in Sources */,
 				F17FA7E21D336DD3001B99AF /* NSURL.swift in Sources */,
 				F17FA7DA1D336DBE001B99AF /* WebService.swift in Sources */,
 				F19512E21D3899C100EDC276 /* Swift.swift in Sources */,
+				F1DDF9811D3B1ECD00EEB426 /* NSData.swift in Sources */,
 				F19512DE1D38833100EDC276 /* WSDCGetOperation.swift in Sources */,
 				F1A75C3F1D336F7E0070AAD8 /* amain.swift in Sources */,
 				F1DDF9751D39B6C800EEB426 /* Points.swift in Sources */,
 				F19512E51D38B3C200EDC276 /* Dump.swift in Sources */,
 				F17FA7DC1D336DC3001B99AF /* JSON.swift in Sources */,
 				F1EB04361D384147004EEA56 /* Storyboard.swift in Sources */,
+				F17762D01D3FFEED00ACB9A7 /* ModalAnimationController.swift in Sources */,
 				F1EB043A1D3843C3004EEA56 /* CompetitorsVC.swift in Sources */,
+				F131A9FD1D3DC58C00B82BB9 /* Dancer.swift in Sources */,
+				F131A9FA1D3D970100B82BB9 /* UIViewController.swift in Sources */,
+				F1BB63141D3C1D2A00A1CC9D /* UITableView.swift in Sources */,
 				F19512F11D38D6AB00EDC276 /* DumpVC.swift in Sources */,
 				F17FA7D61D336D87001B99AF /* CloudKit.swift in Sources */,
 				F17FA7DE1D336DC8001B99AF /* Operation.swift in Sources */,
@@ -630,12 +688,22 @@
 				F17FA7E41D336DD7001B99AF /* NSMutableURLRequest.swift in Sources */,
 				F19512F41D394CDB00EDC276 /* WSDCTransformOperation.swift in Sources */,
 				F17FA7C41D336D46001B99AF /* ViewController.swift in Sources */,
+				F17762BB1D3FE59E00ACB9A7 /* ImportVC.swift in Sources */,
+				F131A9F41D3D80C000B82BB9 /* UIColor.swift in Sources */,
 				F19512DF1D38880600EDC276 /* BZipCompression.h in Sources */,
+				F131AA061D3DCB4E00B82BB9 /* Competition.swift in Sources */,
+				F15CA92F1D3DFA4F00B69279 /* DancerVC.swift in Sources */,
+				F15CA9261D3DF45E00B69279 /* String.swift in Sources */,
 				F19512E01D38880600EDC276 /* BZipCompression.m in Sources */,
+				F131AA081D3DD02800B82BB9 /* Event.swift in Sources */,
+				F1DDF98A1D3B7CA800EEB426 /* NSError.swift in Sources */,
+				F17762CE1D3FFEAB00ACB9A7 /* ModalPresentationController.swift in Sources */,
 				F17FA7C21D336D46001B99AF /* AppDelegate.swift in Sources */,
+				F131A9EB1D3CA0F700B82BB9 /* Notifier.swift in Sources */,
 				F1EB043D1D3845D8004EEA56 /* Images.swift in Sources */,
 				F17FA7D81D336DB8001B99AF /* WSDC.swift in Sources */,
 				F17FA7D41D336D83001B99AF /* NSPredicate.swift in Sources */,
+				F1BB63181D3C359E00A1CC9D /* NSURLRequest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

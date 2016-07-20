@@ -8,19 +8,20 @@
 
 import Foundation
 import CloudKit
-import YSMessagePack
 
 protocol WSDCGetOperationDelegate: class {
-    func didCompleteCompetitorIdsRetrieval(operation: WSDCGetOperation, competitorIds: [Int])
+    func didCompleteCompetitorIdsRetrieval(operation: WSDCGetOperation, competitorIds: [Int], completion: Void->Void)
     func didCompleteCompetitorsRetrieval(operation: WSDCGetOperation, competitors: [WSDC.Competitor])
-    //func didCompleteCompetitorsWrite(operation: WSDCGetOperation, folderPath: String, compressed: NSData)
+    func didCancelOperation(operation: WSDCGetOperation, competitors: [WSDC.Competitor])
+    func didPackRetrievedData(operation: WSDCGetOperation, data: NSData)
+    func errorReported(operation: WSDCGetOperation, error: NSError)
 }
 
 class WSDCGetOperation: Operation, NSProgressReporting {
     let queue = NSOperationQueue()
     let progress: NSProgress
     
-    var throughputTimes = [NSTimeInterval]()
+    //var throughputTimes = [NSTimeInterval]()
     
     weak var delegate: WSDCGetOperationDelegate?
     
@@ -32,41 +33,89 @@ class WSDCGetOperation: Operation, NSProgressReporting {
     
     var competitorIds = [Int]()
     var competitors: [WSDC.Competitor] = []
+    var errors = [NSError]()
     
     lazy var lastOp: Operation = {
         return bo { [unowned self] op in
+            
+            if self.cancelled {
+                self.delegate?.didCancelOperation(self, competitors: self.competitors)
+                
+                return op.done()
+            }
+            
             do {
                 self.delegate?.didCompleteCompetitorsRetrieval(self, competitors: self.competitors)
                 
-                let uncompressed = try NSJSONSerialization.dataWithJSONObject(self.competitors.map { $0.json }, options: [])
-                /*
-                let packed = pack(items: self.competitors.map { $0.json })
-                let compressed = try BZipCompression.compressedDataWithData(packed, blockSize: BZipDefaultBlockSize, workFactor: BZipDefaultWorkFactor)
-                 */
+                let data = try self.pack(self.competitors)
+                try data.writeToDumps(path: "dump.data.bz2")
                 
-                let documentsDir = NSSearchPathForDirectoriesInDomains(
-                    NSSearchPathDirectory.DocumentDirectory,
-                    NSSearchPathDomainMask.UserDomainMask,
-                    true).first!
-                
-                let folderPath = "\(documentsDir)/dumps/\(NSDate().toString)"
-                try NSFileManager().createDirectoryAtPath(folderPath, withIntermediateDirectories: true, attributes: .None)
-                
-                uncompressed.writeToFile("\(folderPath)/competitors.json", atomically: true)
-                
-                /*
-                packed.writeToFile("\(folderPath)/competitors.messagepack", atomically: true)
-                compressed.writeToFile("\(folderPath)/competitors.messagepack.bzip2", atomically: true)
-                */
-                
-                //self.delegate?.didCompleteCompetitorsWrite(self, folderPath: folderPath, compressed: compressed)
+                self.delegate?.didPackRetrievedData(self, data: data)
             }
-            catch {
-                print(error)
+            catch let error as NSError {
+                self.errors.append(error)
+                self.delegate?.errorReported(self, error: error)
             }
         }
     }()
     
+    func pack(competitors: [WSDC.Competitor]) throws -> NSData {
+        
+        var date = NSDate()
+        
+        var serialized = (
+            dancers: [String](),
+            competitions: [String](),
+            events: [String]()
+        )
+        
+        // Events, duplicates removed
+        
+        let events = competitors.reduce(Set<WSDC.Event>()) { tmp, competitor in
+            var set = tmp
+            
+            for division in competitor.divisions {
+                for competition in division.competitions {
+                    set.insert(competition.event)
+                }
+            }
+            
+            return set
+        }
+        
+        serialized.events = events.map { $0.serialized }
+        
+        // Competitors
+        
+        for competitor in competitors {
+            serialized.dancers.append(competitor.serialized)
+            
+            // Competitions
+            
+            for division in competitor.divisions {
+                for competition in division.competitions {
+                    serialized.competitions.append(competition.serialized(withId: competitor.wsdcId, andDivision: division.name))
+                }
+            }
+        }
+        
+        var strings = "__competitions__\n" + serialized.competitions.joinWithSeparator("\n")
+        strings += "\n__events__\n" + serialized.events.joinWithSeparator("\n")
+        strings += "\n__dancers__\n" + serialized.dancers.joinWithSeparator("\n")
+        
+        let data = strings.dataUsingEncoding(NSUTF8StringEncoding)
+        
+        print("SERIALIZATION TIME: \(NSDate().timeIntervalSinceDate(date))")
+        
+        date = NSDate()
+        
+        let compressed = try BZipCompression.compressedDataWithData(data, blockSize: BZipDefaultBlockSize, workFactor: BZipDefaultWorkFactor)
+        
+        print("COMPRESSION TIME: \(NSDate().timeIntervalSinceDate(date))")
+        
+        return compressed
+    }
+
     init(maxConcurrentCount: Int, delegate: WSDCGetOperationDelegate, progress: NSProgress) {
         self.maxConcurrentCount = maxConcurrentCount
         queue.maxConcurrentOperationCount = maxConcurrentCount
@@ -78,20 +127,28 @@ class WSDCGetOperation: Operation, NSProgressReporting {
         super.start()
         
         competitorIds = getCompetitorIds()
-        delegate?.didCompleteCompetitorIdsRetrieval(self, competitorIds: competitorIds)
+        //competitorIds = [10915]
         
-        progress.totalUnitCount += competitorIds.count
+        if competitorIds.count == 0 {
+            return self.cancel()
+        }
         
-        
-        queue.suspended = true
-        
-        queue.addOperation(lastOp)
-        
-        queue.addOperations(
-            (0..<20).map { _ in competitorOp(competitorIds.removeLast()) },
-            waitUntilFinished:  false
-        )
-        queue.suspended = false
+        delegate?.didCompleteCompetitorIdsRetrieval(self, competitorIds: competitorIds) {
+            
+            self.progress.totalUnitCount += self.competitorIds.count
+            
+            self.queue.suspended = true
+            
+            self.queue.addOperation(self.lastOp)
+            
+            let rangeMax = min(self.competitorIds.count, 20)
+            
+            self.queue.addOperations(
+                (0..<rangeMax).map { _ in self.competitorOp(self.competitorIds.removeLast()) },
+                waitUntilFinished:  false
+            )
+            self.queue.suspended = false
+        }
     }
     
     deinit {
@@ -100,17 +157,19 @@ class WSDCGetOperation: Operation, NSProgressReporting {
     
     func getCompetitorIds() -> [Int] {
         
-        let letters = "z"
-        //let letters = "abcdefghijklmnopqrstuvwxyxz"
+        //let letters = "z"
+        let letters = "abcdefghijklmnopqrstuvwxyxz"
         var ids: Set<Int> = []
         
-        //let letterProgress = NSProgress(totalUnitCount: Int64(letters.characters.count))
-        //
-        //progress?.addChild(letterProgress, withPendingUnitCount: 1)
+        progress.totalUnitCount = Int64(letters.characters.count)
         
         let ops = letters.characters.map { String($0) }.map { letter -> Operation in
             
             return bo { [unowned self] op in
+                
+                if self.cancelled {
+                    return op.done()
+                }
                 
                 WebService.load(WebService.search(letter)) { result in
                     
@@ -129,7 +188,15 @@ class WSDCGetOperation: Operation, NSProgressReporting {
                         
                     case .Error(let error):
                         self.progress.completedUnitCount += 1
-                        print(error)
+                        self.errors.append(error.nsError)
+                        self.delegate?.errorReported(self, error: error.nsError)
+                        
+                        op.done()
+                        
+                    case .NetworkError(let error):
+                        self.progress.completedUnitCount += 1
+                        self.errors.append(error)
+                        self.delegate?.errorReported(self, error: error)
                         
                         op.done()
                     }
@@ -169,35 +236,35 @@ class WSDCGetOperation: Operation, NSProgressReporting {
     }
     
     func competitorOp(id: Int) -> Operation {
-        let time = NSDate()
+        //let time = NSDate()
         
         let op = bo { [unowned self] op in
             
-            print(self.cancelled)
-            print(self.state)
             if self.cancelled {
                 return op.done()
             }
             
             WebService.load(WebService.competitor(id)) { result in
-                self.throughputTimes.append(NSDate().timeIntervalSinceDate(time))
+                //self.throughputTimes.append(NSDate().timeIntervalSinceDate(time))
                 
                 switch result {
                     
                 case .Success(let competitor):
-                    print("competitor \(id) \(competitor.lastName) retrieved")
                     self.competitors.append(competitor)
-                    self.progress.completedUnitCount += 1
-                    op.done()
-                    self.triggerNextCompetitor()
-                    self.lastOp.removeDependency(op)
                     
                 case .Error(let error):
-                    self.progress.completedUnitCount += 1
-                    op.done()
-                    self.triggerNextCompetitor()
-                    self.lastOp.removeDependency(op)
+                    self.errors.append(error.nsError)
+                    self.delegate?.errorReported(self, error: error.nsError)
+                
+                case .NetworkError(let error):
+                    self.errors.append(error)
+                    self.delegate?.errorReported(self, error: error)
                 }
+                
+                self.progress.completedUnitCount += 1
+                op.done()
+                self.triggerNextCompetitor()
+                self.lastOp.removeDependency(op)
             }
         }
         
@@ -206,137 +273,3 @@ class WSDCGetOperation: Operation, NSProgressReporting {
         return op
     }
 }
-
-/*
- let writeCloudKitOp = bo { op in
- //let container = CKContainer.defaultContainer()
- let container = CKContainer(identifier: "iCloud.com.zombiedolphin.Points")
- 
- let publicDatabase = container.publicCloudDatabase
- 
- container.requestApplicationPermission(.UserDiscoverability) { status, error in
- container.discoverAllContactUserInfosWithCompletionHandler { userInfo, error in
- 
- }
- }
- 
- let op = CKSubscription(.Dumps, predicate: NSPredicate.all, subscriptionID: .Dumps, options: [.FiresOnRecordCreation, .FiresOnRecordUpdate, .FiresOnRecordDeletion])
- 
- op.notificationInfo = CKNotificationInfo()
- op.notificationInfo?.alertBody = "Competitor Thing"
- op.notificationInfo?.shouldBadge = true
- op.notificationInfo?.shouldSendContentAvailable = true
- 
- publicDatabase.saveSubscription(op) { subscription, error in
- 
- }
- 
- let date = NSDate()
- 
- let record = CKRecord(.Competitors, name: date.toString)
- record["dump"] = compressed
- record["timestamp"] = date
- record["count"] = competitorCount
- 
- publicDatabase.saveRecord(record) { record, error in
- print(record)
- print(error)
- 
- exit(0)
- }
- 
- container.fetchUserRecordIDWithCompletionHandler { recordID, error in
- publicDatabase.fetchRecordWithID(recordID!) { record, error in
- 
- }
- }
- 
- publicDatabase.deleteRecordWithID(CKRecordID(recordName: "_facdec1a146ff3ff4a702897f1371f4f")) { recordID, error in
- 
- }
- }
- 
- compressed = NSData(contentsOfFile: "competitors.messagepack.bzip2")
- 
- queue.addOperation(writeCloudKitOp)
- 
- CFRunLoopRun()
- 
- exit(0)
- 
- queue.addOperations(letterOps, waitUntilFinished: true)
- competitorIds = Array(Set(competitorIds))
- var count = 0
- 
- let times = [String:NSDate]()
- 
- print("Retrieving \(competitorIds.count) competitors")
- 
- let writeFileOp = bo { op in
- guard let documentsDir = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.UserDomainMask, true).first,
- unprettyJSON = try? NSJSONSerialization.dataWithJSONObject(competitors.map { $0.json }, options: []),
- prettyJSON = try? NSJSONSerialization.dataWithJSONObject(competitors.map { $0.json }, options: [.PrettyPrinted]),
- unprettyJSONString = String(data: prettyJSON, encoding: NSUTF8StringEncoding),
- prettyJSONString = String(data: prettyJSON, encoding: NSUTF8StringEncoding) else {
- exit(0)
- }
- 
- do {
- let json = try NSJSONSerialization.JSONObjectWithData(unprettyJSON, options: []) as! [JSONObject]
- count = json.count
- let packed = pack(items: json.map {$0})
- compressed = try BZipCompression.compressedDataWithData(packed, blockSize: BZipDefaultBlockSize, workFactor: BZipDefaultWorkFactor)
- packed.writeToFile("competitors.messagepack", atomically: true)
- compressed?.writeToFile("competitors.messagepack.bzip2", atomically: true)
- //try prettyJSONString.writeToFile("\(documentsDir)/acompetitors-pretty.json", atomically: true, encoding: NSUTF8StringEncoding)
- //try unprettyJSONString.writeToFile("\(documentsDir)/acompetitors.json", atomically: true, encoding: NSUTF8StringEncoding)
- try prettyJSONString.writeToFile("competitors-pretty.json", atomically: true, encoding: NSUTF8StringEncoding)
- try unprettyJSONString.writeToFile("competitors.json", atomically: true, encoding: NSUTF8StringEncoding)
- }
- catch {
- exit(0)
- print(error)
- }
- }
- 
- 
- let competitorOp = { (id: Int) -> Operation in
- 
- let op = bo { op in
- count += 1
- print("Retrieving \(count) / \(competitorIds.count)")
- 
- WebService.load(WebService.competitor(id)) { result in
- 
- switch result {
- 
- case .Success(let competitor):
- competitors.append(competitor)
- op.done()
- 
- case .Error(let error):
- exit(0)
- print("Error for \(id): \(error)")
- op.done()
- }
- }
- }
- 
- writeFileOp.addDependency(op)
- 
- return op
- }
- 
- queue.suspended = true
- 
- writeCloudKitOp.addDependency(writeFileOp)
- 
- queue.addOperation(writeFileOp)
- queue.addOperation(writeCloudKitOp)
- 
- queue.addOperations(competitorIds.map { competitorOp($0) }, waitUntilFinished: false)
- 
- queue.suspended = false
- 
- CFRunLoopRun()
- */

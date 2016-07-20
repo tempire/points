@@ -17,8 +17,8 @@ import Foundation
 //
 
 import Foundation
-import YSMessagePack
 import RealmSwift
+import CloudKit
 
 protocol PrimaryKeyIdObject: class {
     var id: NSUUID { get set }
@@ -47,36 +47,29 @@ class Dump: Object, PrimaryKeyIdObject {
         }
     }
     
-    convenience init(id: NSUUID, date: NSDate, version: Int, competitors: [WSDC.Competitor]) throws {
+    convenience init(ckRecord record: CKRecord) throws {
+        self.init()
+        
+        guard let _id = record["id"] as? String,
+            id = NSUUID(UUIDString: _id),
+            date = record["date"] as? NSDate,
+            version = record["version"] as? Int,
+            data = record["data"] as? NSData else {
+                return
+        }
+        
+        self.id = id
+        self.date = date
+        self.version = version
+        self.data = data
+    }
+    
+    convenience init(id: NSUUID, date: NSDate, version: Int, data: NSData) throws {
         self.init()
         
         self.id = id
         self.date = date
         self.version = version
-        
-        let documentsDir = NSSearchPathForDirectoriesInDomains(
-            NSSearchPathDirectory.DocumentDirectory,
-            NSSearchPathDomainMask.UserDomainMask,
-            true).first!
-        
-        //let uncompressed = try NSJSONSerialization.dataWithJSONObject(self.competitors.map { $0.json }, options: [])
-        
-        let packed = pack(items: competitors.map { $0.json })
-        
-        print(try packed.itemsUnpacked())
-            
-        
-        return;
-        
-        let compressed = try BZipCompression.compressedDataWithData(packed, blockSize: BZipDefaultBlockSize, workFactor: BZipDefaultWorkFactor)
-        
-        let folderPath = "\(documentsDir)/dumps/\(NSDate().toString(format: .ISO8601))"
-        try NSFileManager().createDirectoryAtPath(folderPath, withIntermediateDirectories: true, attributes: .None)
-        
-        //uncompressed.writeToFile("\(folderPath)/competitors.json", atomically: true)
-        //packed.writeToFile("\(folderPath)/competitors.messagepack", atomically: true)
-        compressed.writeToFile("\(folderPath)/competitors.messagepack.bzip2", atomically: true)
-        
-        self.data = compressed
+        self.data = data
     }
 }

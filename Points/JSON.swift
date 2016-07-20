@@ -19,6 +19,32 @@ public enum JSONError: ErrorType, CustomStringConvertible {
     case TypeMismatch(expected: Any, actual: Any)
     case TypeMismatchWithKey(key: JSONKeyType, expected: Any, actual: Any, raw: Any)
     
+    var nsErrorCode: NSError.Domain.Code {
+        switch self {
+        case .UnexpectedError(_):
+            return .JSON(0)
+            
+        case .JSONNotFound:
+            return .JSON(1)
+            
+        case .KeyNotFound(_):
+            return .JSON(2)
+            
+        case .NullValue(_):
+            return .JSON(3)
+            
+        case .TypeMismatch(_):
+            return .JSON(4)
+            
+        case .TypeMismatchWithKey(_):
+            return .JSON(5)
+        }
+    }
+    
+    var nsError: NSError {
+        return NSError(domain: .JSON, code: nsErrorCode, message: description)
+    }
+    
     public var description: String {
         switch self {
         case let .UnexpectedError(error):
@@ -162,7 +188,6 @@ public protocol JSONObjectConvertible : JSONValueType {
     init(json: JSONObject) throws
 }
 
-
 protocol JSONStruct: JSONObjectConvertible { }
 
 enum JSONResult<A: JSONStruct> {
@@ -230,7 +255,10 @@ extension Dictionary where Key: JSONKeyType {
         catch let error as JSONError {
             switch error {
             case .TypeMismatch(expected: _, actual: _):
-                break;
+                throw JSONError.TypeMismatchWithKey(key: key, expected: A.self, actual: any.dynamicType, raw: any)
+                
+            case .JSONNotFound:
+                throw error
                 
             default:
                 throw error

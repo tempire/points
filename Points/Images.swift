@@ -14,6 +14,9 @@ enum Asset: String {
   case Glyphicons_193_Remove_Sign = "glyphicons-193-remove-sign"
   case Glyphicons_44_Group = "glyphicons-44-group"
   case Glyphicons_646_Police = "glyphicons-646-police"
+  case Icon_Error = "icon-error"
+  case Icon_Info = "icon-info"
+  case Icon_Success = "icon-success"
 
   var image: Image {
     return Image(asset: self)

@@ -76,7 +76,7 @@ extension NSDate {
             
         case .WSDCEventMonth:
             let formatter = NSDateFormatter()
-            formatter.dateFormat = "MMMM YYYY"
+            formatter.dateFormat = "MMMM yyyy"
             if let date = formatter.dateFromString(string as String) {
                 self.init(timeInterval: 0, sinceDate: date)
             }

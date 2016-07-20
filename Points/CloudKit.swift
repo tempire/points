@@ -11,9 +11,6 @@ import CloudKit
 
 extension CKSubscription {
     enum SubscriptionType {
-        case Competitors
-        case Events
-        case Competitions
         case Dumps
         
         var description: String {
@@ -24,15 +21,32 @@ extension CKSubscription {
     convenience init(_ recordType: CKRecord.RecordType, predicate: NSPredicate, subscriptionID: SubscriptionType, options: CKSubscriptionOptions) {
         self.init(recordType: recordType.rawValue, predicate: predicate, subscriptionID: subscriptionID.description, options: options)
     }
+    
+    convenience init(_ recordType: CKRecord.RecordType, options: CKSubscriptionOptions) {
+        self.init(recordType: recordType.rawValue, predicate: NSPredicate.all, subscriptionID: recordType.subscriptionForAll.description, options: options)
+    }
+}
+
+extension CKQuery {
+    
+    class func latest(recordType: CKRecord.RecordType) -> CKQuery {
+        let query = CKQuery(recordType: recordType.rawValue, predicate: NSPredicate.all)
+        query.sortDescriptors = [NSSortDescriptor(key: "date", ascending: false)]
+        return query
+    }
 }
 
 extension CKRecord {
     
     enum RecordType: String {
-        case Competitors
-        case Events
-        case Competitions
         case Dumps
+        
+        var subscriptionForAll: CKSubscription.SubscriptionType {
+            switch self {
+            case .Dumps:
+                return .Dumps
+            }
+        }
     }
     
     convenience init(_ type: RecordType, id: NSUUID) {

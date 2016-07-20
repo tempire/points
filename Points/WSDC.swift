@@ -118,17 +118,52 @@ class WSDC {
     
     enum DivisionName: String, JSONValueType {
         case JRS = "Juniors"
-        case INV = "Invitational"
-        case CHMP = "Champions"
-        case ALS = "All-Stars"
         case SPH = "Sophisticated"
         case MSTR = "Masters"
-        case TCH = "Teacher"
         case NEW = "Newcomer"
         case NOV = "Novice"
         case INT = "Intermediate"
         case ADV = "Advanced"
         case PRO = "Professional"
+        case TCH = "Teacher"
+        case ALS = "All-Stars"
+        case INV = "Invitational"
+        case CHMP = "Champions"
+        
+        static var rankOrder: [DivisionName:Int] {
+            
+            return [NOV, INT, ADV, ALS, CHMP].enumerate().reduce([:]) { tmp, tuple in
+                var dict = tmp
+                dict[tuple.element] = tuple.index
+                return dict
+            }
+        }
+        
+        var pointsForNextRank: Int? {
+            switch self {
+            case .NOV:
+                return 15
+            case .INT:
+                return 30
+            case .ADV:
+                return 45
+            default:
+                return .None
+            }
+        }
+        
+        var nextRank: DivisionName? {
+            switch self {
+            case .NOV:
+                return .INT
+            case .INT:
+                return .ADV
+            case .ADV:
+                return .ALS
+            default:
+                return .None
+            }
+        }
         
         var description: String {
             return rawValue
@@ -141,21 +176,21 @@ class WSDC {
         var serialized: Int {
             switch self {
             case .JRS: return 0
-            case .INV: return 1
-            case .CHMP: return 2
-            case .ALS: return 3
-            case .SPH: return 4
-            case .MSTR: return 5
-            case .TCH: return 6
-            case .NEW: return 7
-            case .NOV: return 8
-            case .INT: return 9
-            case .ADV: return 10
-            case .PRO: return 11
+            case .SPH: return 1
+            case .MSTR: return 2
+            case .NEW: return 3
+            case .NOV: return 4
+            case .INT: return 5
+            case .ADV: return 6
+            case .PRO: return 7
+            case .TCH: return 8
+            case .ALS: return 9
+            case .INV: return 10
+            case .CHMP: return 11
             }
         }
         
-        init?(_ abbreviation: String?) {
+        init?(abbreviation: String?) {
             switch abbreviation {
             case "JRS"?: self = JRS
             case "INV"?: self = INV
@@ -174,7 +209,7 @@ class WSDC {
         }
         
         static func JSONValue(object: Any) throws -> DivisionName {
-            if let name = DivisionName(object as? String) {
+            if let name = DivisionName(abbreviation: object as? String) {
                 return name
             }
             
@@ -203,6 +238,17 @@ class WSDC {
                 }
             }
             
+            init?(tinyRaw: String) {
+                switch tinyRaw {
+                case "l":
+                    self = .Lead
+                case "f":
+                    self = .Follow
+                default:
+                    return nil
+                }
+            }
+            
             init?(_ value: String) {
                 switch value {
                 case "leader": self = Lead
@@ -223,6 +269,18 @@ class WSDC {
         enum Result: JSONValueType {
             case Placement(Int)
             case Final
+            
+            init(string: String) throws {
+                if string == "F" {
+                    self = .Final
+                }
+                else if let int = Int(string) {
+                    self = .Placement(int)
+                }
+                else {
+                    throw NSError(domain: "", code: 0, userInfo: [:])
+                }
+            }
             
             var description: String {
                 switch self {
@@ -284,12 +342,13 @@ class WSDC {
         func serialized(withId id: Int, andDivision divisionName: DivisionName) -> String {
             return [
                 id,
+                //divisionName.serialized,
                 divisionName.abbreviation,
                 points,
                 result.description,
                 role.tinyRaw,
                 event.id,
-                "\(event.date.year())"
+                "\(event.date.year()-2000)"
             ].componentsJoinedByString("^")
         }
     }
@@ -335,58 +394,5 @@ class WSDC {
                 name
             ].componentsJoinedByString("^")
         }
-    }
-}
-
-
-extension WSDC {
-    
-    class func pack(competitors: [Competitor]) throws -> NSData {
-        
-        var serialized = (
-            dancers: [String](),
-            competitions: [String](),
-            events: [String]()
-        )
-        
-        // Events, duplicates removed
-        
-        let events = competitors.reduce(Set<Event>()) { tmp, competitor in
-            var set = tmp
-            
-            for division in competitor.divisions {
-                for competition in division.competitions {
-                    set.insert(competition.event)
-                }
-            }
-            
-            return set
-        }
-        
-        serialized.events = events.map { $0.serialized }
-        
-        // Competitors
-        
-        for competitor in competitors {
-            serialized.dancers.append(competitor.serialized)
-            
-            // Competitions
-            
-            for division in competitor.divisions {
-                for competition in division.competitions {
-                    serialized.competitions.append(competition.serialized(withId: competitor.id, andDivision: division.name))
-                }
-            }
-        }
-        
-        let dict = [
-            "dancers": serialized.dancers,
-            "competitions": serialized.competitions,
-            "events": serialized.events
-        ]
-        
-        let data = NSKeyedArchiver.archivedDataWithRootObject(dict)
-        
-        return try BZipCompression.compressedDataWithData(data, blockSize: BZipDefaultBlockSize, workFactor: BZipDefaultWorkFactor)
     }
 }

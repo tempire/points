@@ -1,3 +1,4 @@
+/*
 //
 //  WSDCTransformOperation.swift
 //  Points
@@ -67,3 +68,4 @@ class WSDCTransformOperation: Operation {
         
     }
 }
+*/

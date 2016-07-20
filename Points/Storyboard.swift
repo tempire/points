@@ -16,6 +16,7 @@ enum Storyboard: String {
     static var boards = [Storyboard:UIStoryboard]()
     
     func viewController<A: UIViewController>(type: A.Type) -> A {
+        print("\(A.self)")
         return storyboard.instantiateViewControllerWithIdentifier("\(A.self)") as! A
     }
     

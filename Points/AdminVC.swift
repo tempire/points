@@ -10,12 +10,13 @@ import Foundation
 import UIKit
 import RealmSwift
 import CloudKit
+import MessageBarManager
 
 var context = 0
 
 class AdminVC: UIViewController {
     var wsdcGetOperation: WSDCGetOperation?
-    var dumps: Results<Dump>?
+    var dumps: Results<Dump>!
     
     @IBOutlet weak var progressView: UIProgressView! {
         didSet {
@@ -24,6 +25,8 @@ class AdminVC: UIViewController {
     }
     @IBOutlet weak var progressLabel: UILabel!
     @IBOutlet weak var progressDetailLabel: UILabel!
+    
+    @IBOutlet weak var playButton: UIButton!
     
     @IBOutlet weak var cancelButton: UIButton!
     
@@ -41,7 +44,9 @@ class AdminVC: UIViewController {
             return
         }
         
-        op.state = .Cancelled
+        op.cancel()
+        print(op.state)
+        //op.state = .Cancelled
     }
     
     @IBAction func toggleWSDCGet(sender: UIButton) {
@@ -79,36 +84,21 @@ class AdminVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let documentsDir = NSSearchPathForDirectoriesInDomains(
-            NSSearchPathDirectory.DocumentDirectory,
-            NSSearchPathDomainMask.UserDomainMask,
-            true).first!
-        
-        /*
-        do {
-            let data = NSData(contentsOfFile: "\(documentsDir)/competitors.json")!
-            let json = try NSJSONSerialization.JSONObjectWithData(data, options: []) as! [JSONObject]
-            let competitors = try json.map { try WSDC.Competitor(json: $0) }
-            
-            let op = WSDCTransformOperation(competitors: competitors)
-            NSOperationQueue().addOperation(op)
-        }
-        catch {
-            print(error)
-        }
- */
-        
         navigationController?.delegate = self
         
         do {
             let realm = try Realm()
             dumps = realm.objects(Dump).sorted("date", ascending: false)
             
-            token = dumps!.addNotificationBlock { changes in
+            token = dumps.addNotificationBlock { changes in
                 self.tableView?.reloadData()
             }
         }
-        catch {
+        catch let error as NSError {
+            ui(.Async) {
+                MessageBarManager.sharedInstance().showMessageWithTitle("Show", description: error.localizedDescription, type: MessageBarMessageTypeError, duration: 60)
+            }
+            
             print(error)
         }
     }
@@ -133,6 +123,11 @@ class AdminVC: UIViewController {
         
         let progress = NSProgress()
         
+        progress.cancellationHandler = {
+            progress.removeObserver(self, forKeyPath: "fractionCompleted", context: &context)
+            self.wsdcGetOperation?.cancel()
+        }
+
         progress.addObserver(self,
                              forKeyPath: "fractionCompleted",
                              options: [.Initial, .New, .Old],
@@ -142,6 +137,7 @@ class AdminVC: UIViewController {
         let op = WSDCGetOperation(maxConcurrentCount: 10, delegate: self, progress: progress)
         NSOperationQueue().addOperation(op)
         wsdcGetOperation = op
+        
     }
 
 }
@@ -154,61 +150,95 @@ extension AdminVC: UINavigationControllerDelegate {
 
 extension AdminVC: WSDCGetOperationDelegate {
     
-    func didCompleteCompetitorIdsRetrieval(operation: WSDCGetOperation, competitorIds: [Int]) {
-        print("Retrieved \(competitorIds.count) ids")
+    func errorReported(operation: WSDCGetOperation, error: NSError) {
+        ui(.Async) {
+            MessageBarManager.sharedInstance().showMessageWithTitle("Sync", description: error.localizedDescription, type: MessageBarMessageTypeError, duration: 60)
+        }
+        
+        print(error.localizedDescription)
+        
+        operation.cancel()
+    }
+    
+    func didCancelOperation(operation: WSDCGetOperation, competitors: [WSDC.Competitor]) {
+        
+        var message = "Cancelled when \(operation.progress.localizedDescription)"
+        
+        if let error = operation.errors.last {
+            message += " \(error.localizedDescription)"
+        }
+        
+        ui(.Async) {
+            UIView.transitionWithView(self.view,
+                                      duration: 0.3,
+                                      options: .TransitionCrossDissolve,
+                                      animations: {
+                                        self.cancelButton.hidden = true
+                                        self.progressLabel.text = message
+                                        self.playButton.setImage(UIImage(asset: .Glyphicons_174_Play), forState: .Normal) },
+                                      completion: { finished in
+                                        self.wsdcGetOperation = .None }
+            )
+        }
+        
+        ui(.Async, afterDelay: 10) {
+            
+            if self.wsdcGetOperation != .None {
+                return
+            }
+            
+            UIView.transitionWithView(self.view,
+                                      duration: 0.3,
+                                      options: .TransitionCrossDissolve,
+                                      animations: {
+                                        self.progressLabel.text = .None
+                                        self.progressDetailLabel.text = .None },
+                                      completion: { finished in }
+            )
+        }
+    }
+    
+    func didCompleteCompetitorIdsRetrieval(operation: WSDCGetOperation, competitorIds: [Int], completion: Void->Void){
+        progressLabel.text = "Retrieved \(competitorIds.count) ids"
+        
+        delay(2, dispatch: .Async, queue: dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0)) {
+            completion()
+        }
     }
     
     func didCompleteCompetitorsRetrieval(operation: WSDCGetOperation, competitors: [WSDC.Competitor]) {
-        print("Retrieved \(competitors.count) competitors")
-        
-        let documentsDir = NSSearchPathForDirectoriesInDomains(
-            NSSearchPathDirectory.DocumentDirectory,
-            NSSearchPathDomainMask.UserDomainMask,
-            true).first!
-        
-        let folder = "\(documentsDir)/data/\(NSDate().toString)"
-        
+        //
+    }
+    
+    func didPackRetrievedData(operation: WSDCGetOperation, data: NSData) {
         do {
-            try NSFileManager().createDirectoryAtPath(folder, withIntermediateDirectories: true, attributes: .None)
+            operation.progress.removeObserver(self, forKeyPath: "fractionCompleted", context: &context)
             
-            var date = NSDate()
-            let data = try WSDC.pack(competitors)
-            print("SERIALIZATION TIME: \(NSDate().timeIntervalSinceDate(date))")
-            
-            data.writeToFile("\(folder)/serialized.data", atomically: true)
-            
-            date = NSDate()
-            try Points.setup(data)
-            print("DESERIALIZATION TIME: \(NSDate().timeIntervalSinceDate(date))")
-        }
-        catch {
-            print(error)
-        }
-        
-        /*
-        operation.progress.removeObserver(self, forKeyPath: "fractionCompleted", context: &context)
-        
-        do {
+            // Write to database
             let realm = try Realm()
-            let dump = try Dump(id: NSUUID(), date: NSDate(), version: 0, competitors: competitors)
+            let dump = try Dump(id: NSUUID(), date: NSDate(), version: 0, data: data)
             
             try realm.write {
                 realm.add(dump, update: true)
             }
             
+            // Save to cloudkit
             CKContainer.defaultContainer().publicCloudDatabase.saveRecord(CKRecord.createDump(dump)) { record, error in
                 if let error = error {
+                    
+                    ui(.Async) {
+                        MessageBarManager.sharedInstance().showMessageWithTitle("CloudKit Save", description: error.localizedDescription, type: MessageBarMessageTypeError, duration: 60)
+                    }
+                    
                     print(error)
-                    return
                 }
-                
-                print(record)
             }
         }
-        catch {
+        catch let error as NSError {
+            MessageBarManager.sharedInstance().showMessageWithTitle("Load", description: error.localizedDescription, type: MessageBarMessageTypeError, duration: 60)
+            
             print(error)
         }
- */
     }
     
     override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
@@ -218,7 +248,7 @@ extension AdminVC: WSDCGetOperationDelegate {
         case "fractionCompleted"?:
             if let progress = object as? NSProgress {
                 
-                print("Seconds remaining: \(progress.userInfo[NSProgressThroughputKey])")
+                //print("Seconds remaining: \(progress.userInfo[NSProgressThroughputKey])")
                 ui(.Async) {
                     self.progressView.setProgress(Float(progress.fractionCompleted), animated: true)
                     self.progressLabel.text = progress.localizedDescription

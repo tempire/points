@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import RealmSwift
 import CloudKit
 
 @UIApplicationMain
@@ -24,7 +25,49 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             self.application(application, didReceiveRemoteNotification: remoteNotification)
         }
         
+        //NSURLSession.sharedSession().configuration.timeoutIntervalForResource = 600
+        //NSURLSession.sharedSession().configuration.timeoutIntervalForRequest = 300
+        
+        completeUI(.None)
+        
+
         return true
+    }
+    
+    func configureRealm() throws -> Realm {
+        
+        Realm.Configuration.defaultConfiguration = Realm.Configuration(
+            schemaVersion: 1,
+            migrationBlock: { migration, oldSchemaVersion in
+                
+                switch oldSchemaVersion {
+                    
+                case 0: // Previously unspecified version == 0
+                    break
+                    //self.migrateRealmFrom0To1(migration)
+                    
+                case 1:
+                    break
+                    //self.migrateRealmFrom1To2(migration)
+                    
+                default:
+                    break
+                }
+            }
+        )
+        
+        return try Realm()
+    }
+    
+
+    
+    func completeUI(completion: (Void->Void)?) {
+        ui(.Async) {
+            self.window = UIWindow(frame: UIScreen.mainScreen().bounds)
+            self.window?.rootViewController = Storyboard.Main.viewController(TabBarController)
+            self.window?.makeKeyAndVisible()
+            completion?()
+        }
     }
     
     func applicationWillResignActive(application: UIApplication) {
@@ -56,6 +99,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if let userInfo = userInfo as? [String:NSObject],
             queryNotification = CKNotification(fromRemoteNotificationDictionary: userInfo) as? CKQueryNotification {
             
+            // Store this elsewhere so that fetchNotificationChangesCompletionBlock can retrieve the most recent record id
             let recordID = queryNotification.recordID
             
             let op = CKFetchNotificationChangesOperation(previousServerChangeToken: .None)
@@ -77,6 +121,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 
                 print(op.moreComing)
                 
+                // Do not mark read before it's retrieved, do this in fetchNotificationChangesCompletionBlock
                 let op = CKMarkNotificationsReadOperation(notificationIDsToMarkRead: [id])
                 CKContainer.defaultContainer().addOperation(op)
             }
@@ -86,6 +131,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
             
             op.fetchNotificationChangesCompletionBlock = { token, error in
+                // Retrieve most recent record id for dumps
+                // And only after retrieved, do you mark the notification id as read with CKMarkNotificationsReadOperation
                 
             }
             

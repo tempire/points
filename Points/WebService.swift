@@ -8,9 +8,12 @@
 
 import Foundation
 
-struct Resource<A: JSONStruct> {
+struct Resource<A: JSONStruct>: CustomStringConvertible {
     let request: NSMutableURLRequest
-    var parameters = [String:AnyObject]()
+    
+    var description: String {
+        return "request: \(request)"
+    }
     
     init(url: NSURL, method: NSMutableURLRequest.Method) {
         request = NSMutableURLRequest(
@@ -20,14 +23,28 @@ struct Resource<A: JSONStruct> {
     }
 }
 
+enum ResourceResult<A: JSONStruct> {
+    case Success(A)
+    case Error(JSONError)
+    case NetworkError(NSError)
+}
+
 class WebService {
     static let wsdcBaseURL = NSURL(string: "http://wsdc-points.us-west-2.elasticbeanstalk.com")!
     
     static var session = NSURLSession.sharedSession()
     
-    class func load<A>(resource: Resource<A>, completion: (JSONResult<A>)->Void) {
+    class func load<A: JSONStruct>(resource: Resource<A>, completion: (ResourceResult<A>)->Void) {
+        
+        resource.request.setHeader(.Date(NSDate()))
         
         WebService.session.dataTaskWithRequest(resource.request) { data, response, error in
+            if let error = error {
+                return completion(
+                    .NetworkError(
+                        NSError(domain: NSError.Domain.Network.description, code: error.code, userInfo: error.userInfo)))
+            }
+            
             do {
                 completion(.Success(try A(data: data)))
             }
@@ -35,7 +52,7 @@ class WebService {
                 completion(.Error(error))
             }
             catch let error as NSError {
-                completion(.Error(.UnexpectedError(error)))
+                completion(.Error(JSONError.UnexpectedError(error)))
             }
             }.resume()
     }

@@ -13,26 +13,47 @@ enum Dispatch {
     case Async
 }
 
-func ui(dispatch: Dispatch, block: Void->Void) {
+infix operator ??= {
+}
+
+func ??=(inout left: AnyObject?, right: AnyObject) -> AnyObject {
+    if left == nil {
+        left = right
+    }
+    
+    return left!
+}
+
+func ui(dispatch: Dispatch, afterDelay: Double = 0, closure: Void->Void) {
+    delay(afterDelay, dispatch: dispatch, queue: dispatch_get_main_queue(), closure: closure)
+}
+
+func dispatch(queue: dispatch_queue_t, _ dispatch: Dispatch, block: Void->Void) {
     
     switch dispatch {
         
     case .Sync:
-        dispatch_sync(dispatch_get_main_queue(), block)
+        dispatch_sync(queue, block)
         
     case .Async:
-        dispatch_async(dispatch_get_main_queue(), block)
+        dispatch_async(queue, block)
     }
 }
 
-func dispatch(qos: qos_class_t, _ dispatch: Dispatch, block: Void->Void) {
+func delay(delay:Double, dispatch _dispatch: Dispatch, queue: dispatch_queue_t, closure: Void->Void) {
     
-    switch dispatch {
-        
-    case .Sync:
-        dispatch_sync(dispatch_get_global_queue(qos, 0), block)
-        
-    case .Async:
-        dispatch_async(dispatch_get_global_queue(qos, 0), block)
+    if _dispatch == .Sync && delay == 0 {
+        return dispatch(queue, _dispatch, block: closure)
     }
+    
+    dispatch_after(
+        dispatch_time(
+            DISPATCH_TIME_NOW,
+            Int64(delay * Double(NSEC_PER_SEC))
+        ),
+        queue, {
+            dispatch(queue, _dispatch, block: closure)
+        }
+    )
 }
+
