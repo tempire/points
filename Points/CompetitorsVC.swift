@@ -45,6 +45,8 @@ class CompetitorsVC: UIViewController {
     @IBOutlet weak var tableView: UITableView! {
         didSet {
             tableView.dataSource = self
+            tableView.keyboardDismissMode = .Interactive
+            tableView.contentInset = UIEdgeInsets(top: 8, left: 0, bottom: 0, right: 0)
         }
     }
     
@@ -52,16 +54,24 @@ class CompetitorsVC: UIViewController {
         super.viewDidLoad()
         
         results = try! Realm().objects(Dancer)
+        
+        token = results.addNotificationBlock { note in
+            self.tableView?.reloadData()
+        }
+        
+        navigationController?.delegate = self
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
     
-        tableView?.reloadData()
-        
         if self.results.count == 0 {
             self.performSegueWithVC(ImportVC.self, sender: self)
         }
+    }
+    
+    deinit {
+        print("-DEINIT \(self.dynamicType)")
     }
 }
 
@@ -113,6 +123,8 @@ extension CompetitorsVC: UITableViewDataSource {
 
             vc.dancer = results[indexPath.row]
             
+            tableView.selectRowAtIndexPath(indexPath, animated: true, scrollPosition: UITableViewScrollPosition.None)
+
         case let vc as ImportVC:
             vc.modalPresentationStyle = .Custom
             vc.transitioningDelegate = self
@@ -120,8 +132,6 @@ extension CompetitorsVC: UITableViewDataSource {
         default:
             break
         }
-        
-        //tableView.selectRowAtIndexPath(indexPath, animated: true, scrollPosition: UITableViewScrollPosition.None)
     }
     
 }
@@ -131,23 +141,22 @@ extension CompetitorsVC: UIViewControllerTransitioningDelegate {
     internal func presentationControllerForPresentedViewController(presented: UIViewController, presentingViewController presenting: UIViewController, sourceViewController source: UIViewController) -> UIPresentationController? {
         
         return ModalPresentationController(presentedViewController: presented, presentingViewController: presenting)
-        //return presented == self
-        //    ? ModalPresentationController(presentedViewController: presented, presentingViewController: presenting)
-        //    : .None
     }
     
     internal func animationControllerForPresentedController(presented: UIViewController, presentingController presenting: UIViewController, sourceController source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         
-        return ModalAnimationController(presenting: true)
-        //return presented == self
-        //    ? ModalAnimationController(presenting: true)
-        //    : .None
+        return .None
     }
     
     internal func animationControllerForDismissedController(dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return dismissed == self
-            ? ModalAnimationController(presenting: false)
-            : .None
+        
+        return .None
+    }
+}
+
+extension CompetitorsVC: UINavigationControllerDelegate {
+    func navigationController(navigationController: UINavigationController, willShowViewController viewController: UIViewController, animated: Bool) {
+        navigationController.setNavigationBarHidden(viewController == self, animated: true)
     }
 }
 

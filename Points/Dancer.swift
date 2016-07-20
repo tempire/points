@@ -8,6 +8,7 @@
 
 import Foundation
 import RealmSwift
+import CoreSpotlight
 
 class Dancer: Object, StringImport {
     dynamic var id: Int = 0
@@ -95,4 +96,20 @@ class Dancer: Object, StringImport {
         
         name = fname + " " + lname
     }
+    
+    var searchableAttributeSet: CSSearchableItemAttributeSet {
+        let attr = CSSearchableItemAttributeSet(itemContentType: Spotlight.Domain.Dancer.rawValue)
+        attr.title = name
+        attr.keywords = []
+        attr.keywords?.append("\(id)")
+        
+        attr.contentDescription = rank.max.description + "\n\(id)"
+        
+        return attr
+    }
+    
+    
+    
+    
+
 }

@@ -10,6 +10,7 @@ import Foundation
 import CloudKit
 import BTree
 import RealmSwift
+import CoreSpotlight
 
 //func ==(lhs: Points.Event, rhs: Points.Event) -> Bool { return rhs.hashValue == lhs.hashValue }
 
@@ -36,10 +37,19 @@ class Points {
         }
         
         let objects = try Points.objects(strings, progress: progress)
+        var spotlightItems = [CSSearchableItem]()
         
         realm.beginWrite()
         
-        objects.forEach { realm.add($0, update: true) }
+        objects.forEach {
+            realm.add($0, update: true)
+            
+            if let dancer = $0 as? Dancer {
+                spotlightItems.append(Spotlight.createItem("\(dancer.id)", domain: .Dancer, attributeSet: dancer.searchableAttributeSet))
+            }
+        }
+        
+        Spotlight.indexItems(spotlightItems) { _ in }
         
         try realm.commitWrite()
     }

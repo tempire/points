@@ -9,6 +9,7 @@
 import UIKit
 import RealmSwift
 import CloudKit
+import CoreSpotlight
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -151,3 +152,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 }
 
+
+// MARK: Open from spotlight
+
+extension AppDelegate {
+    
+    func application(application: UIApplication, continueUserActivity userActivity: NSUserActivity, restorationHandler: ([AnyObject]?) -> Void) -> Bool {
+        
+        if let vc = window?.rootViewController as? DancerVC where userActivity.activityType == CSSearchableItemActionType {
+            vc.restoreUserActivityState(userActivity)
+        }
+    
+        return true
+    }
+}

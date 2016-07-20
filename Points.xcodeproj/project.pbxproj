@@ -21,6 +21,7 @@
 		F17762BB1D3FE59E00ACB9A7 /* ImportVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F17762BA1D3FE59E00ACB9A7 /* ImportVC.swift */; };
 		F17762CE1D3FFEAB00ACB9A7 /* ModalPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F17762CD1D3FFEAB00ACB9A7 /* ModalPresentationController.swift */; };
 		F17762D01D3FFEED00ACB9A7 /* ModalAnimationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F17762CF1D3FFEED00ACB9A7 /* ModalAnimationController.swift */; };
+		F17762D21D40290500ACB9A7 /* Spotlight.swift in Sources */ = {isa = PBXBuildFile; fileRef = F17762D11D40290500ACB9A7 /* Spotlight.swift */; };
 		F17FA7C21D336D46001B99AF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F17FA7C11D336D46001B99AF /* AppDelegate.swift */; };
 		F17FA7C41D336D46001B99AF /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F17FA7C31D336D46001B99AF /* ViewController.swift */; };
 		F17FA7C71D336D46001B99AF /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F17FA7C51D336D46001B99AF /* Main.storyboard */; };
@@ -173,6 +174,7 @@
 		F17762BA1D3FE59E00ACB9A7 /* ImportVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImportVC.swift; sourceTree = "<group>"; };
 		F17762CD1D3FFEAB00ACB9A7 /* ModalPresentationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModalPresentationController.swift; sourceTree = "<group>"; };
 		F17762CF1D3FFEED00ACB9A7 /* ModalAnimationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModalAnimationController.swift; sourceTree = "<group>"; };
+		F17762D11D40290500ACB9A7 /* Spotlight.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Spotlight.swift; sourceTree = "<group>"; };
 		F17EEB8D1D33862E00E51C3A /* cli-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "cli-Bridging-Header.h"; sourceTree = "<group>"; };
 		F17FA7BE1D336D46001B99AF /* Points.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Points.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F17FA7C11D336D46001B99AF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -333,6 +335,7 @@
 				F17FA7CA1D336D46001B99AF /* LaunchScreen.storyboard */,
 				F17FA7CD1D336D46001B99AF /* Info.plist */,
 				F1A75C421D3374670070AAD8 /* Points-Bridging-Header.h */,
+				F17762D11D40290500ACB9A7 /* Spotlight.swift */,
 				F17762CD1D3FFEAB00ACB9A7 /* ModalPresentationController.swift */,
 				F17762CF1D3FFEED00ACB9A7 /* ModalAnimationController.swift */,
 			);
@@ -675,6 +678,7 @@
 				F1DDF9751D39B6C800EEB426 /* Points.swift in Sources */,
 				F19512E51D38B3C200EDC276 /* Dump.swift in Sources */,
 				F17FA7DC1D336DC3001B99AF /* JSON.swift in Sources */,
+				F17762D21D40290500ACB9A7 /* Spotlight.swift in Sources */,
 				F1EB04361D384147004EEA56 /* Storyboard.swift in Sources */,
 				F17762D01D3FFEED00ACB9A7 /* ModalAnimationController.swift in Sources */,
 				F1EB043A1D3843C3004EEA56 /* CompetitorsVC.swift in Sources */,

@@ -29,6 +29,9 @@ class ImportVC: UIViewController {
         
         progress = NSProgress()
         
+        view.layer.cornerRadius = 6
+        view.clipsToBounds = true
+        
         progress.addObserver(self,
                                   forKeyPath: "fractionCompleted",
                                   options: [.Initial, .New, .Old],
@@ -59,7 +62,8 @@ class ImportVC: UIViewController {
                     self.progressView.setProgress(1, animated: true)
                     
                     ui(.Async, afterDelay: 2) {
-                        self.presentingViewController?.dismissViewControllerAnimated(true, completion: .None)
+                        //self.presentingViewController?.dismissViewControllerAnimated(true, completion: .None)
+                        self.dismissViewControllerAnimated(true, completion: .None)
                     }
                     
                     //self.progressView.performAction(M13ProgressViewActionSuccess, animated: true)
