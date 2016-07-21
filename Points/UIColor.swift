@@ -18,4 +18,8 @@ extension UIColor {
     var follow: UIColor {
         return UIColor(red: 0.980, green: 0.502, blue: 0.447, alpha: 1.00)
     }
+    
+    var charcoal: UIColor {
+        return UIColor(red: 0.294, green: 0.294, blue: 0.294, alpha: 1.00)
+    }
 }

@@ -15,6 +15,7 @@ target 'Points' do
   pod 'MessageBarManager'
   pod 'BTree', '2.1.0'
   pod 'M13ProgressSuite', '1.2.7'
+  pod 'Reveal-iOS-SDK', '1.6.2'
 end
 
 target 'cli' do

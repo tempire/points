@@ -45,6 +45,18 @@ class Dancer: Object, StringImport {
         }
     }
     
+    var divisionNamesInDisplayOrder: [WSDC.DivisionName] {
+        let comps = competitions.reduce(Set<WSDC.DivisionName>()) { tmp, comp in
+            var set = tmp
+            set.insert(comp.divisionName)
+            return set
+        }
+        
+        return comps.sort { left, right in
+            return WSDC.DivisionName.displayOrder[left] < WSDC.DivisionName.displayOrder[right]
+        }
+    }
+    
     func calculateRank() -> Rank {
         let rankOrder = WSDC.DivisionName.rankOrder
         

@@ -58,6 +58,7 @@ class Points {
         
         var objects = [Object]()
         var compsByDancerId = [Int:[Competition]]()
+        var eventsById = [Int:Event]()
         
         progress.totalUnitCount = Int64(strings.count)
         
@@ -90,6 +91,7 @@ class Points {
                 
             case "competitions":
                 let competition = try Competition(string)
+                competition.event = eventsById[competition.eventId]
                 
                 if compsByDancerId[competition.wsdcId] == nil {
                     compsByDancerId[competition.wsdcId] = []
@@ -99,7 +101,11 @@ class Points {
                 objects.append(competition)
                 
             case "events":
-                objects.append(try Event(string))
+                let event = try Event(string)
+                
+                eventsById[event.id] = event
+                
+                objects.append(event)
                 
             default:
                 throw NSError(domain: .SerializedParsing, code: .SectionTitle, message: "Could not parse section title in strings data: \(identifier)")

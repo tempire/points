@@ -16,7 +16,7 @@ enum Dispatch {
 infix operator ??= {
 }
 
-func ??=(inout left: AnyObject?, right: AnyObject) -> AnyObject {
+func ??=(inout left: Any?, right: AnyObject) -> Any {
     if left == nil {
         left = right
     }

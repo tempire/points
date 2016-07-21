@@ -59,7 +59,7 @@ class CompetitorsVC: UIViewController {
             self.tableView?.reloadData()
         }
         
-        navigationController?.delegate = self
+        //navigationController?.delegate = self
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -122,6 +122,8 @@ extension CompetitorsVC: UITableViewDataSource {
             }
 
             vc.dancer = results[indexPath.row]
+            vc.peek = segue.identifier == "peek"
+            print("SETTING PEEK TO \(vc.peek)")
             
             tableView.selectRowAtIndexPath(indexPath, animated: true, scrollPosition: UITableViewScrollPosition.None)
 
@@ -154,11 +156,11 @@ extension CompetitorsVC: UIViewControllerTransitioningDelegate {
     }
 }
 
-extension CompetitorsVC: UINavigationControllerDelegate {
-    func navigationController(navigationController: UINavigationController, willShowViewController viewController: UIViewController, animated: Bool) {
-        navigationController.setNavigationBarHidden(viewController == self, animated: true)
-    }
-}
+//extension CompetitorsVC: UINavigationControllerDelegate {
+//    func navigationController(navigationController: UINavigationController, willShowViewController viewController: UIViewController, animated: Bool) {
+//        navigationController.setNavigationBarHidden(viewController == self, animated: true)
+//    }
+//}
 
 class CompetitorsCell: UITableViewCell {
     @IBOutlet weak var nameLabel: UILabel!

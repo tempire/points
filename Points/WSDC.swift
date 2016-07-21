@@ -130,9 +130,19 @@ class WSDC {
         case INV = "Invitational"
         case CHMP = "Champions"
         
+        static var values = [ CHMP, INV, ALS, ADV, INT, MSTR, SPH, NOV, JRS, NEW, JRS, PRO, TCH ]
+        
         static var rankOrder: [DivisionName:Int] {
             
-            return [NOV, INT, ADV, ALS, CHMP].enumerate().reduce([:]) { tmp, tuple in
+            return [NEW, NOV, INT, ADV, ALS, CHMP].enumerate().reduce([:]) { tmp, tuple in
+                var dict = tmp
+                dict[tuple.element] = tuple.index
+                return dict
+            }
+        }
+        
+        static var displayOrder: [DivisionName:Int] {
+            return DivisionName.values.enumerate().reduce([:]) { tmp, tuple in
                 var dict = tmp
                 dict[tuple.element] = tuple.index
                 return dict
@@ -188,6 +198,14 @@ class WSDC {
             case .INV: return 10
             case .CHMP: return 11
             }
+        }
+        
+        init?(description: String?) {
+            guard let rawValue = description, name = DivisionName(rawValue: rawValue) else {
+                return nil
+            }
+            
+            self = name
         }
         
         init?(abbreviation: String?) {
@@ -285,7 +303,19 @@ class WSDC {
             var description: String {
                 switch self {
                 case let .Placement(int):
+                    return String(int) + ext + " Place"
+                case .Final:
+                    return "Finals"
+                }
+            }
+            
+            var tinyRaw: String {
+                
+                switch self {
+                    
+                case let .Placement(int):
                     return "\(int)"
+                    
                 case .Final:
                     return "F"
                 }
@@ -345,7 +375,7 @@ class WSDC {
                 //divisionName.serialized,
                 divisionName.abbreviation,
                 points,
-                result.description,
+                result.tinyRaw,
                 role.tinyRaw,
                 event.id,
                 "\(event.date.year()-2000)"

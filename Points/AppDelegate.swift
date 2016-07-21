@@ -159,7 +159,9 @@ extension AppDelegate {
     
     func application(application: UIApplication, continueUserActivity userActivity: NSUserActivity, restorationHandler: ([AnyObject]?) -> Void) -> Bool {
         
-        if let vc = window?.rootViewController as? DancerVC where userActivity.activityType == CSSearchableItemActionType {
+        if let tabVC = window?.rootViewController as? TabBarController,
+            navVC = tabVC.selectedViewController as? UINavigationController,
+            vc = navVC.viewControllers.last as? DancerVC where userActivity.activityType == CSSearchableItemActionType {
             vc.restoreUserActivityState(userActivity)
         }
     

@@ -63,6 +63,7 @@
 		F1A75C551D3378970070AAD8 /* WebService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F17FA7D91D336DBE001B99AF /* WebService.swift */; };
 		F1A75C561D33789E0070AAD8 /* NSMutableURLRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = F17FA7E31D336DD7001B99AF /* NSMutableURLRequest.swift */; };
 		F1A75C5A1D337E810070AAD8 /* acompetitors.data in Resources */ = {isa = PBXBuildFile; fileRef = F1A75C591D337E810070AAD8 /* acompetitors.data */; };
+		F1AB6D4F1D406AFB00642EAE /* Maps.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1AB6D4E1D406AFB00642EAE /* Maps.swift */; };
 		F1BB63141D3C1D2A00A1CC9D /* UITableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1BB63131D3C1D2A00A1CC9D /* UITableView.swift */; };
 		F1BB63181D3C359E00A1CC9D /* NSURLRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1BB63171D3C359E00A1CC9D /* NSURLRequest.swift */; };
 		F1DDF9751D39B6C800EEB426 /* Points.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1DDF9741D39B6C800EEB426 /* Points.swift */; };
@@ -214,6 +215,7 @@
 		F1A75C491D33784C0070AAD8 /* cli */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = cli; sourceTree = BUILT_PRODUCTS_DIR; };
 		F1A75C4B1D33784C0070AAD8 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		F1A75C591D337E810070AAD8 /* acompetitors.data */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = acompetitors.data; sourceTree = "<group>"; };
+		F1AB6D4E1D406AFB00642EAE /* Maps.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Maps.swift; sourceTree = "<group>"; };
 		F1BB63131D3C1D2A00A1CC9D /* UITableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UITableView.swift; sourceTree = "<group>"; };
 		F1BB63171D3C359E00A1CC9D /* NSURLRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSURLRequest.swift; sourceTree = "<group>"; };
 		F1DDF9741D39B6C800EEB426 /* Points.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Points.swift; sourceTree = "<group>"; };
@@ -335,6 +337,7 @@
 				F17FA7CA1D336D46001B99AF /* LaunchScreen.storyboard */,
 				F17FA7CD1D336D46001B99AF /* Info.plist */,
 				F1A75C421D3374670070AAD8 /* Points-Bridging-Header.h */,
+				F1AB6D4E1D406AFB00642EAE /* Maps.swift */,
 				F17762D11D40290500ACB9A7 /* Spotlight.swift */,
 				F17762CD1D3FFEAB00ACB9A7 /* ModalPresentationController.swift */,
 				F17762CF1D3FFEED00ACB9A7 /* ModalAnimationController.swift */,
@@ -697,6 +700,7 @@
 				F19512DF1D38880600EDC276 /* BZipCompression.h in Sources */,
 				F131AA061D3DCB4E00B82BB9 /* Competition.swift in Sources */,
 				F15CA92F1D3DFA4F00B69279 /* DancerVC.swift in Sources */,
+				F1AB6D4F1D406AFB00642EAE /* Maps.swift in Sources */,
 				F15CA9261D3DF45E00B69279 /* String.swift in Sources */,
 				F19512E01D38880600EDC276 /* BZipCompression.m in Sources */,
 				F131AA081D3DD02800B82BB9 /* Event.swift in Sources */,

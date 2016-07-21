@@ -99,8 +99,8 @@ class WSDCGetOperation: Operation, NSProgressReporting {
             }
         }
         
-        var strings = "__competitions__\n" + serialized.competitions.joinWithSeparator("\n")
-        strings += "\n__events__\n" + serialized.events.joinWithSeparator("\n")
+        var strings = "__events__\n" + serialized.events.joinWithSeparator("\n")
+        strings += "\n__competitions__\n" + serialized.competitions.joinWithSeparator("\n")
         strings += "\n__dancers__\n" + serialized.dancers.joinWithSeparator("\n")
         
         let data = strings.dataUsingEncoding(NSUTF8StringEncoding)

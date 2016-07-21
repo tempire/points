@@ -27,8 +27,9 @@ class Competition: Object, StringImport {
     dynamic private var _divisionName: String = ""
     dynamic private var _result: String = ""
     dynamic private var _role: String = ""
-    dynamic private var eventId: Int = 0
+    dynamic var eventId: Int = 0
     dynamic private var year: Int = 0
+    dynamic var event: Event!
     
     let dancer = LinkingObjects(fromType: Dancer.self, property: "competitions")
     
@@ -46,7 +47,7 @@ class Competition: Object, StringImport {
             return try! WSDC.Competition.Result(string: _result)
         }
         set {
-            _result = newValue.description
+            _result = newValue.tinyRaw
         }
     }
     
