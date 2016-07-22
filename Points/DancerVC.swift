@@ -174,9 +174,9 @@ extension DancerVC: UITableViewDataSource {
         
         cell.competition = competition
         cell.nameLabel.text = competition.result.description
-        cell.eventNameLabel.text = competition.event.name
-        cell.eventDateLabel.text = competition.event.date.toString(format: .WSDCEventMonth)
-        cell.eventLocationButton.setTitle(competition.event.location, forState: .Normal)
+        cell.eventNameLabel.text = competition.eventYear.event.name
+        cell.eventDateLabel.text = competition.eventYear.date.toString(format: .WSDCEventMonth)
+        cell.eventLocationButton.setTitle(competition.eventYear.event.location, forState: .Normal)
         cell.pointsLabel.text = String(competition.points)
         
         return cell
@@ -239,6 +239,6 @@ class DancerCell: UITableViewCell {
     
     
     @IBAction func showEventLocation(sender: UIButton) {
-        Maps.openAtAddress(competition.event.location)
+        Maps.openAtAddress(competition.eventYear.event.location)
     }
 }

@@ -58,12 +58,10 @@ class CompetitorsVC: UIViewController {
         token = results.addNotificationBlock { note in
             self.tableView?.reloadData()
         }
-        
-        //navigationController?.delegate = self
     }
     
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
     
         if self.results.count == 0 {
             self.performSegueWithVC(ImportVC.self, sender: self)
@@ -155,12 +153,6 @@ extension CompetitorsVC: UIViewControllerTransitioningDelegate {
         return .None
     }
 }
-
-//extension CompetitorsVC: UINavigationControllerDelegate {
-//    func navigationController(navigationController: UINavigationController, willShowViewController viewController: UIViewController, animated: Bool) {
-//        navigationController.setNavigationBarHidden(viewController == self, animated: true)
-//    }
-//}
 
 class CompetitorsCell: UITableViewCell {
     @IBOutlet weak var nameLabel: UILabel!

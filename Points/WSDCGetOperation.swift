@@ -71,32 +71,40 @@ class WSDCGetOperation: Operation, NSProgressReporting {
         
         // Events, duplicates removed
         
-        let events = competitors.reduce(Set<WSDC.Event>()) { tmp, competitor in
-            var set = tmp
+        let eventsDict = competitors.reduce([Int:Set<WSDC.Event>]()) { tmp, competitor in
+            var eventsDict = tmp
             
-            for division in competitor.divisions {
-                for competition in division.competitions {
-                    set.insert(competition.event)
-                }
-            }
-            
-            return set
-        }
-        
-        serialized.events = events.map { $0.serialized }
-        
-        // Competitors
-        
-        for competitor in competitors {
             serialized.dancers.append(competitor.serialized)
             
-            // Competitions
-            
             for division in competitor.divisions {
                 for competition in division.competitions {
+                    
+                    // Competitions
                     serialized.competitions.append(competition.serialized(withId: competitor.wsdcId, andDivision: division.name))
+                    
+                    // Event insert
+                    if eventsDict[competition.event.id] == nil {
+                        eventsDict[competition.event.id] = Set<WSDC.Event>()
+                    }
+                    eventsDict[competition.event.id]!.insert(competition.event)
                 }
             }
+            
+            return eventsDict
+        }
+        
+        // Combine events, indexed on id + year
+        
+        serialized.events = eventsDict.values.map { events in
+            let string = [
+            String(events.first!.date.month()),
+            String(events.first!.id),
+            events.first!.location,
+            events.first!.name,
+            events.map { String($0.date.year() - 2000) }.joinWithSeparator(",")
+            ].joinWithSeparator("^")
+            
+            return string
         }
         
         var strings = "__events__\n" + serialized.events.joinWithSeparator("\n")
@@ -128,6 +136,7 @@ class WSDCGetOperation: Operation, NSProgressReporting {
         
         competitorIds = getCompetitorIds()
         //competitorIds = [10915]
+        //competitorIds = [7353]
         
         if competitorIds.count == 0 {
             return self.cancel()

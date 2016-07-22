@@ -248,7 +248,6 @@ extension AdminVC: WSDCGetOperationDelegate {
         case "fractionCompleted"?:
             if let progress = object as? NSProgress {
                 
-                //print("Seconds remaining: \(progress.userInfo[NSProgressThroughputKey])")
                 ui(.Async) {
                     self.progressView.setProgress(Float(progress.fractionCompleted), animated: true)
                     self.progressLabel.text = progress.localizedDescription

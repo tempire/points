@@ -28,8 +28,8 @@ class Competition: Object, StringImport {
     dynamic private var _result: String = ""
     dynamic private var _role: String = ""
     dynamic var eventId: Int = 0
-    dynamic private var year: Int = 0
-    dynamic var event: Event!
+    dynamic var year: Int = 0
+    dynamic var eventYear: EventYear!
     
     let dancer = LinkingObjects(fromType: Dancer.self, property: "competitions")
     

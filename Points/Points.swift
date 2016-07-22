@@ -14,9 +14,9 @@ import CoreSpotlight
 
 //func ==(lhs: Points.Event, rhs: Points.Event) -> Bool { return rhs.hashValue == lhs.hashValue }
 
-class Points {
+enum Points {
     
-    class func addSubscriptionForNewPoints(completion: (CKSubscription?, NSError?)->Void) {
+    static func addSubscriptionForNewPoints(completion: (CKSubscription?, NSError?)->Void) {
         let publicDatabase = CKContainer.defaultContainer().publicCloudDatabase
         
         let op = CKSubscription(.Dumps, options: [.FiresOnRecordCreation, .FiresOnRecordUpdate, .FiresOnRecordDeletion])
@@ -28,7 +28,7 @@ class Points {
         publicDatabase.saveSubscription(op, completionHandler: completion)
     }
     
-    class func importData(data: NSData, into realm: Realm, with progress: NSProgress) throws {
+    static func importData(data: NSData, into realm: Realm, with progress: NSProgress) throws {
         
         let uncompressed = try BZipCompression.decompressedDataWithData(data)
         
@@ -54,11 +54,11 @@ class Points {
         try realm.commitWrite()
     }
     
-    class func objects(strings: [String], progress: NSProgress) throws -> [Object] {
+    static func objects(strings: [String], progress: NSProgress) throws -> [Object] {
         
         var objects = [Object]()
         var compsByDancerId = [Int:[Competition]]()
-        var eventsById = [Int:Event]()
+        var eventYearsByIdAndYear = [String:EventYear]()
         
         progress.totalUnitCount = Int64(strings.count)
         
@@ -75,10 +75,6 @@ class Points {
             case "dancers":
                 let dancer = try Dancer(string)
                 
-                if dancer.lname == "Hinkle" {
-                    
-                }
-                
                 if let comps = compsByDancerId[dancer.id] {
                     for comp in comps {
                         dancer.competitions.append(comp)
@@ -91,7 +87,7 @@ class Points {
                 
             case "competitions":
                 let competition = try Competition(string)
-                competition.event = eventsById[competition.eventId]
+                competition.eventYear = eventYearsByIdAndYear[String(competition.eventId) + String(competition.year)]
                 
                 if compsByDancerId[competition.wsdcId] == nil {
                     compsByDancerId[competition.wsdcId] = []
@@ -101,11 +97,13 @@ class Points {
                 objects.append(competition)
                 
             case "events":
-                let event = try Event(string)
+                let eventYears = try EventYear.createEvents(string.componentsSeparatedByString("^"))
                 
-                eventsById[event.id] = event
-                
-                objects.append(event)
+                eventYears.forEach {
+                    objects.append($0)
+                    let key = String($0.event.id) + String($0.year)
+                    eventYearsByIdAndYear[key] = $0
+                }
                 
             default:
                 throw NSError(domain: .SerializedParsing, code: .SectionTitle, message: "Could not parse section title in strings data: \(identifier)")

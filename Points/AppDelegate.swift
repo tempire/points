@@ -26,8 +26,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             self.application(application, didReceiveRemoteNotification: remoteNotification)
         }
         
-        //NSURLSession.sharedSession().configuration.timeoutIntervalForResource = 600
-        //NSURLSession.sharedSession().configuration.timeoutIntervalForRequest = 300
+        NSURLSession.sharedSession().configuration.timeoutIntervalForResource = 600
+        NSURLSession.sharedSession().configuration.timeoutIntervalForRequest = 300
         
         completeUI(.None)
         

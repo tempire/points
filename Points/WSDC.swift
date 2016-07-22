@@ -384,7 +384,7 @@ class WSDC {
     }
     
     struct Event: JSONStruct, Hashable {
-        var hashValue: Int { return id }
+        var hashValue: Int { return id.hashValue + date.hashValue }
         
         var date: NSDate
         var id: Int
