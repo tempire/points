@@ -76,6 +76,7 @@ enum Points {
             
             if string[string.startIndex..<string.startIndex.advancedBy(2)] == "__" {
                 identifier = string[string.startIndex.advancedBy(2)..<string.endIndex.advancedBy(-2)]
+                progress.completedUnitCount += 1
                 continue
             }
 
@@ -89,6 +90,8 @@ enum Points {
                     let key = [String($0.event.id), String($0.year)].joinWithSeparator("^")
                     eventYearsByIdAndYear[key] = $0
                 }
+                
+                progress.completedUnitCount += 1
                 
             case "competitions":
                 
@@ -129,8 +132,10 @@ enum Points {
                     }
                     
                     // Increment total unit count for competition placement loop below
-                    progress.totalUnitCount += Int64(0.5)
                 }
+                
+                progress.totalUnitCount += 1
+                progress.completedUnitCount += 1
                 
                 objects.append(competition)
                 
@@ -146,12 +151,12 @@ enum Points {
                 dancer.rank = dancer.calculateRank()
                 
                 objects.append(dancer)
+            
+                progress.completedUnitCount += 1
                 
             default:
                 throw NSError(domain: .SerializedParsing, code: .SectionTitle, message: "Could not parse section title in strings data: \(identifier)")
             }
-            
-            progress.completedUnitCount += 1
         }
         
         for case let competition as Competition in objects {
@@ -172,9 +177,9 @@ enum Points {
                 case .Follow:
                     competition.partnerCompetition = partnerComps[key]?.lead
                 }
-                
-                progress.completedUnitCount += Int64(0.5)
             }
+            
+            progress.completedUnitCount += 1
         }
         
         return objects

@@ -38,7 +38,7 @@ class ImportVC: UIViewController {
                                   context: nil
         )
         
-        preferredContentSize = CGSize(width: 300, height: contentView.intrinsicContentSize().height)
+        preferredContentSize = CGSize(width: 300, height: 300)
         
         getDumpFromCloudKit()
     }
@@ -61,7 +61,7 @@ class ImportVC: UIViewController {
                     
                     self.progressView.setProgress(1, animated: true)
                     
-                    ui(.Async, afterDelay: 2) {
+                    ui(.Async) {
                         //self.presentingViewController?.dismissViewControllerAnimated(true, completion: .None)
                         self.dismissViewControllerAnimated(true, completion: .None)
                     }

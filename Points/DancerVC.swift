@@ -58,7 +58,7 @@ class DancerVC: UIViewController {
     var sort = CompetitionSort.DivisionName {
         didSet {
             print("Set sort to \(sort)")
-            sortButton.setTitle("\(sort)", forState: .Normal)
+            //sortButton.setTitle("\(sort)", forState: .Normal)
             updateScrollView()
             tableView.reloadDataWithDissolve()
             tableView.scrollToRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 0), atScrollPosition: .Top, animated: false)
@@ -71,8 +71,28 @@ class DancerVC: UIViewController {
     
     var peek: Bool = false
     
+    @IBOutlet weak var rankLabel: UILabel! {
+        didSet {
+            rankLabel.text = dancer.rank.max.description
+        }
+    }
+    @IBOutlet weak var dancerNameLabel: UILabel! {
+        didSet {
+            dancerNameLabel.text = dancer.name
+        }
+    }
+    @IBOutlet weak var wsdcIdLabel: UILabel! {
+        didSet {
+            wsdcIdLabel.text = String(dancer.id)
+        }
+    }
+    
     @IBOutlet weak var backgroundHeaderViewHeightConstraint: NSLayoutConstraint!
-    @IBOutlet weak var avatarImageView: UIImageView!
+    @IBOutlet weak var avatarImageView: UIImageView! {
+        didSet {
+            avatarImageView.image = UIImage.createAvatarPlaceholder(userFullName: dancer.name, placeholderSize: CGSize(width: 256, height: 256))
+        }
+    }
     @IBOutlet weak var sortButton: UIButton!
     
     lazy var divisionScrollView: UIScrollView = {
@@ -320,10 +340,10 @@ extension DancerVC: UITableViewDelegate {
     
     func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
         
-        cell.contentView.layer.masksToBounds = false
-        cell.contentView.layer.shadowColor = UIColor.blackColor().CGColor
-        cell.contentView.layer.shadowOffset = CGSize(width: 0, height: 0.5)
-        cell.contentView.layer.shadowPath = UIBezierPath(rect: cell.bounds).CGPath
+        //cell.contentView.layer.masksToBounds = false
+        //cell.contentView.layer.shadowColor = UIColor.blackColor().CGColor
+        //cell.contentView.layer.shadowOffset = CGSize(width: 0, height: 0.5)
+        //cell.contentView.layer.shadowPath = UIBezierPath(rect: cell.bounds).CGPath
     }
 }
 
