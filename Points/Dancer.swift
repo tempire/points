@@ -57,6 +57,19 @@ class Dancer: Object, StringImport {
         }
     }
     
+    func points(forDivision divisionName: WSDC.DivisionName) -> [WSDC.Competition.Role:Int] {
+        
+        return competitions
+            .filter { $0.divisionName == divisionName }
+            .reduce([WSDC.Competition.Role.Lead: 0, WSDC.Competition.Role.Follow: 0]) { tmp, comp in
+                var dict = tmp
+                
+                dict[comp.role]! += comp.points
+                
+                return dict
+        }
+    }
+    
     func calculateRank() -> Rank {
         let rankOrder = WSDC.DivisionName.rankOrder
         

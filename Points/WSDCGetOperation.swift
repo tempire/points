@@ -14,7 +14,8 @@ protocol WSDCGetOperationDelegate: class {
     func didCompleteCompetitorsRetrieval(operation: WSDCGetOperation, competitors: [WSDC.Competitor])
     func didCancelOperation(operation: WSDCGetOperation, competitors: [WSDC.Competitor])
     func didPackRetrievedData(operation: WSDCGetOperation, data: NSData)
-    func errorReported(operation: WSDCGetOperation, error: NSError)
+    func errorReported(operation: WSDCGetOperation, error: NSError, requeuing: Bool)
+    func shouldRequeueAfterError(operation: WSDCGetOperation, error: NSError, competitorId: Int) -> Bool
 }
 
 class WSDCGetOperation: Operation, NSProgressReporting {
@@ -54,7 +55,7 @@ class WSDCGetOperation: Operation, NSProgressReporting {
             }
             catch let error as NSError {
                 self.errors.append(error)
-                self.delegate?.errorReported(self, error: error)
+                self.delegate?.errorReported(self, error: error, requeuing: false)
             }
         }
     }()
@@ -97,10 +98,10 @@ class WSDCGetOperation: Operation, NSProgressReporting {
         
         serialized.events = eventsDict.values.map { events in
             let string = [
-            String(events.first!.date.month()),
             String(events.first!.id),
-            events.first!.location,
             events.first!.name,
+            events.first!.location,
+            String(events.first!.date.month()),
             events.map { String($0.date.year() - 2000) }.joinWithSeparator(",")
             ].joinWithSeparator("^")
             
@@ -134,8 +135,9 @@ class WSDCGetOperation: Operation, NSProgressReporting {
     override func start() {
         super.start()
         
-        competitorIds = getCompetitorIds()
-        //competitorIds = [10915]
+        //competitorIds = getCompetitorIds()
+        competitorIds = [10915, 8836]
+        // tony schubert
         //competitorIds = [7353]
         
         if competitorIds.count == 0 {
@@ -198,14 +200,14 @@ class WSDCGetOperation: Operation, NSProgressReporting {
                     case .Error(let error):
                         self.progress.completedUnitCount += 1
                         self.errors.append(error.nsError)
-                        self.delegate?.errorReported(self, error: error.nsError)
+                        self.delegate?.errorReported(self, error: error.nsError, requeuing: false)
                         
                         op.done()
                         
                     case .NetworkError(let error):
                         self.progress.completedUnitCount += 1
                         self.errors.append(error)
-                        self.delegate?.errorReported(self, error: error)
+                        self.delegate?.errorReported(self, error: error, requeuing: false)
                         
                         op.done()
                     }
@@ -249,6 +251,10 @@ class WSDCGetOperation: Operation, NSProgressReporting {
         
         let op = bo { [unowned self] op in
             
+            guard let delegate = self.delegate else {
+                return
+            }
+            
             if self.cancelled {
                 return op.done()
             }
@@ -263,11 +269,24 @@ class WSDCGetOperation: Operation, NSProgressReporting {
                     
                 case .Error(let error):
                     self.errors.append(error.nsError)
-                    self.delegate?.errorReported(self, error: error.nsError)
+                    
+                    //let requeue = delegate.shouldRequeueAfterError(self, error: error.nsError, competitorId: id)
+                    //delegate.errorReported(self, error: error.nsError, requeuing: requeue)
+                    delegate.errorReported(self, error: error.nsError, requeuing: false)
                 
                 case .NetworkError(let error):
                     self.errors.append(error)
-                    self.delegate?.errorReported(self, error: error)
+                    
+                    
+                    let requeue = delegate.shouldRequeueAfterError(self, error: error, competitorId: id)
+                    delegate.errorReported(self, error: error, requeuing: requeue)
+                    
+                    if requeue {
+                        let requeuedOp = self.competitorOp(id)
+                        self.lastOp.addDependency(requeuedOp)
+                        self.queue.addOperation(requeuedOp)
+                        self.progress.totalUnitCount += 1
+                    }
                 }
                 
                 self.progress.completedUnitCount += 1

@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		C17AD6A0282C0536F97F6721 /* Pods_cli.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 49CBE127983671DA00FB3F3A /* Pods_cli.framework */; };
+		F110AA871D4421EC008F603A /* UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F110AA861D4421EC008F603A /* UIView.swift */; };
+		F110AA901D4440F6008F603A /* UILabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F110AA8F1D4440F6008F603A /* UILabel.swift */; };
 		F131A9EB1D3CA0F700B82BB9 /* Notifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = F131A9EA1D3CA0F700B82BB9 /* Notifier.swift */; };
 		F131A9F41D3D80C000B82BB9 /* UIColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F131A9F31D3D80BF00B82BB9 /* UIColor.swift */; };
 		F131A9F81D3D95E400B82BB9 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F131A9F71D3D95E400B82BB9 /* TabBarController.swift */; };
@@ -70,6 +72,7 @@
 		F1DDF9811D3B1ECD00EEB426 /* NSData.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1DDF9801D3B1ECD00EEB426 /* NSData.swift */; };
 		F1DDF98A1D3B7CA800EEB426 /* NSError.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1DDF9891D3B7CA800EEB426 /* NSError.swift */; };
 		F1DDF98C1D3BFE9E00EEB426 /* CloudKitGetDumpOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1DDF98B1D3BFE9E00EEB426 /* CloudKitGetDumpOperation.swift */; };
+		F1E27A8B1D467D0600612196 /* Int.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1E27A8A1D467D0600612196 /* Int.swift */; };
 		F1EB04361D384147004EEA56 /* Storyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1EB04351D384147004EEA56 /* Storyboard.swift */; };
 		F1EB04381D3842EF004EEA56 /* AdminVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1EB04371D3842EF004EEA56 /* AdminVC.swift */; };
 		F1EB043A1D3843C3004EEA56 /* CompetitorsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1EB04391D3843C3004EEA56 /* CompetitorsVC.swift */; };
@@ -162,6 +165,8 @@
 		49CBE127983671DA00FB3F3A /* Pods_cli.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_cli.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		92FDCCA70C3E77232FDA9F24 /* Pods-Points.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Points.release.xcconfig"; path = "Pods/Target Support Files/Pods-Points/Pods-Points.release.xcconfig"; sourceTree = "<group>"; };
 		B9D07EEAA190B4FBE1F23E4F /* Pods-cli.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-cli.release.xcconfig"; path = "Pods/Target Support Files/Pods-cli/Pods-cli.release.xcconfig"; sourceTree = "<group>"; };
+		F110AA861D4421EC008F603A /* UIView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIView.swift; sourceTree = "<group>"; };
+		F110AA8F1D4440F6008F603A /* UILabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UILabel.swift; sourceTree = "<group>"; };
 		F131A9EA1D3CA0F700B82BB9 /* Notifier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Notifier.swift; sourceTree = "<group>"; };
 		F131A9F31D3D80BF00B82BB9 /* UIColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIColor.swift; sourceTree = "<group>"; };
 		F131A9F71D3D95E400B82BB9 /* TabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
@@ -222,6 +227,7 @@
 		F1DDF9801D3B1ECD00EEB426 /* NSData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSData.swift; sourceTree = "<group>"; };
 		F1DDF9891D3B7CA800EEB426 /* NSError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSError.swift; sourceTree = "<group>"; };
 		F1DDF98B1D3BFE9E00EEB426 /* CloudKitGetDumpOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CloudKitGetDumpOperation.swift; sourceTree = "<group>"; };
+		F1E27A8A1D467D0600612196 /* Int.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Int.swift; sourceTree = "<group>"; };
 		F1EB04351D384147004EEA56 /* Storyboard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Storyboard.swift; sourceTree = "<group>"; };
 		F1EB04371D3842EF004EEA56 /* AdminVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdminVC.swift; sourceTree = "<group>"; };
 		F1EB04391D3843C3004EEA56 /* CompetitorsVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompetitorsVC.swift; sourceTree = "<group>"; };
@@ -311,6 +317,7 @@
 				F1DDF98B1D3BFE9E00EEB426 /* CloudKitGetDumpOperation.swift */,
 				F19512F31D394CDB00EDC276 /* WSDCTransformOperation.swift */,
 				F15CA92E1D3DFA4F00B69279 /* DancerVC.swift */,
+				F1E27A8A1D467D0600612196 /* Int.swift */,
 				F17762BA1D3FE59E00ACB9A7 /* ImportVC.swift */,
 				F19512F01D38D6AB00EDC276 /* DumpVC.swift */,
 				F1BB63131D3C1D2A00A1CC9D /* UITableView.swift */,
@@ -338,6 +345,8 @@
 				F17FA7CD1D336D46001B99AF /* Info.plist */,
 				F1A75C421D3374670070AAD8 /* Points-Bridging-Header.h */,
 				F1AB6D4E1D406AFB00642EAE /* Maps.swift */,
+				F110AA861D4421EC008F603A /* UIView.swift */,
+				F110AA8F1D4440F6008F603A /* UILabel.swift */,
 				F17762D11D40290500ACB9A7 /* Spotlight.swift */,
 				F17762CD1D3FFEAB00ACB9A7 /* ModalPresentationController.swift */,
 				F17762CF1D3FFEED00ACB9A7 /* ModalAnimationController.swift */,
@@ -685,6 +694,7 @@
 				F1EB04361D384147004EEA56 /* Storyboard.swift in Sources */,
 				F17762D01D3FFEED00ACB9A7 /* ModalAnimationController.swift in Sources */,
 				F1EB043A1D3843C3004EEA56 /* CompetitorsVC.swift in Sources */,
+				F110AA871D4421EC008F603A /* UIView.swift in Sources */,
 				F131A9FD1D3DC58C00B82BB9 /* Dancer.swift in Sources */,
 				F131A9FA1D3D970100B82BB9 /* UIViewController.swift in Sources */,
 				F1BB63141D3C1D2A00A1CC9D /* UITableView.swift in Sources */,
@@ -708,6 +718,8 @@
 				F17762CE1D3FFEAB00ACB9A7 /* ModalPresentationController.swift in Sources */,
 				F17FA7C21D336D46001B99AF /* AppDelegate.swift in Sources */,
 				F131A9EB1D3CA0F700B82BB9 /* Notifier.swift in Sources */,
+				F110AA901D4440F6008F603A /* UILabel.swift in Sources */,
+				F1E27A8B1D467D0600612196 /* Int.swift in Sources */,
 				F1EB043D1D3845D8004EEA56 /* Images.swift in Sources */,
 				F17FA7D81D336DB8001B99AF /* WSDC.swift in Sources */,
 				F17FA7D41D336D83001B99AF /* NSPredicate.swift in Sources */,

@@ -9,6 +9,7 @@
 #endif
 
 enum Asset: String {
+  case _889_Sort_Descending_Selected = "889-sort-descending-selected"
   case Glyphicons_174_Play = "glyphicons-174-play"
   case Glyphicons_175_Pause = "glyphicons-175-pause"
   case Glyphicons_193_Remove_Sign = "glyphicons-193-remove-sign"

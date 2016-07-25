@@ -31,14 +31,14 @@ class EventYear: Object {
     
     class func createEvents(strings: [String]) throws -> [EventYear] {
         
-        guard let month = Int(strings[0]),
-            id = Int(strings[1]) else {
+        guard let month = Int(strings[3]),
+            id = Int(strings[0]) else {
                 
                 throw NSError(domain: .SerializedParsing, code: .Event, message: "Could not parse event: \(strings)")
         }
         
         let location = strings[2]
-        let name = strings[3]
+        let name = strings[1]
 
         return strings[4].componentsSeparatedByString(",").flatMap {
             guard let year = Int($0) else {
@@ -56,7 +56,7 @@ class EventYear: Object {
     convenience required init(month: Int, year: Int, event: Event) {
         self.init()
         
-        self.id = String(month) + String(year)
+        self.id = [String(event.id), String(month), String(year)].joinWithSeparator("^")
         self.month = month
         self.year = year
         self.event = event

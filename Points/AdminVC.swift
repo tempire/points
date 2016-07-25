@@ -150,14 +150,21 @@ extension AdminVC: UINavigationControllerDelegate {
 
 extension AdminVC: WSDCGetOperationDelegate {
     
-    func errorReported(operation: WSDCGetOperation, error: NSError) {
+    func errorReported(operation: WSDCGetOperation, error: NSError, requeuing: Bool) {
         ui(.Async) {
-            MessageBarManager.sharedInstance().showMessageWithTitle("Sync", description: error.localizedDescription, type: MessageBarMessageTypeError, duration: 60)
+            MessageBarManager.sharedInstance().showMessageWithTitle("Sync", description: error.localizedDescription, type: requeuing ? MessageBarMessageTypeInfo : MessageBarMessageTypeError, duration: 60)
         }
         
+        print(error)
         print(error.localizedDescription)
         
-        operation.cancel()
+        if !requeuing {
+            operation.cancel()
+        }
+    }
+    
+    func shouldRequeueAfterError(operation: WSDCGetOperation, error: NSError, competitorId: Int) -> Bool {
+        return true
     }
     
     func didCancelOperation(operation: WSDCGetOperation, competitors: [WSDC.Competitor]) {

@@ -10,6 +10,7 @@ import Foundation
 import CloudKit
 
 func ==(lhs: WSDC.Event, rhs: WSDC.Event) -> Bool { return rhs.hashValue == lhs.hashValue }
+func ==(lhs: WSDC.Competition.Result, rhs: WSDC.Competition.Result) -> Bool { return rhs.hashValue == lhs.hashValue }
 
 class WSDC {
     
@@ -149,6 +150,10 @@ class WSDC {
             }
         }
         
+        var displayOrder: Int {
+            return DivisionName.displayOrder[self] ?? 0
+        }
+        
         var pointsForNextRank: Int? {
             switch self {
             case .NOV:
@@ -249,6 +254,13 @@ class WSDC {
                 return rawValue
             }
             
+            var color: UIColor {
+                switch self {
+                case Lead: return UIColor.lead
+                case Follow: return UIColor.follow
+                }
+            }
+            
             var tinyRaw: String {
                 switch self {
                 case .Lead: return "l"
@@ -284,7 +296,11 @@ class WSDC {
             }
         }
         
-        enum Result: JSONValueType {
+        enum Result: JSONValueType, Hashable {
+            var hashValue: Int {
+                return tinyRaw.hashValue
+            }
+            
             case Placement(Int)
             case Final
             
@@ -334,6 +350,18 @@ class WSDC {
                         return ""
                     }
                 default: return ""
+                }
+            }
+            
+            var displayOrder: Int {
+                
+                switch self {
+                    
+                case .Placement(let int):
+                    return int
+                    
+                case .Final:
+                    return 6
                 }
             }
             

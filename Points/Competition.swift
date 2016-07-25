@@ -28,8 +28,12 @@ class Competition: Object, StringImport {
     dynamic private var _result: String = ""
     dynamic private var _role: String = ""
     dynamic var eventId: Int = 0
-    dynamic var year: Int = 0
+    dynamic var year: Int = 0 // for sorting, realm does not support supporting on child relationships
+    dynamic var month: Int = 0 // for sorting
     dynamic var eventYear: EventYear!
+    dynamic var divisionNameDisplayOrder: Int = 0
+    
+    dynamic var partnerCompetition: Competition?
     
     let dancer = LinkingObjects(fromType: Dancer.self, property: "competitions")
     
@@ -53,10 +57,10 @@ class Competition: Object, StringImport {
     
     var role: WSDC.Competition.Role {
         get {
-            return WSDC.Competition.Role(_role)!
+            return WSDC.Competition.Role(tinyRaw: _role)!
         }
         set {
-            _role = newValue.description
+            _role = newValue.tinyRaw
         }
     }
     
@@ -89,5 +93,6 @@ class Competition: Object, StringImport {
         self.role = role
         self.eventId = eventId
         self.year = year + 2000
+        self.divisionNameDisplayOrder = divisionName.displayOrder
     }
 }

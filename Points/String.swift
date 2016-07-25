@@ -13,4 +13,12 @@ extension String {
     var trim: String? {
         return stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet()).isEmpty ? .None : self
     }
+    
+    init?(_ int: Int?) {
+        guard let int = int else {
+            return nil
+        }
+        
+        self = String(int)
+    }
 }

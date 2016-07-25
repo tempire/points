@@ -46,6 +46,10 @@ class Spotlight {
         }
     }
     
+    static func removeAll(completion: (NSError?->Void)) {
+        CSSearchableIndex.defaultSearchableIndex().deleteAllSearchableItemsWithCompletionHandler(completion)
+    }
+    
     static func removeItems(ids: [String], completion: ((NSError?)->Void)? = .None) {
         CSSearchableIndex.defaultSearchableIndex().deleteSearchableItemsWithIdentifiers(ids) { error in
             if let error = error {
