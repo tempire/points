@@ -47,6 +47,8 @@ class CompetitorsVC: UIViewController {
             tableView.dataSource = self
             tableView.keyboardDismissMode = .Interactive
             tableView.contentInset = UIEdgeInsets(top: 8, left: 0, bottom: 0, right: 0)
+            tableView.estimatedRowHeight = 66
+            tableView.rowHeight = UITableViewAutomaticDimension
         }
     }
     
@@ -93,8 +95,17 @@ extension CompetitorsVC: UITableViewDataSource {
         let cell = tableView.dequeueCell(CompetitorsCell.self, for: indexPath)
         let dancer = results[indexPath.row]
         
+        cell.avatarImageView.image = UIImage.createAvatarPlaceholder(userFullName: dancer.name, placeholderSize: CGSize(width: 44, height: 44))
         cell.nameLabel.text = dancer.name
         cell.rankLabel.text = dancer.rank.max.description
+        
+        let points = dancer.points(forDivision: dancer.rank.max)
+        
+        cell.divisionLeadPointsLabel.hidden = points[.Lead] == 0
+        cell.divisionLeadPointsLabel.text = String(points[.Lead]!)
+        
+        cell.divisionFollowPointsLabel.hidden = points[.Follow] == 0
+        cell.divisionFollowPointsLabel.text = String(points[.Follow]!)
         
         return cell
     }
@@ -155,6 +166,17 @@ extension CompetitorsVC: UIViewControllerTransitioningDelegate {
 }
 
 class CompetitorsCell: UITableViewCell {
+    @IBOutlet weak var avatarImageView: UIImageView!
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var rankLabel: UILabel!
+    @IBOutlet weak var divisionLeadPointsLabel: InsetLabel! {
+        didSet {
+            divisionLeadPointsLabel.insets = UIEdgeInsets(top: 2, left: 4, bottom: 2, right: 4)
+        }
+    }
+    @IBOutlet weak var divisionFollowPointsLabel: InsetLabel! {
+        didSet {
+            divisionFollowPointsLabel.insets = UIEdgeInsets(top: 2, left: 4, bottom: 2, right: 4)
+        }
+    }
 }
