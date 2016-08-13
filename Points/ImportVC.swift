@@ -15,6 +15,7 @@ import CloudKit
 
 class ImportVC: UIViewController {
     var progress = NSProgress()
+    var dump: Dump?
     
     @IBOutlet weak var contentView: UIView!
     
@@ -39,6 +40,10 @@ class ImportVC: UIViewController {
         )
         
         preferredContentSize = CGSize(width: 300, height: 300)
+        
+        if let dump = dump {
+            //importDump()
+        }
         
         getDumpFromCloudKit()
     }

@@ -17,6 +17,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+        print("hinkle ok")
         
         let notificationSettings = UIUserNotificationSettings(forTypes: [.Alert, .Badge, .Sound], categories: .None)
         application.registerUserNotificationSettings(notificationSettings)
@@ -29,8 +30,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         NSURLSession.sharedSession().configuration.timeoutIntervalForResource = 600
         NSURLSession.sharedSession().configuration.timeoutIntervalForRequest = 300
         
-        completeUI(.None)
+        Points.addSubscriptionForNewPoints { subscription, error in
+            print(error)
+        }
         
+        completeUI(.None)
 
         return true
     }
@@ -97,6 +101,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // MARK: APNS
     
     func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
+        print("received remote notification")
+
+        /*
+        
         if let userInfo = userInfo as? [String:NSObject],
             queryNotification = CKNotification(fromRemoteNotificationDictionary: userInfo) as? CKQueryNotification {
             
@@ -111,6 +119,29 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 
                 switch notification.queryNotificationReason {
                 case .RecordCreated:
+                    guard let recordId = notification.recordID else {
+                        return
+                    }
+                    
+                    
+                    CKContainer.defaultContainer().publicCloudDatabase.fetchRecordWithID(recordId) { record, error in
+                        if let data = record?["data"] as? NSData, date = record?["date"] as? NSDate {
+                    
+                            do {
+                                // Write to database
+                                let realm = try Realm()
+                                let dump = try Dump(id: NSUUID(), date: NSDate(), version: 0, data: data)
+                                
+                                try realm.write {
+                                    realm.add(dump, update: true)
+                                }
+                            }
+                            catch let error as NSError {
+                                print(error)
+                            }
+                        }
+                    }
+                    
                     print("created")
                     
                 case .RecordUpdated:
@@ -141,6 +172,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             
             print(recordID)
         }
+        */
     }
     
     func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {

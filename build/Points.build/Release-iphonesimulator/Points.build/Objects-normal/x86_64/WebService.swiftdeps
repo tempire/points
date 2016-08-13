@@ -1,0 +1,403 @@
+### Swift dependencies file v0 ###
+provides-top-level:
+- "Resource"
+- "ResourceResult"
+- "WebService"
+provides-nominal:
+- "V6Points8Resource"
+- "O6Points14ResourceResult"
+- "C6Points10WebService"
+provides-member:
+- ["V6Points8Resource", ""]
+- ["O6Points14ResourceResult", ""]
+- ["C6Points10WebService", ""]
+provides-dynamic-lookup:
+depends-top-level:
+- "NSMutableURLRequest"
+- !private "Dictionary"
+- "NSURLSession"
+- "WSDC"
+- !private "NSDate"
+- "CustomStringConvertible"
+- "Void"
+- "WebService"
+- "String"
+- !private "UnicodeScalarType"
+- "NSURL"
+- "JSONError"
+- "StringLiteralType"
+- "ResourceResult"
+- "JSONStruct"
+- "Resource"
+- "Int"
+- "NSError"
+depends-member:
+- ["Ps9AnyObject", "Competitor"]
+- !private ["Ps9AnyObject", "Domain"]
+- !private ["Ps9AnyObject", "JSONError"]
+- ["Ps9AnyObject", "Method"]
+- !private ["Ps9AnyObject", "NSDate"]
+- !private ["Ps9AnyObject", "NSError"]
+- ["Ps9AnyObject", "NSURL"]
+- ["Ps9AnyObject", "NSURLSession"]
+- !private ["Ps9AnyObject", "Resource"]
+- ["Ps9AnyObject", "SearchResults"]
+- !private ["Ps9AnyObject", "URLByAppendingPathComponent"]
+- !private ["Ps9AnyObject", "WebService"]
+- !private ["Ps9AnyObject", "addFormParameters"]
+- !private ["Ps9AnyObject", "code"]
+- !private ["Ps9AnyObject", "dataTaskWithRequest"]
+- !private ["Ps9AnyObject", "deinit"]
+- ["Ps9AnyObject", "init"]
+- !private ["Ps9AnyObject", "resume"]
+- !private ["Ps9AnyObject", "session"]
+- !private ["Ps9AnyObject", "setHeader"]
+- ["Ps9AnyObject", "sharedSession"]
+- !private ["Ps9AnyObject", "userInfo"]
+- !private ["Ps9AnyObject", "wsdcBaseURL"]
+- ["Ps9AnyObject", ""]
+- !private ["Sb", "deinit"]
+- !private ["PSo13CKRecordValue", "init"]
+- !private ["PSo15CNKeyDescriptor", "init"]
+- !private ["Ps11CVarArgType", "Domain"]
+- ["Ps11CVarArgType", "Method"]
+- !private ["Ps11CVarArgType", "URLByAppendingPathComponent"]
+- !private ["Ps11CVarArgType", "addFormParameters"]
+- !private ["Ps11CVarArgType", "code"]
+- !private ["Ps11CVarArgType", "dataTaskWithRequest"]
+- ["Ps11CVarArgType", "init"]
+- !private ["Ps11CVarArgType", "resume"]
+- !private ["Ps11CVarArgType", "setHeader"]
+- ["Ps11CVarArgType", "sharedSession"]
+- !private ["Ps11CVarArgType", "userInfo"]
+- !private ["Vs9Character", "deinit"]
+- !private ["Ps14CollectionType", "Key"]
+- !private ["Ps14CollectionType", "Value"]
+- !private ["Ps10Comparable", "init"]
+- ["VC6Points4WSDC10Competitor", "deinit"]
+- !private ["Ps28CustomDebugStringConvertible", "Domain"]
+- !private ["Ps28CustomDebugStringConvertible", "Key"]
+- ["Ps28CustomDebugStringConvertible", "Method"]
+- !private ["Ps28CustomDebugStringConvertible", "Some"]
+- !private ["Ps28CustomDebugStringConvertible", "URLByAppendingPathComponent"]
+- !private ["Ps28CustomDebugStringConvertible", "Value"]
+- !private ["Ps28CustomDebugStringConvertible", "addFormParameters"]
+- !private ["Ps28CustomDebugStringConvertible", "code"]
+- !private ["Ps28CustomDebugStringConvertible", "dataTaskWithRequest"]
+- ["Ps28CustomDebugStringConvertible", "init"]
+- !private ["Ps28CustomDebugStringConvertible", "resume"]
+- !private ["Ps28CustomDebugStringConvertible", "setHeader"]
+- ["Ps28CustomDebugStringConvertible", "sharedSession"]
+- !private ["Ps28CustomDebugStringConvertible", "userInfo"]
+- !private ["Ps23CustomStringConvertible", "Domain"]
+- !private ["Ps23CustomStringConvertible", "Key"]
+- ["Ps23CustomStringConvertible", "Method"]
+- !private ["Ps23CustomStringConvertible", "NSMutableURLRequest"]
+- !private ["Ps23CustomStringConvertible", "URLByAppendingPathComponent"]
+- !private ["Ps23CustomStringConvertible", "UnexpectedError"]
+- !private ["Ps23CustomStringConvertible", "Value"]
+- !private ["Ps23CustomStringConvertible", "addFormParameters"]
+- !private ["Ps23CustomStringConvertible", "code"]
+- !private ["Ps23CustomStringConvertible", "dataTaskWithRequest"]
+- ["Ps23CustomStringConvertible", "description"]
+- ["Ps23CustomStringConvertible", "init"]
+- !private ["Ps23CustomStringConvertible", "request"]
+- !private ["Ps23CustomStringConvertible", "resume"]
+- !private ["Ps23CustomStringConvertible", "setHeader"]
+- ["Ps23CustomStringConvertible", "sharedSession"]
+- !private ["Ps23CustomStringConvertible", "userInfo"]
+- ["Ps23CustomStringConvertible", ""]
+- !private ["Vs10Dictionary", "Key"]
+- !private ["Vs10Dictionary", "Value"]
+- !private ["Ps28DictionaryLiteralConvertible", "Key"]
+- !private ["Ps28DictionaryLiteralConvertible", "Value"]
+- !private ["OE6PointsCSo7NSError6Domain", "Network"]
+- !private ["OE6PointsCSo7NSError6Domain", "description"]
+- !private ["Sd", "deinit"]
+- !private ["Ps9Equatable", "Domain"]
+- ["Ps9Equatable", "Method"]
+- !private ["Ps9Equatable", "Network"]
+- !private ["Ps9Equatable", "POST"]
+- !private ["Ps9Equatable", "URLByAppendingPathComponent"]
+- !private ["Ps9Equatable", "addFormParameters"]
+- !private ["Ps9Equatable", "code"]
+- !private ["Ps9Equatable", "dataTaskWithRequest"]
+- !private ["Ps9Equatable", "description"]
+- ["Ps9Equatable", "init"]
+- !private ["Ps9Equatable", "resume"]
+- !private ["Ps9Equatable", "setHeader"]
+- ["Ps9Equatable", "sharedSession"]
+- !private ["Ps9Equatable", "userInfo"]
+- !private ["Ps9ErrorType", "Domain"]
+- !private ["Ps9ErrorType", "UnexpectedError"]
+- !private ["Ps9ErrorType", "code"]
+- !private ["Ps9ErrorType", "init"]
+- !private ["Ps9ErrorType", "userInfo"]
+- !private ["Ps41ExtendedGraphemeClusterLiteralConvertible", "init"]
+- !private ["Sf", "deinit"]
+- !private ["Ps8Hashable", "Domain"]
+- ["Ps8Hashable", "Method"]
+- !private ["Ps8Hashable", "Network"]
+- !private ["Ps8Hashable", "POST"]
+- !private ["Ps8Hashable", "URLByAppendingPathComponent"]
+- !private ["Ps8Hashable", "addFormParameters"]
+- !private ["Ps8Hashable", "code"]
+- !private ["Ps8Hashable", "dataTaskWithRequest"]
+- !private ["Ps8Hashable", "description"]
+- ["Ps8Hashable", "init"]
+- !private ["Ps8Hashable", "resume"]
+- !private ["Ps8Hashable", "setHeader"]
+- ["Ps8Hashable", "sharedSession"]
+- !private ["Ps8Hashable", "userInfo"]
+- !private ["O6Points6Header", "Date"]
+- !private ["Ps9Indexable", "Key"]
+- !private ["Ps9Indexable", "Value"]
+- !private ["Si", "deinit"]
+- !private ["Vs5Int16", "deinit"]
+- !private ["Vs5Int32", "deinit"]
+- !private ["Vs5Int64", "deinit"]
+- !private ["Vs4Int8", "deinit"]
+- !private ["O6Points9JSONError", "UnexpectedError"]
+- !private ["P6Points11JSONKeyType", "init"]
+- !private ["P6Points21JSONObjectConvertible", "init"]
+- !private ["P6Points10JSONStruct", "init"]
+- !private ["P6Points13JSONValueType", "Key"]
+- !private ["P6Points13JSONValueType", "URLByAppendingPathComponent"]
+- !private ["P6Points13JSONValueType", "Value"]
+- ["P6Points13JSONValueType", "init"]
+- !private ["OE6PointsCSo19NSMutableURLRequest6Method", "POST"]
+- !private ["Ps14MirrorPathType", "init"]
+- !private ["PSo8NSCoding", "Domain"]
+- ["PSo8NSCoding", "Method"]
+- !private ["PSo8NSCoding", "URLByAppendingPathComponent"]
+- !private ["PSo8NSCoding", "addFormParameters"]
+- !private ["PSo8NSCoding", "code"]
+- ["PSo8NSCoding", "init"]
+- !private ["PSo8NSCoding", "setHeader"]
+- !private ["PSo8NSCoding", "userInfo"]
+- !private ["PSo9NSCopying", "Domain"]
+- ["PSo9NSCopying", "Method"]
+- !private ["PSo9NSCopying", "URLByAppendingPathComponent"]
+- !private ["PSo9NSCopying", "addFormParameters"]
+- !private ["PSo9NSCopying", "code"]
+- ["PSo9NSCopying", "init"]
+- !private ["PSo9NSCopying", "resume"]
+- !private ["PSo9NSCopying", "setHeader"]
+- !private ["PSo9NSCopying", "userInfo"]
+- !private ["CSo6NSDate", "init"]
+- !private ["CSo7NSError", "Domain"]
+- !private ["CSo7NSError", "code"]
+- !private ["CSo7NSError", "init"]
+- !private ["CSo7NSError", "userInfo"]
+- ["PSo16NSMutableCopying", "Method"]
+- !private ["PSo16NSMutableCopying", "addFormParameters"]
+- !private ["PSo16NSMutableCopying", "init"]
+- !private ["PSo16NSMutableCopying", "setHeader"]
+- ["CSo19NSMutableURLRequest", "Method"]
+- !private ["CSo19NSMutableURLRequest", "addFormParameters"]
+- !private ["CSo19NSMutableURLRequest", "init"]
+- !private ["CSo19NSMutableURLRequest", "setHeader"]
+- !private ["CSo8NSObject", "Domain"]
+- ["CSo8NSObject", "Method"]
+- !private ["CSo8NSObject", "URLByAppendingPathComponent"]
+- !private ["CSo8NSObject", "addFormParameters"]
+- !private ["CSo8NSObject", "code"]
+- !private ["CSo8NSObject", "dataTaskWithRequest"]
+- ["CSo8NSObject", "init"]
+- !private ["CSo8NSObject", "resume"]
+- !private ["CSo8NSObject", "setHeader"]
+- ["CSo8NSObject", "sharedSession"]
+- !private ["CSo8NSObject", "userInfo"]
+- !private ["PSo16NSObjectProtocol", "Domain"]
+- ["PSo16NSObjectProtocol", "Method"]
+- !private ["PSo16NSObjectProtocol", "URLByAppendingPathComponent"]
+- !private ["PSo16NSObjectProtocol", "addFormParameters"]
+- !private ["PSo16NSObjectProtocol", "code"]
+- !private ["PSo16NSObjectProtocol", "dataTaskWithRequest"]
+- ["PSo16NSObjectProtocol", "init"]
+- !private ["PSo16NSObjectProtocol", "resume"]
+- !private ["PSo16NSObjectProtocol", "setHeader"]
+- ["PSo16NSObjectProtocol", "sharedSession"]
+- !private ["PSo16NSObjectProtocol", "userInfo"]
+- !private ["PSo14NSSecureCoding", "Domain"]
+- ["PSo14NSSecureCoding", "Method"]
+- !private ["PSo14NSSecureCoding", "URLByAppendingPathComponent"]
+- !private ["PSo14NSSecureCoding", "addFormParameters"]
+- !private ["PSo14NSSecureCoding", "code"]
+- ["PSo14NSSecureCoding", "init"]
+- !private ["PSo14NSSecureCoding", "setHeader"]
+- !private ["PSo14NSSecureCoding", "userInfo"]
+- !private ["CSo8NSString", "init"]
+- !private ["CSo5NSURL", "URLByAppendingPathComponent"]
+- ["CSo5NSURL", "init"]
+- ["CSo12NSURLRequest", "Method"]
+- !private ["CSo12NSURLRequest", "addFormParameters"]
+- !private ["CSo12NSURLRequest", "init"]
+- !private ["CSo12NSURLRequest", "setHeader"]
+- !private ["CSo12NSURLSession", "dataTaskWithRequest"]
+- ["CSo12NSURLSession", "sharedSession"]
+- !private ["CSo20NSURLSessionDataTask", "resume"]
+- !private ["CSo16NSURLSessionTask", "resume"]
+- !private ["Ps21NilLiteralConvertible", "Some"]
+- !private ["Sq", "Some"]
+- !private ["Ps16OutputStreamType", "init"]
+- !private ["Ps16RawRepresentable", "POST"]
+- ["V6Points8Resource", "NSMutableURLRequest"]
+- ["V6Points8Resource", "NSURL"]
+- ["V6Points8Resource", "String"]
+- ["V6Points8Resource", "deinit"]
+- ["V6Points8Resource", "description"]
+- ["V6Points8Resource", "init"]
+- ["V6Points8Resource", "request"]
+- ["O6Points14ResourceResult", "A"]
+- ["O6Points14ResourceResult", "Error"]
+- ["O6Points14ResourceResult", "JSONError"]
+- ["O6Points14ResourceResult", "NSError"]
+- ["O6Points14ResourceResult", "NetworkError"]
+- ["O6Points14ResourceResult", "Success"]
+- ["VC6Points4WSDC13SearchResults", "deinit"]
+- !private ["Ps12SequenceType", "Key"]
+- !private ["Ps12SequenceType", "Value"]
+- !private ["Ps10Streamable", "init"]
+- !private ["SS", "deinit"]
+- !private ["SS", "init"]
+- !private ["Ps30StringInterpolationConvertible", "init"]
+- !private ["Ps24StringLiteralConvertible", "init"]
+- !private ["Su", "deinit"]
+- !private ["Vs6UInt16", "deinit"]
+- !private ["Vs6UInt32", "deinit"]
+- !private ["Vs6UInt64", "deinit"]
+- !private ["Vs5UInt8", "deinit"]
+- !private ["Sc", "deinit"]
+- !private ["Ps31UnicodeScalarLiteralConvertible", "init"]
+- ["C6Points4WSDC", "Competitor"]
+- ["C6Points4WSDC", "SearchResults"]
+- ["C6Points10WebService", "Int"]
+- !private ["C6Points10WebService", "JSONError"]
+- ["C6Points10WebService", "JSONStruct"]
+- !private ["C6Points10WebService", "NSDate"]
+- !private ["C6Points10WebService", "NSError"]
+- ["C6Points10WebService", "NSURL"]
+- ["C6Points10WebService", "NSURLSession"]
+- ["C6Points10WebService", "Resource"]
+- ["C6Points10WebService", "ResourceResult"]
+- ["C6Points10WebService", "String"]
+- ["C6Points10WebService", "Void"]
+- ["C6Points10WebService", "WSDC"]
+- !private ["C6Points10WebService", "WebService"]
+- ["C6Points10WebService", "competitor"]
+- ["C6Points10WebService", "deinit"]
+- ["C6Points10WebService", "init"]
+- ["C6Points10WebService", "load"]
+- ["C6Points10WebService", "search"]
+- ["C6Points10WebService", "session"]
+- ["C6Points10WebService", "wsdcBaseURL"]
+- !private ["Ps49_BuiltinExtendedGraphemeClusterLiteralConvertible", "init"]
+- !private ["Ps32_BuiltinStringLiteralConvertible", "init"]
+- !private ["Ps37_BuiltinUTF16StringLiteralConvertible", "init"]
+- !private ["Ps39_BuiltinUnicodeScalarLiteralConvertible", "init"]
+- !private ["Ps32_FileReferenceLiteralConvertible", "URLByAppendingPathComponent"]
+- ["Ps32_FileReferenceLiteralConvertible", "init"]
+- !private ["Ps21_ObjectiveCBridgeable", "Key"]
+- !private ["Ps21_ObjectiveCBridgeable", "Value"]
+- !private ["Ps21_ObjectiveCBridgeable", "init"]
+- !private ["Ps12_Reflectable", "Key"]
+- !private ["Ps12_Reflectable", "Some"]
+- !private ["Ps12_Reflectable", "URLByAppendingPathComponent"]
+- !private ["Ps12_Reflectable", "Value"]
+- ["Ps12_Reflectable", "init"]
+depends-nominal:
+- "Ps9AnyObject"
+- !private "Sb"
+- !private "PSo13CKRecordValue"
+- !private "PSo15CNKeyDescriptor"
+- "Ps11CVarArgType"
+- !private "Vs9Character"
+- !private "Ps14CollectionType"
+- !private "Ps10Comparable"
+- "VC6Points4WSDC10Competitor"
+- "Ps28CustomDebugStringConvertible"
+- "Ps23CustomStringConvertible"
+- !private "Vs10Dictionary"
+- !private "Ps28DictionaryLiteralConvertible"
+- !private "OE6PointsCSo7NSError6Domain"
+- !private "Sd"
+- "Ps9Equatable"
+- !private "Ps9ErrorType"
+- !private "Ps41ExtendedGraphemeClusterLiteralConvertible"
+- !private "Sf"
+- "Ps8Hashable"
+- !private "O6Points6Header"
+- !private "Ps9Indexable"
+- !private "Si"
+- !private "Vs5Int16"
+- !private "Vs5Int32"
+- !private "Vs5Int64"
+- !private "Vs4Int8"
+- !private "O6Points9JSONError"
+- !private "P6Points11JSONKeyType"
+- !private "P6Points21JSONObjectConvertible"
+- !private "P6Points10JSONStruct"
+- "P6Points13JSONValueType"
+- !private "OE6PointsCSo19NSMutableURLRequest6Method"
+- !private "Ps14MirrorPathType"
+- "PSo8NSCoding"
+- "PSo9NSCopying"
+- !private "CSo6NSDate"
+- !private "CSo7NSError"
+- "PSo16NSMutableCopying"
+- "CSo19NSMutableURLRequest"
+- "CSo8NSObject"
+- "PSo16NSObjectProtocol"
+- "PSo14NSSecureCoding"
+- !private "CSo8NSString"
+- "CSo5NSURL"
+- "CSo12NSURLRequest"
+- "CSo12NSURLSession"
+- !private "CSo20NSURLSessionDataTask"
+- !private "CSo16NSURLSessionTask"
+- !private "Ps21NilLiteralConvertible"
+- !private "Sq"
+- !private "Ps16OutputStreamType"
+- !private "Ps16RawRepresentable"
+- "V6Points8Resource"
+- "O6Points14ResourceResult"
+- "VC6Points4WSDC13SearchResults"
+- !private "Ps12SequenceType"
+- !private "Ps10Streamable"
+- !private "SS"
+- !private "Ps30StringInterpolationConvertible"
+- !private "Ps24StringLiteralConvertible"
+- !private "Su"
+- !private "Vs6UInt16"
+- !private "Vs6UInt32"
+- !private "Vs6UInt64"
+- !private "Vs5UInt8"
+- !private "Sc"
+- !private "Ps31UnicodeScalarLiteralConvertible"
+- "C6Points4WSDC"
+- "C6Points10WebService"
+- !private "Ps49_BuiltinExtendedGraphemeClusterLiteralConvertible"
+- !private "Ps32_BuiltinStringLiteralConvertible"
+- !private "Ps37_BuiltinUTF16StringLiteralConvertible"
+- !private "Ps39_BuiltinUnicodeScalarLiteralConvertible"
+- "Ps32_FileReferenceLiteralConvertible"
+- !private "Ps21_ObjectiveCBridgeable"
+- "Ps12_Reflectable"
+depends-dynamic-lookup:
+- !private "init"
+depends-external:
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphonesimulator/x86_64/Swift.swiftmodule"
+- "/Users/glen/Projects/Points/Points/Points-Bridging-Header.h"
+- "/Users/glen/Projects/Points/cli/BZipCompression.h"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphonesimulator/x86_64/Foundation.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphonesimulator/x86_64/Darwin.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphonesimulator/x86_64/Dispatch.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphonesimulator/x86_64/ObjectiveC.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphonesimulator/x86_64/CoreGraphics.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphonesimulator/x86_64/UIKit.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphonesimulator/x86_64/CoreImage.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphonesimulator/x86_64/CloudKit.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphonesimulator/x86_64/Contacts.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphonesimulator/x86_64/CoreLocation.swiftmodule"
+interface-hash: "a66f459ee9aeb2267ed223a7b6053133"

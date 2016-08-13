@@ -13,6 +13,7 @@ import MessageBarManager
 
 class CompetitorsVC: UIViewController {
     var token: NotificationToken?
+    var token2: NotificationToken?
     
     var results: Results<Dancer>! {
         didSet {
@@ -49,17 +50,38 @@ class CompetitorsVC: UIViewController {
             tableView.contentInset = UIEdgeInsets(top: 8, left: 0, bottom: 0, right: 0)
             tableView.estimatedRowHeight = 66
             tableView.rowHeight = UITableViewAutomaticDimension
+            tableView.separatorStyle = .None
         }
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        results = try! Realm().objects(Dancer)
+        let realm = try! Realm()
+        
+        results = realm.objects(Dancer)
         
         token = results.addNotificationBlock { note in
             self.tableView?.reloadData()
         }
+        
+        //token = realm.objects(Dump).addNotificationBlock { note in
+        //    do {
+        //        let realm = try Realm()
+        //        realm.beginWrite()
+        //        realm.delete(realm.objects(Competition))
+        //        realm.delete(realm.objects(Dancer))
+        //        realm.delete(realm.objects(Event))
+        //        try realm.commitWrite()
+        //        
+        //        ui(.Async) {
+        //            self.performSegueWithVC(ImportVC.self, sender: self)
+        //        }
+        //    }
+        //    catch let error as NSError {
+        //        print("Could not remove objects: \(error)")
+        //    }
+        //}
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -99,11 +121,13 @@ extension CompetitorsVC: UITableViewDataSource {
         cell.nameLabel.text = dancer.name
         cell.rankLabel.text = dancer.rank.max.description
         
-        let points = dancer.points(forDivision: dancer.rank.max)
+        if dancer.name == "Kyle Redd" {
+            print(1)
+        }
         
+        let points = dancer.points(forDivision: dancer.rank.max)
         cell.divisionLeadPointsLabel.hidden = points[.Lead] == 0
         cell.divisionLeadPointsLabel.text = String(points[.Lead]!)
-        
         cell.divisionFollowPointsLabel.hidden = points[.Follow] == 0
         cell.divisionFollowPointsLabel.text = String(points[.Follow]!)
         
@@ -134,7 +158,9 @@ extension CompetitorsVC: UITableViewDataSource {
             vc.peek = segue.identifier == "peek"
             print("SETTING PEEK TO \(vc.peek)")
             
-            tableView.selectRowAtIndexPath(indexPath, animated: true, scrollPosition: UITableViewScrollPosition.None)
+            //tableView.selectRowAtIndexPath(indexPath, animated: true, scrollPosition: UITableViewScrollPosition.None)
+            
+            tableView.deselectRowAtIndexPath(indexPath, animated: true)
 
         case let vc as ImportVC:
             vc.modalPresentationStyle = .Custom

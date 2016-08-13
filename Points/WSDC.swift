@@ -127,9 +127,9 @@ class WSDC {
         case ADV = "Advanced"
         case PRO = "Professional"
         case TCH = "Teacher"
-        case ALS = "All-Stars"
+        case ALS = "All-Star"
         case INV = "Invitational"
-        case CHMP = "Champions"
+        case CHMP = "Champion"
         
         static var values = [ CHMP, INV, ALS, ADV, INT, MSTR, SPH, NOV, JRS, NEW, JRS, PRO, TCH ]
         

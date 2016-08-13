@@ -21,4 +21,14 @@ extension String {
         
         self = String(int)
     }
+    
+    func height(width width: CGFloat, font: UIFont) -> CGFloat {
+        
+        return self.boundingRectWithSize(
+            CGSize(width: width, height: CGFloat.max),
+            options: NSStringDrawingOptions.UsesLineFragmentOrigin,
+            attributes: [NSFontAttributeName: font],
+            context: .None
+            ).height
+    }
 }

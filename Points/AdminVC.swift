@@ -226,7 +226,14 @@ extension AdminVC: WSDCGetOperationDelegate {
             let dump = try Dump(id: NSUUID(), date: NSDate(), version: 0, data: data)
             
             try realm.write {
+                realm.deleteAll()
                 realm.add(dump, update: true)
+                
+                ui(.Async) {
+                    let vc = Storyboard.Main.viewController(ImportVC)
+                    vc.dump = dump
+                    self.presentViewController(vc, animated: true, completion: .None)
+                }
             }
             
             // Save to cloudkit

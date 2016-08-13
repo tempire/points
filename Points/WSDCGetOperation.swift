@@ -135,10 +135,10 @@ class WSDCGetOperation: Operation, NSProgressReporting {
     override func start() {
         super.start()
         
-        //competitorIds = getCompetitorIds()
-        competitorIds = [10915, 8836]
+        competitorIds = getCompetitorIds()
+        //competitorIds = [10915, 8836]
         // tony schubert
-        //competitorIds = [7353]
+        //competitorIds = [7353, 11049]
         
         if competitorIds.count == 0 {
             return self.cancel()

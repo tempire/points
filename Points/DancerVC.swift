@@ -71,6 +71,9 @@ class DancerVC: UIViewController {
     
     var peek: Bool = false
     
+    var dancerNameLabelHeight = CGFloat(0)
+    var dancerNameLabelTransitionInProgress = false
+    
     @IBOutlet weak var rankLabel: UILabel! {
         didSet {
             rankLabel.text = dancer.rank.max.description
@@ -79,6 +82,8 @@ class DancerVC: UIViewController {
     @IBOutlet weak var dancerNameLabel: UILabel! {
         didSet {
             dancerNameLabel.text = dancer.name
+            dancerNameLabel.layer.borderColor = UIColor.redColor().CGColor
+            dancerNameLabel.layer.borderWidth = 2
         }
     }
     @IBOutlet weak var wsdcIdLabel: UILabel! {
@@ -102,8 +107,6 @@ class DancerVC: UIViewController {
         return view
     }()
     
-    //@IBOutlet weak var divisionSummaryView: UIView!
-    
     @IBOutlet weak var tableView: UITableView! {
         didSet {
             tableView.scrollsToTop = true
@@ -112,23 +115,7 @@ class DancerVC: UIViewController {
             tableView.rowHeight = UITableViewAutomaticDimension
             tableView.separatorStyle = .None
             tableView.allowsSelection = false
-            
-            //tableView.contentInset = UIEdgeInsets(top: 300, left: 0, bottom: 0, right: 0)
-            //tableView.contentOffset = CGPoint(x: 0, y: -300)
-            
             tableView.delegate = self
-            
-            /*
-            // TableView background
-            tableView?.backgroundView = .None
-            let view = UIView()
-            view.backgroundColor = UIColor.charcoal.dark
-            let barView = UIView(frame: CGRect(x: 84, y: 0, width: 2, height: tableView.bounds.height))
-            barView.backgroundColor = UIColor.charcoal.light
-            view.addSubview(barView)
-            
-            tableView?.backgroundView = view
- */
         }
     }
     
@@ -153,40 +140,61 @@ class DancerVC: UIViewController {
         
         divisionScrollView.subviews.forEach { $0.removeFromSuperview() }
         
-        var titles = [String]()
+        var headers: [(title: String, subTitle: String)] = []
         
         switch sort {
         case .DivisionName:
-            titles = dancer.divisionNamesInDisplayOrder.map { $0.description }
+            headers = dancer.divisionNamesInDisplayOrder.map {
+                (
+                    title: $0.description,
+                    subTitle: String(dancer.points(forDivision: $0).values.reduce(0, combine: +))
+                )
+            }
             
         case .Date:
-            titles = dancer
+            headers = dancer
                 .competitions
-                .reduce(Set<Int>()) { tmp, comp in
-                    var set = tmp
-                    set.insert(comp.eventYear.year)
-                    return set
+                .reduce([:]) { tmp, comp -> [Int:Int] in
+                    var dict = tmp
+                    
+                    if dict[comp.eventYear.year] == nil {
+                        dict[comp.eventYear.year] = 0
+                    }
+                    
+                    dict[comp.eventYear.year]! += 1
+                    
+                    return dict
                 }
                 .sort(>)
-                .map { String($0) }
+                .map {
+                    let title = String($0.0)
+                    let subTitle = String($0.1)
+                    return (title: title, subTitle: subTitle)
+            }
             
         case .Placement:
-            titles = dancer
+            headers = dancer
                 .competitions
-                .reduce(Set<WSDC.Competition.Result>()) { tmp, comp in
-                    var set = tmp
-                    set.insert(comp.result)
-                    return set
+                .reduce([:]) { tmp, comp -> [WSDC.Competition.Result:Int] in
+                    
+                    var dict = tmp
+                    
+                    if dict[comp.result] == nil {
+                        dict[comp.result] = 0
+                    }
+                    
+                    dict[comp.result]! += 1
+                    
+                    return dict
                 }
-                .sort { $0.displayOrder < $1.displayOrder }
-                .map { $0.description }
+                .sort { $0.0.displayOrder < $1.0.displayOrder }
+                .map { (title: $0.0.description, subTitle: String($0.1)) }
         }
         
-        let buttons: [UIButton] = titles.map { title in
+        let buttons: [UIButton] = headers.map { header in
             
             let button = UIButton()
             button.translatesAutoresizingMaskIntoConstraints = false
-            button.clipsToBounds = false
             divisionScrollView.addSubview(button)
             
             button.backgroundColor = .lightGrayColor()
@@ -197,14 +205,21 @@ class DancerVC: UIViewController {
             
             button.contentEdgeInsets = UIEdgeInsets(top: 0, left: 12, bottom: 0, right: 12)
             
-            let pointsStackView = UIStackView()
-            pointsStackView.translatesAutoresizingMaskIntoConstraints = false
-            pointsStackView.userInteractionEnabled = false
-            pointsStackView.axis = .Horizontal
-            pointsStackView.spacing = 4
-            divisionScrollView.addSubview(pointsStackView)
+            //let pointsStackView = UIStackView()
+            //pointsStackView.translatesAutoresizingMaskIntoConstraints = false
+            //pointsStackView.userInteractionEnabled = false
+            //pointsStackView.axis = .Horizontal
+            //pointsStackView.spacing = 4
+            //divisionScrollView.addSubview(pointsStackView)
             
-            button.setTitle(title, forState: .Normal)
+            button.setTitle(header.title, forState: .Normal)
+            
+            let label = UILabel()
+            label.translatesAutoresizingMaskIntoConstraints = false
+            label.text = header.subTitle
+            button.addSubview(label)
+            label.bottomAnchor.constraintEqualToAnchor(button.bottomAnchor, constant: -4).active = true
+            label.centerXAnchor.constraintEqualToAnchor(button.centerXAnchor).active = true
             
             /*
             let rolePoints = dancer.points(forDivision: divisionName)
@@ -223,9 +238,6 @@ class DancerVC: UIViewController {
                 pointsStackView.addArrangedSubview(label)
             }
             */
-            
-            pointsStackView.centerXAnchor.constraintEqualToAnchor(button.centerXAnchor).active = true
-            divisionScrollView.bottomAnchor.constraintEqualToAnchor(pointsStackView.bottomAnchor, constant: 6).active = true
             
             return button
         }
@@ -399,16 +411,16 @@ extension DancerVC: UIScrollViewDelegate {
             title = String(competition?.year)
         }
         
-        for case let button as UIButton in divisionScrollView.subviews where button.currentTitle == title {
-            highlight(button: button)
-            backgroundHeaderViewHeightConstraint.constant = max(56, 300 - tableView.contentOffset.y)
-            view.setNeedsLayout()
-            return
-        }
         
+        backgroundHeaderViewHeightConstraint.constant = max(max(dancerNameLabel.bounds.height, 56), 300 - self.tableView.contentOffset.y)
+        dancerNameLabel.layoutIfNeeded()
+        view.setNeedsLayout()
+        
+        for case let button as UIButton in divisionScrollView.subviews where button.currentTitle == title {
+            return highlight(button: button)
+        }
     }
 }
-
 
 // MARK: Actions
 
