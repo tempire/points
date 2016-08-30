@@ -18,6 +18,8 @@ enum Asset: String {
   case Icon_Error = "icon-error"
   case Icon_Info = "icon-info"
   case Icon_Success = "icon-success"
+  case Partner_Group = "partner group"
+  case Partner = "partner"
 
   var image: Image {
     return Image(asset: self)

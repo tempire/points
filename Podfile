@@ -18,6 +18,8 @@ target 'Points' do
   pod 'ChameleonFramework', '2.1.0'
   #pod 'ITDAvatarPlaceholder', '0.1.0'
   pod 'Reveal-iOS-SDK', '1.6.2'
+  pod 'MGSwipeTableCell', '1.5.5'
+  pod 'Spotify-iOS-SDK', '0.17.0'
 end
 
 target 'cli' do

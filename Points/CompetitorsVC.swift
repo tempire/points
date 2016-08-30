@@ -12,6 +12,9 @@ import RealmSwift
 import MessageBarManager
 
 class CompetitorsVC: UIViewController {
+    
+    var interactivePopTransition: UIPercentDrivenInteractiveTransition?
+    
     var token: NotificationToken?
     var token2: NotificationToken?
     
@@ -47,7 +50,7 @@ class CompetitorsVC: UIViewController {
         didSet {
             tableView.dataSource = self
             tableView.keyboardDismissMode = .Interactive
-            tableView.contentInset = UIEdgeInsets(top: 8, left: 0, bottom: 0, right: 0)
+            //tableView.contentInset = UIEdgeInsets(top: 8, left: 0, bottom: 0, right: 0)
             tableView.estimatedRowHeight = 66
             tableView.rowHeight = UITableViewAutomaticDimension
             tableView.separatorStyle = .None
@@ -65,23 +68,7 @@ class CompetitorsVC: UIViewController {
             self.tableView?.reloadData()
         }
         
-        //token = realm.objects(Dump).addNotificationBlock { note in
-        //    do {
-        //        let realm = try Realm()
-        //        realm.beginWrite()
-        //        realm.delete(realm.objects(Competition))
-        //        realm.delete(realm.objects(Dancer))
-        //        realm.delete(realm.objects(Event))
-        //        try realm.commitWrite()
-        //        
-        //        ui(.Async) {
-        //            self.performSegueWithVC(ImportVC.self, sender: self)
-        //        }
-        //    }
-        //    catch let error as NSError {
-        //        print("Could not remove objects: \(error)")
-        //    }
-        //}
+        navigationController?.delegate = self
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -117,13 +104,11 @@ extension CompetitorsVC: UITableViewDataSource {
         let cell = tableView.dequeueCell(CompetitorsCell.self, for: indexPath)
         let dancer = results[indexPath.row]
         
-        cell.avatarImageView.image = UIImage.createAvatarPlaceholder(userFullName: dancer.name, placeholderSize: CGSize(width: 44, height: 44))
+        //cell.avatarImageView.image = UIImage.createAvatarPlaceholder(userFullName: dancer.name, placeholderSize: CGSize(width: 44, height: 44))
+        cell.avatarPlaceholderView.backgroundColor = .lightGrayColor()
+        cell.avatarInitialsLabel.text = dancer.name.firstLetters
         cell.nameLabel.text = dancer.name
         cell.rankLabel.text = dancer.rank.max.description
-        
-        if dancer.name == "Kyle Redd" {
-            print(1)
-        }
         
         let points = dancer.points(forDivision: dancer.rank.max)
         cell.divisionLeadPointsLabel.hidden = points[.Lead] == 0
@@ -191,8 +176,82 @@ extension CompetitorsVC: UIViewControllerTransitioningDelegate {
     }
 }
 
+extension CompetitorsVC: UINavigationControllerDelegate {
+    
+    func navigationController(navigationController: UINavigationController, willShowViewController viewController: UIViewController, animated: Bool) {
+        let pan = UIPanGestureRecognizer(target: self, action: #selector(handleNVCPopPanGesture(_:)))
+        navigationController.view.addGestureRecognizer(pan)
+    }
+    
+    func navigationController(navigationController: UINavigationController, animationControllerForOperation operation: UINavigationControllerOperation, fromViewController fromVC: UIViewController, toViewController toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        
+        if operation == UINavigationControllerOperation.Pop {
+            return PopTransitionController()
+        }
+        
+        return .None
+    }
+    
+    func navigationController(navigationController: UINavigationController, interactionControllerForAnimationController animationController: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
+        
+        return interactivePopTransition
+    }
+}
+
+// Navigation Controller pop pan gesture
+
+extension CompetitorsVC {
+    
+    func handleNVCPopPanGesture(recognizer: UIPanGestureRecognizer) {
+        let coords = recognizer.translationInView(view)
+        let progress = coords.x / (view.bounds.size.width * 1)
+        let direction: TransitionDirection = coords.x < 0 ? .Left : .Right
+        let axis: TransitionAxis = fabs(coords.x) > fabs(coords.y) ? .Horizontal : .Vertical
+        
+        switch recognizer.state {
+        case .Began:
+            if direction == .Right {
+                interactivePopTransition = UIPercentDrivenInteractiveTransition()
+                navigationController?.popViewControllerAnimated(true)
+            }
+            
+        case .Changed:
+            interactivePopTransition?.updateInteractiveTransition(progress)
+            
+        case .Ended, .Cancelled:
+            let containerView = view
+            
+            if axis == .Vertical {
+                interactivePopTransition?.cancelInteractiveTransition()
+                interactivePopTransition = .None
+                return
+            }
+            
+            let exceededVelocityThreshold = recognizer.velocityInView(containerView).x > 250
+            
+            if exceededVelocityThreshold || progress > 0.5 {
+                interactivePopTransition?.finishInteractiveTransition()
+            }
+            else {
+                interactivePopTransition?.cancelInteractiveTransition()
+            }
+            interactivePopTransition = .None
+            
+        default:
+            break
+        }
+    }
+}
+
 class CompetitorsCell: UITableViewCell {
     @IBOutlet weak var avatarImageView: UIImageView!
+    @IBOutlet weak var avatarPlaceholderView: UIView! {
+        didSet {
+            avatarPlaceholderView.layer.cornerRadius = 44 / 2
+            avatarPlaceholderView.clipsToBounds = true
+        }
+    }
+    @IBOutlet weak var avatarInitialsLabel: UILabel!
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var rankLabel: UILabel!
     @IBOutlet weak var divisionLeadPointsLabel: InsetLabel! {

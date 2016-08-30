@@ -23,9 +23,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         application.registerUserNotificationSettings(notificationSettings)
         application.registerForRemoteNotifications()
         
-        if let remoteNotification = launchOptions?[UIApplicationLaunchOptionsRemoteNotificationKey] as? [NSObject:AnyObject] {
-            self.application(application, didReceiveRemoteNotification: remoteNotification)
-        }
+        //if let remoteNotification = launchOptions?[UIApplicationLaunchOptionsRemoteNotificationKey] as? [NSObject:AnyObject] {
+        //    self.application(application, didReceiveRemoteNotification: remoteNotification)
+        //}
         
         NSURLSession.sharedSession().configuration.timeoutIntervalForResource = 600
         NSURLSession.sharedSession().configuration.timeoutIntervalForRequest = 300
@@ -100,11 +100,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     // MARK: APNS
     
-    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
-        print("received remote notification")
-
-        /*
+    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
         
+        print(userInfo)
+        
+        completionHandler(.NoData)
+        
+        return;
+        
+        //print("RECEVIED REMOTE NOTIFICATION")
+        //completionHandler(.NoData)
+    
         if let userInfo = userInfo as? [String:NSObject],
             queryNotification = CKNotification(fromRemoteNotificationDictionary: userInfo) as? CKQueryNotification {
             
@@ -112,7 +118,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             let recordID = queryNotification.recordID
             
             let op = CKFetchNotificationChangesOperation(previousServerChangeToken: .None)
+            
             op.notificationChangedBlock = { notification in
+                
                 guard let notification = notification as? CKQueryNotification, id = notification.notificationID else {
                     return
                 }
@@ -122,7 +130,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     guard let recordId = notification.recordID else {
                         return
                     }
-                    
                     
                     CKContainer.defaultContainer().publicCloudDatabase.fetchRecordWithID(recordId) { record, error in
                         if let data = record?["data"] as? NSData, date = record?["date"] as? NSDate {
@@ -172,11 +179,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             
             print(recordID)
         }
-        */
     }
     
     func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
-        //
+        print("\(deviceToken)")
+        let token = "\(deviceToken)"
+            .stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: "<>"))
+            .stringByReplacingOccurrencesOfString(" ", withString: "")
+
+        print(token)
     }
     
     func application(application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: NSError) {

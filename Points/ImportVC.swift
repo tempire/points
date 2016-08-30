@@ -130,13 +130,18 @@ class ImportVC: UIViewController {
         op.completionBlock = {
             
         }
+        
         op.queryCompletionBlock = { cursor, error in
             
             if let error = error {
+                
                 ui(.Async) {
                     MessageBarManager.sharedInstance().showMessageWithTitle("Fetch Dump", description: error.localizedDescription, type: MessageBarMessageTypeError)
+                    self.dismissViewControllerAnimated(true, completion: .None)
                 }
+                
                 print(error)
+                
                 return
             }
         }
@@ -151,7 +156,9 @@ class ImportVC: UIViewController {
         case "fractionCompleted"?:
             
             if let progress = object as? NSProgress {
+                
                 print("fraction: \(progress.fractionCompleted)")
+                
                 ui(.Async) {
                     self.progressView.setProgress(Float(progress.fractionCompleted), animated: true)
                     //progressView.setProgress(CGFloat(progress.fractionCompleted), animated: true)

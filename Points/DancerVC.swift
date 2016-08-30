@@ -11,6 +11,7 @@ import UIKit
 import RealmSwift
 import CoreSpotlight
 import MessageBarManager
+import MGSwipeTableCell
 
 enum CompetitionSort {
     case DivisionName
@@ -54,12 +55,11 @@ enum CompetitionSort {
 
 class DancerVC: UIViewController {
     var dancer: Dancer!
+    var cellHeights = [CGFloat]()
     
     var sort = CompetitionSort.DivisionName {
         didSet {
-            print("Set sort to \(sort)")
-            //sortButton.setTitle("\(sort)", forState: .Normal)
-            updateScrollView()
+            updateHeaderScrollView()
             tableView.reloadDataWithDissolve()
             tableView.scrollToRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 0), atScrollPosition: .Top, animated: false)
         }
@@ -82,8 +82,6 @@ class DancerVC: UIViewController {
     @IBOutlet weak var dancerNameLabel: UILabel! {
         didSet {
             dancerNameLabel.text = dancer.name
-            dancerNameLabel.layer.borderColor = UIColor.redColor().CGColor
-            dancerNameLabel.layer.borderWidth = 2
         }
     }
     @IBOutlet weak var wsdcIdLabel: UILabel! {
@@ -111,38 +109,65 @@ class DancerVC: UIViewController {
         didSet {
             tableView.scrollsToTop = true
             tableView.dataSource = self
-            tableView.estimatedRowHeight = 72
-            tableView.rowHeight = UITableViewAutomaticDimension
             tableView.separatorStyle = .None
-            tableView.allowsSelection = false
+            tableView.allowsSelection = true
+            tableView.estimatedRowHeight = 115
             tableView.delegate = self
+            tableView.backgroundColor = UIColor.charcoal.dark
+            
+            let backgroundView = UIView()
+            tableView.backgroundView = .None
+            tableView.backgroundView = backgroundView
+            backgroundView.backgroundColor = UIColor.charcoal.dark
+            
+            let barView = UIView()
+            barView.translatesAutoresizingMaskIntoConstraints = false
+            backgroundView.addSubview(barView)
+            barView.backgroundColor = UIColor.charcoal.light
+            barView.widthAnchor.constraintEqualToConstant(2).active = true
+            barView.topAnchor.constraintEqualToAnchor(backgroundView.topAnchor).active = true
+            barView.bottomAnchor.constraintEqualToAnchor(backgroundView.bottomAnchor).active = true
+            barView.leftAnchor.constraintEqualToAnchor(backgroundView.leftAnchor, constant: 84).active = true
         }
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        updateScrollView()
+        initializeCellHeights()
+        updateHeaderScrollView()
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
+        setBackgroundColor()
+        tableView.reloadData()
+        //scrollViewDidScroll(tableView)
+    }
+    
+    func initializeCellHeights() {
+        let count = competitions.count * 2
+        (0..<count).forEach { index in
+            cellHeights.append(index % 2 == 0 ? UITableViewAutomaticDimension : 0)
+        }
+    }
+    
+    func setBackgroundColor() {
         view.backgroundColor = peek ? .clearColor() : .darkGrayColor()
         peek = false
     }
     
-    @IBAction func theThing(sender: UIButton) {
-        print("theThing")
-    }
-    
-    func updateScrollView() {
+    func updateHeaderScrollView() {
         
-        divisionScrollView.subviews.forEach { $0.removeFromSuperview() }
+        divisionScrollView.subviews.forEach {
+            $0.removeFromSuperview()
+        }
         
         var headers: [(title: String, subTitle: String)] = []
         
         switch sort {
+            
         case .DivisionName:
             headers = dancer.divisionNamesInDisplayOrder.map {
                 (
@@ -156,6 +181,10 @@ class DancerVC: UIViewController {
                 .competitions
                 .reduce([:]) { tmp, comp -> [Int:Int] in
                     var dict = tmp
+                    
+                    print("COMPNAME: \(comp.eventYear.event.name), EVENTYEAR: \(comp.eventYear.year), PARTNER: \(comp.partnerCompetition?.dancer.first?.name ?? "")")
+                    
+                    print(dict)
                     
                     if dict[comp.eventYear.year] == nil {
                         dict[comp.eventYear.year] = 0
@@ -205,13 +234,6 @@ class DancerVC: UIViewController {
             
             button.contentEdgeInsets = UIEdgeInsets(top: 0, left: 12, bottom: 0, right: 12)
             
-            //let pointsStackView = UIStackView()
-            //pointsStackView.translatesAutoresizingMaskIntoConstraints = false
-            //pointsStackView.userInteractionEnabled = false
-            //pointsStackView.axis = .Horizontal
-            //pointsStackView.spacing = 4
-            //divisionScrollView.addSubview(pointsStackView)
-            
             button.setTitle(header.title, forState: .Normal)
             
             let label = UILabel()
@@ -221,29 +243,8 @@ class DancerVC: UIViewController {
             label.bottomAnchor.constraintEqualToAnchor(button.bottomAnchor, constant: -4).active = true
             label.centerXAnchor.constraintEqualToAnchor(button.centerXAnchor).active = true
             
-            /*
-            let rolePoints = dancer.points(forDivision: divisionName)
-            
-            for role in rolePoints.filter({ $0.1 > 0 }).sort({ $0.1 > $1.1 }).map({ $0.0 }) {
-            
-                let label = InsetLabel(insets: UIEdgeInsets(top: 2, left: 4, bottom: 2, right: 4))
-                label.translatesAutoresizingMaskIntoConstraints = false
-                label.userInteractionEnabled = false
-                label.font = UIFont.systemFontOfSize(13)
-                label.textColor = .whiteColor()
-                label.backgroundColor = role == .Lead ? .lead  : .follow
-                label.clipsToBounds = true
-                label.layer.cornerRadius = 4
-                label.text = String(rolePoints[role]!)
-                pointsStackView.addArrangedSubview(label)
-            }
-            */
-            
             return button
         }
-        
-        
-       // divisionScrollView.topAnchor.constraintEqualToAnchor(self.backgroundHeaderView.bottomAnchor).active = true
         
         divisionScrollView.constrainEdgesHorizontally(buttons)
         divisionScrollView.contentOffset = CGPoint(x: 0, y: 0)
@@ -265,10 +266,12 @@ extension DancerVC {
                     if b.currentTitle == button.currentTitle {
                         b.backgroundColor = .darkGrayColor()
                         b.setTitleColor(.whiteColor(), forState: .Normal)
+                        b.highlighted = true
                     }
                     else {
                         b.backgroundColor = .lightGrayColor()
                         b.setTitleColor(.whiteColor(), forState: .Normal)
+                        b.highlighted = false
                     }
                 }
                 
@@ -322,14 +325,41 @@ extension DancerVC: UITableViewDataSource {
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return competitions.count
+        return competitions.count * 2
+    }
+    
+    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        return cellHeights[indexPath.row]
+        //return UITableViewAutomaticDimension
+        //return 115
+        //if indexPath.row % 2 == 0 || detailsCellVisible[indexPath.row] {
+        ////if isMainCell(indexPath) || isVisibleDetailsCell(indexPath) {
+        //    return 72 //return UITableViewAutomaticDimension
+        //}
+        //
+        //return 0
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueCell(DancerCell.self, for: indexPath)
-        let competition = competitions[indexPath.row]
         
+        let cell = isMainCell(indexPath)
+            ? tableView.dequeueCell(DancerCompCell.self, for: indexPath)
+            : tableView.dequeueCell(DancerCompDetailsCell.self, for: indexPath)
+        
+        //isMainCell(indexPath)
+        //    ? dancerCompCell(cell as! DancerCompCell, competition: competition(forIndexPath: indexPath), indexPath: indexPath)
+        //    : dancerCompDetailsCell(cell as! DancerCompDetailsCell, competition: competition(forIndexPath: indexPath), indexPath: indexPath)
+        
+        //cell.contentView.setNeedsLayout()
+        //cell.contentView.layoutIfNeeded()
+        
+        return cell
+    }
+    
+    func dancerCompCell(cell: DancerCompCell, competition: Competition, indexPath: NSIndexPath) -> DancerCompCell {
+    
         cell.competition = competition
+        //cell.resultLabel.text = "main"
         cell.resultLabel.text = competition.result.description
         cell.divisionNameLabel.text = competition.divisionName.description
         cell.eventNameLabel.text = competition.eventYear.event.name
@@ -345,19 +375,167 @@ extension DancerVC: UITableViewDataSource {
         cell.partnerNameLabel.text = competition.partnerCompetition?.dancer.first?.name
         
         return cell
+        
+        // Swipe
+        
+        var buttons = [
+            MGSwipeButton(.Event, backgroundColor: .darkGrayColor()),
+            MGSwipeButton(.Competition, backgroundColor: .darkGrayColor())
+        ]
+        
+        if competition.partnerCompetition != .None {
+            buttons = [MGSwipeButton(.Partner, backgroundColor: view.tintColor)] + buttons
+        }
+        
+        cell.rightButtons = buttons.map { button in
+            button.centerIconOverText()
+            button.setEdgeInsets(UIEdgeInsetsZero)
+            return button
+        }
+        
+        cell.rightSwipeSettings.transition = .Drag
+        cell.rightExpansion.buttonIndex = 0
+        cell.rightExpansion.fillOnTrigger = true
+        cell.delegate = self
+        
+        return cell
+    }
+    
+    func dancerCompDetailsCell(cell: DancerCompDetailsCell, competition: Competition, indexPath: NSIndexPath) -> DancerCompDetailsCell {
+        
+        //cell.competition = competition
+        cell.resultLabel.text = "details" //competition.result.description
+        //cell.divisionNameLabel.text = competition.divisionName.description
+        //cell.eventNameLabel.text = competition.eventYear.event.name
+        //cell.eventDateLabel.text = competition.eventYear.date.shortMonthToString() + "\n" + String(competition.eventYear.date.year())
+        //cell.eventLocationLabel.text = competition.eventYear.event.location
+        //cell.pointsLabel.text = String(competition.points)
+        //cell.pointsCircleView.backgroundColor = competition.role == .Lead ? .lead : .follow
+        //
+        //cell.partnerRoleView.hidden = competition.partnerCompetition == .None
+        //
+        //cell.partnerRoleView.backgroundColor = competition.partnerCompetition?.role.color
+        //cell.partnerRoleLabel.text = competition.partnerCompetition?.role.tinyRaw.uppercaseString
+        //cell.partnerNameLabel.text = competition.partnerCompetition?.dancer.first?.name
+        
+        return cell
+        
+        // Swipe
+        
+        var buttons = [
+            MGSwipeButton(.Event, backgroundColor: .darkGrayColor()),
+            MGSwipeButton(.Competition, backgroundColor: .darkGrayColor())
+        ]
+        
+        if competition.partnerCompetition != .None {
+            buttons = [MGSwipeButton(.Partner, backgroundColor: view.tintColor)] + buttons
+        }
+        
+        cell.rightButtons = buttons.map { button in
+            button.centerIconOverText()
+            button.setEdgeInsets(UIEdgeInsetsZero)
+            return button
+        }
+        
+        cell.rightSwipeSettings.transition = .Drag
+        cell.rightExpansion.buttonIndex = 0
+        cell.rightExpansion.fillOnTrigger = true
+        cell.delegate = self
+        
+        return cell
     }
 }
+
 
 extension DancerVC: UITableViewDelegate {
     
     func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+        
+        isMainCell(indexPath)
+            ? dancerCompCell(cell as! DancerCompCell, competition: competition(forIndexPath: indexPath), indexPath: indexPath)
+            : dancerCompDetailsCell(cell as! DancerCompDetailsCell, competition: competition(forIndexPath: indexPath), indexPath: indexPath)
         
         //cell.contentView.layer.masksToBounds = false
         //cell.contentView.layer.shadowColor = UIColor.blackColor().CGColor
         //cell.contentView.layer.shadowOffset = CGSize(width: 0, height: 0.5)
         //cell.contentView.layer.shadowPath = UIBezierPath(rect: cell.bounds).CGPath
     }
+    
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        
+        guard isMainCell(indexPath) else {
+            return
+        }
+        
+        let detailsCellIndexPath = self.detailsCellIndexPath(forIndexPath: indexPath)
+        
+        cellHeights[detailsCellIndexPath.row] = cellHeights[detailsCellIndexPath.row] == 0 ? UITableViewAutomaticDimension : 0
+        //detailsCellVisible[detailsCellIndexPath.row] = !detailsCellVisible[detailsCellIndexPath.row]
+        
+        tableView.reloadRowsAtIndexPaths([detailsCellIndexPath], withRowAnimation: .Automatic)
+    }
 }
+
+
+// MARK: Table Cell utility methods
+
+extension DancerVC {
+    func isMainCell(indexPath: NSIndexPath) -> Bool {
+        return indexPath.row % 2 == 0
+    }
+    
+    func detailsCellIndexPath(forIndexPath indexPath: NSIndexPath) -> NSIndexPath {
+        return indexPath.row % 2 == 0 ? indexPath.nextRow : indexPath
+    }
+}
+
+
+extension DancerVC: MGSwipeTableCellDelegate {
+   
+    func swipeTableCellWillBeginSwiping(cell: MGSwipeTableCell) {
+        //for case let button as MGSwipeButton in cell.rightButtons {
+        //}
+    }
+    
+    func swipeTableCell(cell: MGSwipeTableCell, tappedButtonAtIndex index: Int, direction: MGSwipeDirection, fromExpansion: Bool) -> Bool {
+        
+        guard let indexPath = tableView.indexPathForCell(cell) else {
+            return false
+        }
+        
+        switch MGSwipeButton.SwipeButton(index) {
+            
+        case .None:
+            break
+            
+        case .Partner?:
+            if let dancer = competition(forIndexPath: indexPath).partnerCompetition?.dancer.first {
+                let vc = Storyboard.Main.viewController(DancerVC)
+                vc.dancer = dancer
+                navigationController?.pushViewController(vc, animated: true)
+            }
+
+        case .Competition?:
+            break
+            
+        case .Event?:
+            break
+        }
+        
+        return false
+    }
+}
+
+
+// Segue 
+
+extension DancerVC {
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    }
+
+}
+
 
 // Open from spotlight
 
@@ -381,46 +559,89 @@ extension DancerVC {
 
 // Scrollview delegate
 
+private var times = 0
+
 extension DancerVC: UIScrollViewDelegate {
     
     func scrollViewDidScroll(scrollView: UIScrollView) {
         
-        // Header button highlighting
-        
-        var title: String?
-        
-        var competition: Competition?
-        
-        if scrollView.contentOffset.y + 1 >= scrollView.contentSize.height - scrollView.frame.size.height {
-            competition = competitions.last
-        }
-        else if let row = tableView.indexPathsForVisibleRows?.first?.row where competitions.count >= row {
-            competition = competitions[row]
+        if tableView.contentOffset.y > 0-50 && tableView.contentOffset.y < 500 { // (300-56) {
+            backgroundHeaderViewHeightConstraint.constant = max(max(dancerNameLabel.bounds.height, 56), 300 - self.tableView.contentOffset.y)
         }
         
+        let pointImmediatelyBelowTableViewHeader = CGPoint(
+            x: 5,
+            y: tableView.contentOffset.y + tableView(tableView, heightForHeaderInSection: 0)
+        )
+        
+        let title = rowTitle(
+            activeCompetition(
+                scrollView: scrollView,
+                indexPath: tableView.indexPathForRowAtPoint(pointImmediatelyBelowTableViewHeader)
+            )
+        )
+        
+        for case let button as UIButton in divisionScrollView.subviews where button.currentTitle == title {
+            highlight(button: button)
+            return
+        }
+    }
+    
+    func cellTitleIsVisible(rect: CGRect) -> Bool {
+        return rect.origin.y < 97
+    }
+    
+    func cellTitleIsHidden(rect: CGRect) -> Bool {
+        return rect.origin.y > 105
+    }
+    
+    func rowTitle(competition: Competition?) -> String? {
         
         switch sort {
             
         case .DivisionName:
-            title = competition?.divisionName.description
+            return competition?.divisionName.description
             
         case .Placement:
-            title = competition?.result.description
+            return competition?.result.description
             
         case .Date:
-            title = String(competition?.year)
-        }
-        
-        
-        backgroundHeaderViewHeightConstraint.constant = max(max(dancerNameLabel.bounds.height, 56), 300 - self.tableView.contentOffset.y)
-        dancerNameLabel.layoutIfNeeded()
-        view.setNeedsLayout()
-        
-        for case let button as UIButton in divisionScrollView.subviews where button.currentTitle == title {
-            return highlight(button: button)
+            return String(competition?.year)
         }
     }
+    
+    func competition(forIndexPath indexPath: NSIndexPath) -> Competition {
+        return competitions[Int(floor(Float(indexPath.row / 2)))]
+    }
+    
+    func activeCompetition(scrollView scrollView: UIScrollView, indexPath tmp: NSIndexPath?) -> Competition? {
+        
+        guard let indexPath = tmp else {
+            return .None
+        }
+        
+        let cellRectWithinTableView = tableView.convertRect(tableView.rectForRowAtIndexPath(indexPath), toView: tableView.superview)
+        
+        if scrollView.scrolledAboveContentView {
+            return competitions.first
+        }
+            
+        else if scrollView.atBottomOfContentView {
+            return competitions.last
+        }
+            
+        else if cellTitleIsHidden(cellRectWithinTableView) {
+            return competition(forIndexPath: indexPath)
+        }
+            
+        else if cellTitleIsVisible(cellRectWithinTableView) {
+            return competition(forIndexPath: indexPath.nextRow)
+        }
+        
+        return .None
+    }
 }
+
 
 // MARK: Actions
 
@@ -441,13 +662,43 @@ extension DancerVC {
     }
 }
 
-class DancerCell: UITableViewCell {
+class DancerCompCell: MGSwipeTableCell {
+
     weak var competition: Competition!
     
-    @IBOutlet weak var pointsCircleView: UIView!
-        {
+    @IBOutlet weak var pointsCircleView: UIView! {
         didSet {
-            pointsCircleView.layer.borderColor = UIColor.charcoal.light.CGColor
+            //pointsCircleView.layer.borderColor = UIColor.charcoal.light.CGColor
+            //pointsCircleView.layer.shouldRasterize = true
+            //pointsCircleView.layer.cornerRadius = 18
+        }
+    }
+    
+    @IBOutlet weak var resultLabel: UILabel!
+    @IBOutlet weak var divisionNameLabel: UILabel!
+    @IBOutlet weak var eventNameLabel: UILabel!
+    @IBOutlet weak var eventLocationLabel: UILabel!
+    @IBOutlet weak var eventDateLabel: UILabel!
+    @IBOutlet weak var pointsLabel: UILabel!
+    @IBOutlet weak var partnerContentView: UIView!
+    @IBOutlet weak var partnerRoleView: UIView!
+    @IBOutlet weak var partnerRoleLabel: UILabel!
+    @IBOutlet weak var partnerNameLabel: UILabel!
+    
+    @IBAction func showEventLocation(sender: UIButton) {
+        Maps.openAtAddress(competition.eventYear.event.location)
+    }
+}
+
+class DancerCompDetailsCell: MGSwipeTableCell {
+
+    weak var competition: Competition!
+    
+    @IBOutlet weak var pointsCircleView: UIView! {
+        didSet {
+            //pointsCircleView.layer.borderColor = UIColor.charcoal.light.CGColor
+            //pointsCircleView.layer.shouldRasterize = true
+            //pointsCircleView.layer.cornerRadius = 18
         }
     }
     

@@ -9,10 +9,30 @@
 import Foundation
 import UIKit
 
+extension UIStoryboardSegue {
+    
+    enum Identifier: String {
+        case Partner
+        
+        init?(_ rawValue: String?) {
+            guard let rawValue = rawValue, identifier = Identifier(rawValue: rawValue) else {
+                return nil
+            }
+            
+            self = identifier
+        }
+    }
+}
+
+
 extension UIViewController {
     
     func performSegueWithVC<A: UIViewController>(type: A.Type, sender: AnyObject?) {
         performSegueWithIdentifier("\(A.self)", sender: sender)
+    }
+    
+    func performSegueWithIdentifier(identifier: UIStoryboardSegue.Identifier, sender: AnyObject?) {
+        performSegueWithIdentifier("\(identifier)", sender: sender)
     }
     
     func replaceRootVC(vc: UIViewController, completion: (Void->Void)?) {
