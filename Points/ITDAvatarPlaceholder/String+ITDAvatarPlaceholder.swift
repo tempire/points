@@ -7,13 +7,13 @@
 //
 
 extension String {
-    public func toAvatarPlaceholderText(maxLettersCount: Int = 3) -> String {
+    public func toAvatarPlaceholderText(_ maxLettersCount: Int = 3) -> String {
         let maxLettersCount = maxLettersCount < 0 ? 0: maxLettersCount
         
-        let text = self.firstLetters.uppercaseString
+        let text = self.firstLetters.uppercased()
         
         return text.characters.count > maxLettersCount ?
-            text[text.startIndex..<text.startIndex.advancedBy(maxLettersCount)] : text
+            text[text.startIndex..<text.characters.index(text.startIndex, offsetBy: maxLettersCount)] : text
     }
     
     var firstLetters: String {
@@ -25,9 +25,9 @@ extension String {
             case " ":
                 shouldAddLetter = true
                 
-            case _ where shouldAddLetter && kLetterCharacterSet.longCharacterIsMember(ch.value):
+            case _ where shouldAddLetter && kLetterCharacterSet.contains(UnicodeScalar(ch.value)!):
                 shouldAddLetter = false
-                result.append(ch)
+                result.append(String(ch))
                 
             default:
                 break

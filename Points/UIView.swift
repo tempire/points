@@ -11,31 +11,40 @@ import UIKit
 
 extension UIView {
     
-    func constrainEdges(toView view: UIView, withInsets insets: UIEdgeInsets = UIEdgeInsetsZero) {
+    func constrainEdges(toView view: UIView, withInsets insets: UIEdgeInsets = UIEdgeInsets.zero) {
         translatesAutoresizingMaskIntoConstraints = false
-        topAnchor.constraintEqualToAnchor(view.topAnchor, constant: insets.top).active = true
-        bottomAnchor.constraintEqualToAnchor(view.bottomAnchor, constant: insets.bottom).active = true
-        leadingAnchor.constraintEqualToAnchor(view.leadingAnchor, constant: insets.left).active = true
-        trailingAnchor.constraintEqualToAnchor(view.trailingAnchor, constant: insets.right).active = true
+        topAnchor.constraint(equalTo: view.topAnchor, constant: insets.top).isActive = true
+        bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: insets.bottom).isActive = true
+        leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: insets.left).isActive = true
+        trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: insets.right).isActive = true
     }
     
-    func constrainEdgesHorizontally(views: [UIView], withInsets insets: UIEdgeInsets = UIEdgeInsetsZero) {
+    func constrainEdgesHorizontally(_ views: [UIView], withInsets insets: UIEdgeInsets = UIEdgeInsets.zero) {
         
-        views.enumerate().forEach { index, view in
-            view.topAnchor.constraintEqualToAnchor(topAnchor).active = true
-            view.bottomAnchor.constraintEqualToAnchor(bottomAnchor).active = true
-            view.heightAnchor.constraintEqualToAnchor(heightAnchor).active = true
+        views.enumerated().forEach { index, view in
+            view.topAnchor.constraint(equalTo: topAnchor).isActive = true
+            view.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
+            view.heightAnchor.constraint(equalTo: heightAnchor).isActive = true
             
             if view == views.first {
-                view.leadingAnchor.constraintEqualToAnchor(leadingAnchor, constant: insets.left).active = true
+                view.leadingAnchor.constraint(equalTo: leadingAnchor, constant: insets.left).isActive = true
             }
             else {
-                view.leadingAnchor.constraintEqualToAnchor(views[index-1].trailingAnchor).active = true
+                view.leadingAnchor.constraint(equalTo: views[index-1].trailingAnchor).isActive = true
             }
             
             if view == views.last {
-                view.trailingAnchor.constraintEqualToAnchor(trailingAnchor, constant: insets.right).active = true
+                view.trailingAnchor.constraint(equalTo: trailingAnchor, constant: insets.right).isActive = true
             }
         }
+    }
+    
+    func superviewMatching<A>(_ aClass: A.Type) -> A? {
+        
+        guard let superview = superview else {
+            return .none
+        }
+        
+        return superview as? A ?? superview.superviewMatching(aClass)
     }
 }

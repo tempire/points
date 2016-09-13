@@ -17,22 +17,22 @@ class InsetLabel: UILabel {
         }
     }
     
-    override func intrinsicContentSize() -> CGSize {
-        let size = super.intrinsicContentSize()
+    override var intrinsicContentSize : CGSize {
+        let size = super.intrinsicContentSize
         return CGSize(width: size.width + insets.left + insets.right, height: size.height + insets.top + insets.bottom)
     }
     
     init(insets: UIEdgeInsets) {
         self.insets = insets
-        super.init(frame: CGRectZero)
+        super.init(frame: CGRect.zero)
     }
     
     required init?(coder aDecoder: NSCoder) {
-        self.insets = UIEdgeInsetsZero
+        self.insets = UIEdgeInsets.zero
         super.init(coder: aDecoder)
     }
     
-    override func drawTextInRect(rect: CGRect) {
-        super.drawTextInRect(UIEdgeInsetsInsetRect(rect, insets))
+    override func drawText(in rect: CGRect) {
+        super.drawText(in: UIEdgeInsetsInsetRect(rect, insets))
     }
 }

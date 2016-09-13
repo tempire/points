@@ -15,8 +15,8 @@ class Dancer: Object, StringImport {
     dynamic var fname: String = ""
     dynamic var lname: String = ""
     dynamic var name: String = ""
-    dynamic private var _maxRank: String = ""
-    dynamic private var _minRank: String = ""
+    dynamic fileprivate var _maxRank: String = ""
+    dynamic fileprivate var _minRank: String = ""
     
     let competitions = List<Competition>()
     
@@ -52,8 +52,9 @@ class Dancer: Object, StringImport {
             return set
         }
         
-        return comps.sort { left, right in
-            return WSDC.DivisionName.displayOrder[left] < WSDC.DivisionName.displayOrder[right]
+        return comps.sorted { left, right in
+            return left < right
+            //return WSDC.DivisionName.displayOrder[left] < WSDC.DivisionName.displayOrder[right]
         }
     }
     
@@ -80,19 +81,27 @@ class Dancer: Object, StringImport {
         
         for comp in competitions {
             
-            if points[comp.divisionName] == .None {
+            if points[comp.divisionName] == .none {
                 points[comp.divisionName] = 0
             }
             
             points[comp.divisionName]! += comp.points
             
-            if let nextRank = comp.divisionName.nextRank
-                where points[comp.divisionName] > comp.divisionName.pointsForNextRank
-                    && rankOrder[nextRank] > rankOrder[max] {
+            if let nextRank = comp.divisionName.nextRank,
+                let divisionPoints = points[comp.divisionName],
+                let nextRankPoints = comp.divisionName.pointsForNextRank,
+                let nextRankOrder = rankOrder[nextRank],
+                let maxRankOrder = rankOrder[max],
+                divisionPoints > nextRankPoints,
+                nextRankOrder > maxRankOrder {
+                
                 max = nextRank
             }
             
-            if rankOrder[comp.divisionName] > rankOrder[max] {
+            if let divisionRankOrder = rankOrder[comp.divisionName],
+                let maxRankOrder = rankOrder[max],
+                divisionRankOrder > maxRankOrder {
+                
                 max = comp.divisionName
             }
         }
@@ -112,7 +121,7 @@ class Dancer: Object, StringImport {
         self.init()
         
         guard let id = Int(strings[0]) else {
-                throw NSError(domain: .SerializedParsing, code: .Dancer, message: "Could not parse dancer: \(strings)")
+                throw NSError(domain: .serializedParsing, code: .dancer, message: "Could not parse dancer: \(strings)")
         }
         
         self.id = id

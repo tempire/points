@@ -11,25 +11,25 @@ import Foundation
 
 class Maps {
     
-    class func canOpenAtAddress(address: String?) -> Bool {
+    class func canOpenAtAddress(_ address: String?) -> Bool {
         
-        guard let address = address?.stringByReplacingOccurrencesOfString("", withString: "", options: .RegularExpressionSearch, range: nil)
-            .stringByReplacingOccurrencesOfString("\n", withString: " ", options: .RegularExpressionSearch, range: nil)
-            .stringByReplacingOccurrencesOfString(" ", withString: "+", options: .RegularExpressionSearch, range: nil) where !address.isEmpty else {
+        guard let address = address?.replacingOccurrences(of: "", with: "", options: .regularExpression, range: nil)
+            .replacingOccurrences(of: "\n", with: " ", options: .regularExpression, range: nil)
+            .replacingOccurrences(of: " ", with: "+", options: .regularExpression, range: nil) , !address.isEmpty else {
                 return false
         }
         
         return true
     }
     
-    class func openAtAddress(address: String?) -> Bool {
+    class func openAtAddress(_ address: String?) -> Bool {
         
-        guard let address = address?.stringByReplacingOccurrencesOfString("\n", withString: " ", options: .RegularExpressionSearch, range: nil).stringByReplacingOccurrencesOfString(" ", withString: "+", options: .RegularExpressionSearch, range: nil),
-            url = NSURL(string: "http://maps.apple.com/?q=\(address)") where !address.isEmpty else {
+        guard let address = address?.replacingOccurrences(of: "\n", with: " ", options: .regularExpression, range: nil).replacingOccurrences(of: " ", with: "+", options: .regularExpression, range: nil),
+            let url = URL(string: "http://maps.apple.com/?q=\(address)") , !address.isEmpty else {
                 
                 return false
         }
         
-        return UIApplication.sharedApplication().openURL(url)
+        return UIApplication.shared.openURL(url)
     }
 }

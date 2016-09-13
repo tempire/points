@@ -9,25 +9,25 @@
 import Foundation
 
 enum TransitionAxis {
-    case Vertical
-    case Horizontal
+    case vertical
+    case horizontal
 }
 
 enum TransitionDirection {
-    case Up
-    case Down
-    case Left
-    case Right
+    case up
+    case down
+    case left
+    case right
     
     init(axis: TransitionAxis, point: CGPoint) {
         
         switch axis {
             
-        case .Vertical:
-            self = point.y > 0 ? Up : Down
+        case .vertical:
+            self = point.y > 0 ? .up : .down
             
-        case .Horizontal:
-            self = point.x < 0 ? Left : Right
+        case .horizontal:
+            self = point.x < 0 ? .left : .right
         }
     }
 }

@@ -11,7 +11,7 @@ import Foundation
 extension String {
     
     var trim: String? {
-        return stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet()).isEmpty ? .None : self
+        return trimmingCharacters(in: CharacterSet.whitespaces).isEmpty ? .none : self
     }
     
     init?(_ int: Int?) {
@@ -22,13 +22,13 @@ extension String {
         self = String(int)
     }
     
-    func height(width width: CGFloat, font: UIFont) -> CGFloat {
+    func height(width: CGFloat, font: UIFont) -> CGFloat {
         
-        return self.boundingRectWithSize(
-            CGSize(width: width, height: CGFloat.max),
-            options: NSStringDrawingOptions.UsesLineFragmentOrigin,
+        return self.boundingRect(
+            with: CGSize(width: width, height: CGFloat.greatestFiniteMagnitude),
+            options: NSStringDrawingOptions.usesLineFragmentOrigin,
             attributes: [NSFontAttributeName: font],
-            context: .None
+            context: .none
             ).height
     }
 }

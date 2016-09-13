@@ -12,46 +12,46 @@ extension NSError {
     enum Domain {
         
         enum Code {
-            case Role
-            case Result
-            case Strings
-            case SectionTitle
-            case Dancer
-            case Competition
-            case Event
-            case JSON(Int)
-            case Timeout(NSTimeInterval)
+            case role
+            case result
+            case strings
+            case sectionTitle
+            case dancer
+            case competition
+            case event
+            case json(Int)
+            case timeout(TimeInterval)
             
             var value: Int {
                 switch self {
-                case Role: return 0
-                case Result: return 1
-                case Strings: return 2
-                case SectionTitle: return 3
-                case Dancer: return 4
-                case Competition: return 5
-                case Event: return 6
-                case JSON(let code): return 100 + code
-                case Timeout(_): return 7
+                case .role: return 0
+                case .result: return 1
+                case .strings: return 2
+                case .sectionTitle: return 3
+                case .dancer: return 4
+                case .competition: return 5
+                case .event: return 6
+                case .json(let code): return 100 + code
+                case .timeout(_): return 7
                 }
             }
         }
         
-        case SerializedParsing
-        case JSON
-        case Network
+        case serializedParsing
+        case json
+        case network
         
         var description: String {
             
             switch self {
                 
-            case .SerializedParsing(_):
+            case .serializedParsing(_):
                 return "SerializedParsing"
                 
-            case .JSON:
+            case .json:
                 return "JSON"
                 
-            case .Network:
+            case .network:
                 return "Network"
             }
         }

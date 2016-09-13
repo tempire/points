@@ -15,7 +15,7 @@ extension UIStoryboardSegue {
         case Partner
         
         init?(_ rawValue: String?) {
-            guard let rawValue = rawValue, identifier = Identifier(rawValue: rawValue) else {
+            guard let rawValue = rawValue, let identifier = Identifier(rawValue: rawValue) else {
                 return nil
             }
             
@@ -27,31 +27,31 @@ extension UIStoryboardSegue {
 
 extension UIViewController {
     
-    func performSegueWithVC<A: UIViewController>(type: A.Type, sender: AnyObject?) {
-        performSegueWithIdentifier("\(A.self)", sender: sender)
+    func performSegueWithVC<A: UIViewController>(_ type: A.Type, sender: AnyObject?) {
+        performSegue(withIdentifier: "\(A.self)", sender: sender)
     }
     
-    func performSegueWithIdentifier(identifier: UIStoryboardSegue.Identifier, sender: AnyObject?) {
-        performSegueWithIdentifier("\(identifier)", sender: sender)
+    func performSegueWithIdentifier(_ identifier: UIStoryboardSegue.Identifier, sender: AnyObject?) {
+        performSegue(withIdentifier: "\(identifier)", sender: sender)
     }
     
-    func replaceRootVC(vc: UIViewController, completion: (Void->Void)?) {
-        guard let window = UIApplication.sharedApplication().keyWindow, rootVC = window.rootViewController else {
+    func replaceRootVC(_ vc: UIViewController, completion: ((Void)->Void)?) {
+        guard let window = UIApplication.shared.keyWindow, let rootVC = window.rootViewController else {
             return
         }
         
-        let snapshot = window.snapshotViewAfterScreenUpdates(true)
-        vc.view.addSubview(snapshot)
+        let snapshot = window.snapshotView(afterScreenUpdates: true)
+        vc.view.addSubview(snapshot!)
         
         window.rootViewController = vc
         window.makeKeyAndVisible()
         
-        UIView.animateWithDuration(0.3,
+        UIView.animate(withDuration: 0.3,
                                    animations: {
-                                    snapshot.layer.opacity = 0 },
+                                    snapshot?.layer.opacity = 0 },
                                    completion: { finished in
-                                    rootVC.dismissViewControllerAnimated(false) {
-                                        snapshot.removeFromSuperview()
+                                    rootVC.dismiss(animated: false) {
+                                        snapshot?.removeFromSuperview()
                                         rootVC.view.removeFromSuperview()
                                         completion?()
                                     }

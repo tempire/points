@@ -12,7 +12,7 @@ extension Int {
     
     init?(_ string: String?) {
         
-        guard let rawValue = string, int = Int(rawValue) else {
+        guard let rawValue = string, let int = Int(rawValue) else {
             return nil
         }
         

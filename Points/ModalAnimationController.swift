@@ -10,18 +10,18 @@ import Foundation
 import UIKit
 
 class ModalAnimationController: NSObject, UIViewControllerAnimatedTransitioning {
-    let duration: NSTimeInterval = 0.5
+    let duration: TimeInterval = 0.5
     let presenting: Bool
     
     init(presenting: Bool) {
         self.presenting = presenting
     }
     
-    func transitionDuration(transitionContext: UIViewControllerContextTransitioning?) -> NSTimeInterval {
+    func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
         return duration
     }
     
-    func animateTransition(transitionContext: UIViewControllerContextTransitioning) {
+    func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
         //
     }
 }

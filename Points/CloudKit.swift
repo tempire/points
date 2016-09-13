@@ -11,7 +11,7 @@ import CloudKit
 
 extension CKSubscription {
     enum SubscriptionType {
-        case Dumps
+        case dumps
         
         var description: String {
             return "\(self)"
@@ -29,7 +29,7 @@ extension CKSubscription {
 
 extension CKQuery {
     
-    class func latest(recordType: CKRecord.RecordType) -> CKQuery {
+    class func latest(_ recordType: CKRecord.RecordType) -> CKQuery {
         let query = CKQuery(recordType: recordType.rawValue, predicate: NSPredicate.all)
         query.sortDescriptors = [NSSortDescriptor(key: "date", ascending: false)]
         return query
@@ -44,22 +44,22 @@ extension CKRecord {
         var subscriptionForAll: CKSubscription.SubscriptionType {
             switch self {
             case .Dumps:
-                return .Dumps
+                return .dumps
             }
         }
     }
     
-    convenience init(_ type: RecordType, id: NSUUID) {
-        let recordID = CKRecordID(recordName: id.UUIDString)
+    convenience init(_ type: RecordType, id: UUID) {
+        let recordID = CKRecordID(recordName: id.uuidString)
         self.init(recordType: type.rawValue, recordID: recordID)
     }
     
-    class func createDump(dump: Dump) -> CKRecord {
-        let record = CKRecord(.Dumps, id: dump.id)
+    class func createDump(_ dump: Dump) -> CKRecord {
+        let record = CKRecord(.Dumps, id: dump.id as UUID)
         
-        record["id"] = dump.id.UUIDString
+        record["id"] = dump.id.uuidString as CKRecordValue?
         record["date"] = dump.date
-        record["version"] = dump.version
+        record["version"] = dump.version as CKRecordValue?
         record["data"] = dump.data
         
         return record

@@ -14,11 +14,11 @@ extension UIColor {
         return fromInt(name.hashValue).flatten()
     }
     
-    static func fromInt(value: Int) -> UIColor {
+    static func fromInt(_ value: Int) -> UIColor {
         return UIColor.fromUInt(UInt(abs(value)))
     }
     
-    static func fromUInt(value: UInt) -> UIColor {
+    static func fromUInt(_ value: UInt) -> UIColor {
         return UIColor(
             red: CGFloat((value & 0xFF0000) >> 16) / 255.0,
             green: CGFloat((value & 0x00FF00) >> 8) / 255.0,

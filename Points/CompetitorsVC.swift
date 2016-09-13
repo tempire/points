@@ -24,22 +24,22 @@ class CompetitorsVC: UIViewController {
         }
     }
     
-    var highlightedIndexPath: NSIndexPath?
+    var highlightedIndexPath: IndexPath?
     
     var filterString: String? {
         didSet {
-            let objects = try! Realm().objects(Dancer)
+            let objects = try! Realm().allObjects(ofType: Dancer.self)
             
             var predicate = NSPredicate.all
             
-            if let filterString = filterString, int = Int(filterString) {
+            if let filterString = filterString, let int = Int(filterString) {
                 predicate = NSPredicate(format: "id = %d", int)
             }
             else if let filterString = filterString {
                 predicate = NSPredicate(format: "name CONTAINS[c] %@ OR _maxRank BEGINSWITH %@", filterString, filterString)
             }
             
-            results = objects.filter(predicate)
+            results = objects.filter(using: predicate)
         }
     }
     
@@ -49,11 +49,11 @@ class CompetitorsVC: UIViewController {
     @IBOutlet weak var tableView: UITableView! {
         didSet {
             tableView.dataSource = self
-            tableView.keyboardDismissMode = .Interactive
+            tableView.keyboardDismissMode = .interactive
             //tableView.contentInset = UIEdgeInsets(top: 8, left: 0, bottom: 0, right: 0)
             tableView.estimatedRowHeight = 66
             tableView.rowHeight = UITableViewAutomaticDimension
-            tableView.separatorStyle = .None
+            tableView.separatorStyle = .none
         }
     }
     
@@ -62,7 +62,7 @@ class CompetitorsVC: UIViewController {
         
         let realm = try! Realm()
         
-        results = realm.objects(Dancer)
+        results = realm.allObjects(ofType: Dancer.self)
         
         token = results.addNotificationBlock { note in
             self.tableView?.reloadData()
@@ -71,7 +71,7 @@ class CompetitorsVC: UIViewController {
         navigationController?.delegate = self
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
     
         if self.results.count == 0 {
@@ -80,62 +80,62 @@ class CompetitorsVC: UIViewController {
     }
     
     deinit {
-        print("-DEINIT \(self.dynamicType)")
+        print("-DEINIT \(type(of: self))")
     }
 }
 
 extension CompetitorsVC {
-    @IBAction func search(sender: UITextField) {
+    @IBAction func search(_ sender: UITextField) {
         filterString = sender.text
     }
 }
 
 extension CompetitorsVC: UITableViewDataSource {
     
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return results.count
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueCell(CompetitorsCell.self, for: indexPath)
         let dancer = results[indexPath.row]
         
         //cell.avatarImageView.image = UIImage.createAvatarPlaceholder(userFullName: dancer.name, placeholderSize: CGSize(width: 44, height: 44))
-        cell.avatarPlaceholderView.backgroundColor = .lightGrayColor()
+        cell.avatarPlaceholderView.backgroundColor = .lightGray
         cell.avatarInitialsLabel.text = dancer.name.firstLetters
         cell.nameLabel.text = dancer.name
         cell.rankLabel.text = dancer.rank.max.description
         
         let points = dancer.points(forDivision: dancer.rank.max)
-        cell.divisionLeadPointsLabel.hidden = points[.Lead] == 0
+        cell.divisionLeadPointsLabel.isHidden = points[.Lead] == 0
         cell.divisionLeadPointsLabel.text = String(points[.Lead]!)
-        cell.divisionFollowPointsLabel.hidden = points[.Follow] == 0
+        cell.divisionFollowPointsLabel.isHidden = points[.Follow] == 0
         cell.divisionFollowPointsLabel.text = String(points[.Follow]!)
         
         return cell
     }
     
-    override func previewActionItems() -> [UIPreviewActionItem] {
+    override var previewActionItems : [UIPreviewActionItem] {
         return [
-            UIPreviewAction(title: "Bookmark", style: .Selected, handler: { action, vc in
+            UIPreviewAction(title: "Bookmark", style: .selected, handler: { action, vc in
             }),
             
-            UIPreviewAction(title: "Cancel", style: .Default, handler: { action, vc in
+            UIPreviewAction(title: "Cancel", style: .default, handler: { action, vc in
             })
         ]
     }
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
-        switch segue.destinationViewController {
+        switch segue.destination {
             
         case let vc as DancerVC:
             guard let cell = sender as? CompetitorsCell,
-                indexPath = tableView.indexPathForCell(cell) else {
+                let indexPath = tableView.indexPath(for: cell) else {
                     return
             }
 
@@ -145,10 +145,10 @@ extension CompetitorsVC: UITableViewDataSource {
             
             //tableView.selectRowAtIndexPath(indexPath, animated: true, scrollPosition: UITableViewScrollPosition.None)
             
-            tableView.deselectRowAtIndexPath(indexPath, animated: true)
+            tableView.deselectRow(at: indexPath, animated: true)
 
         case let vc as ImportVC:
-            vc.modalPresentationStyle = .Custom
+            vc.modalPresentationStyle = .custom
             vc.transitioningDelegate = self
             
         default:
@@ -160,39 +160,39 @@ extension CompetitorsVC: UITableViewDataSource {
 
 extension CompetitorsVC: UIViewControllerTransitioningDelegate {
     
-    internal func presentationControllerForPresentedViewController(presented: UIViewController, presentingViewController presenting: UIViewController, sourceViewController source: UIViewController) -> UIPresentationController? {
+    internal func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
         
-        return ModalPresentationController(presentedViewController: presented, presentingViewController: presenting)
+        return ModalPresentationController(presentedViewController: presented, presenting: presenting)
     }
     
-    internal func animationControllerForPresentedController(presented: UIViewController, presentingController presenting: UIViewController, sourceController source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+    internal func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         
-        return .None
+        return .none
     }
     
-    internal func animationControllerForDismissedController(dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+    internal func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         
-        return .None
+        return .none
     }
 }
 
 extension CompetitorsVC: UINavigationControllerDelegate {
     
-    func navigationController(navigationController: UINavigationController, willShowViewController viewController: UIViewController, animated: Bool) {
+    func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
         let pan = UIPanGestureRecognizer(target: self, action: #selector(handleNVCPopPanGesture(_:)))
         navigationController.view.addGestureRecognizer(pan)
     }
     
-    func navigationController(navigationController: UINavigationController, animationControllerForOperation operation: UINavigationControllerOperation, fromViewController fromVC: UIViewController, toViewController toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+    func navigationController(_ navigationController: UINavigationController, animationControllerFor operation: UINavigationControllerOperation, from fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         
-        if operation == UINavigationControllerOperation.Pop {
+        if operation == UINavigationControllerOperation.pop {
             return PopTransitionController()
         }
         
-        return .None
+        return .none
     }
     
-    func navigationController(navigationController: UINavigationController, interactionControllerForAnimationController animationController: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
+    func navigationController(_ navigationController: UINavigationController, interactionControllerFor animationController: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
         
         return interactivePopTransition
     }
@@ -202,40 +202,40 @@ extension CompetitorsVC: UINavigationControllerDelegate {
 
 extension CompetitorsVC {
     
-    func handleNVCPopPanGesture(recognizer: UIPanGestureRecognizer) {
-        let coords = recognizer.translationInView(view)
+    func handleNVCPopPanGesture(_ recognizer: UIPanGestureRecognizer) {
+        let coords = recognizer.translation(in: view)
         let progress = coords.x / (view.bounds.size.width * 1)
-        let direction: TransitionDirection = coords.x < 0 ? .Left : .Right
-        let axis: TransitionAxis = fabs(coords.x) > fabs(coords.y) ? .Horizontal : .Vertical
+        let direction: TransitionDirection = coords.x < 0 ? .left : .right
+        let axis: TransitionAxis = fabs(coords.x) > fabs(coords.y) ? .horizontal : .vertical
         
         switch recognizer.state {
-        case .Began:
-            if direction == .Right {
+        case .began:
+            if direction == .right {
                 interactivePopTransition = UIPercentDrivenInteractiveTransition()
-                navigationController?.popViewControllerAnimated(true)
+                navigationController?.popViewController(animated: true)
             }
             
-        case .Changed:
-            interactivePopTransition?.updateInteractiveTransition(progress)
+        case .changed:
+            interactivePopTransition?.update(progress)
             
-        case .Ended, .Cancelled:
+        case .ended, .cancelled:
             let containerView = view
             
-            if axis == .Vertical {
-                interactivePopTransition?.cancelInteractiveTransition()
-                interactivePopTransition = .None
+            if axis == .vertical {
+                interactivePopTransition?.cancel()
+                interactivePopTransition = .none
                 return
             }
             
-            let exceededVelocityThreshold = recognizer.velocityInView(containerView).x > 250
+            let exceededVelocityThreshold = recognizer.velocity(in: containerView).x > 250
             
             if exceededVelocityThreshold || progress > 0.5 {
-                interactivePopTransition?.finishInteractiveTransition()
+                interactivePopTransition?.finish()
             }
             else {
-                interactivePopTransition?.cancelInteractiveTransition()
+                interactivePopTransition?.cancel()
             }
-            interactivePopTransition = .None
+            interactivePopTransition = .none
             
         default:
             break

@@ -15,13 +15,13 @@ enum Storyboard: String {
     static let values = [Main]
     static var boards = [Storyboard:UIStoryboard]()
     
-    func viewController<A: UIViewController>(type: A.Type) -> A {
+    func viewController<A: UIViewController>(_ type: A.Type) -> A {
         print("\(A.self)")
-        return storyboard.instantiateViewControllerWithIdentifier("\(A.self)") as! A
+        return storyboard.instantiateViewController(withIdentifier: "\(A.self)") as! A
     }
     
     var storyboard: UIStoryboard {
-        let storyboard = Storyboard.boards[self] ?? UIStoryboard(name: rawValue, bundle: .None)
+        let storyboard = Storyboard.boards[self] ?? UIStoryboard(name: rawValue, bundle: .none)
         Storyboard.boards[self] = storyboard
         return storyboard
     }

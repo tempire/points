@@ -14,7 +14,7 @@ import M13ProgressSuite
 import CloudKit
 
 class ImportVC: UIViewController {
-    var progress = NSProgress()
+    var progress = Progress()
     var dump: Dump?
     
     @IBOutlet weak var contentView: UIView!
@@ -28,33 +28,33 @@ class ImportVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        progress = NSProgress()
+        progress = Progress()
         
         view.layer.cornerRadius = 6
         view.clipsToBounds = true
         
         progress.addObserver(self,
                                   forKeyPath: "fractionCompleted",
-                                  options: [.Initial, .New, .Old],
+                                  options: [.initial, .new, .old],
                                   context: nil
         )
         
         preferredContentSize = CGSize(width: 300, height: 300)
         
-        if let dump = dump {
-            //importDump()
-        }
+        //if let dump = dump {
+        //    //importDump()
+        //}
         
         getDumpFromCloudKit()
     }
     
     func importDump() {
     
-        dispatch(dispatch_get_global_queue(QOS_CLASS_USER_INTERACTIVE, 0), .Async) {
+        dispatch(DispatchQueue.global(qos: DispatchQoS.QoSClass.userInteractive), .async) {
             do {
                 let realm = try! Realm()
                 
-                guard let dump = realm.objects(Dump).sorted("date", ascending: true).last else {
+                guard let dump = realm.allObjects(ofType: Dump.self).sorted(onProperty: "date", ascending: true).last else {
                     return
                 }
                 
@@ -62,21 +62,21 @@ class ImportVC: UIViewController {
                 
                 self.progress.removeObserver(self, forKeyPath: "fractionCompleted", context: nil)
                 
-                ui(.Sync) {
+                ui(.sync) {
                     
                     self.progressView.setProgress(1, animated: true)
                     
-                    ui(.Async) {
+                    ui(.async) {
                         //self.presentingViewController?.dismissViewControllerAnimated(true, completion: .None)
-                        self.dismissViewControllerAnimated(true, completion: .None)
+                        self.dismiss(animated: true, completion: .none)
                     }
                     
                     //self.progressView.performAction(M13ProgressViewActionSuccess, animated: true)
                 }
             }
             catch let error as NSError {
-                ui(.Async) {
-                    MessageBarManager.sharedInstance().showMessageWithTitle("Import Points", description: error.localizedDescription, type: MessageBarMessageTypeError)
+                ui(.async) {
+                    MessageBarManager.sharedInstance().showMessage(withTitle: "Import Points", description: error.localizedDescription, type: MessageBarMessageTypeError)
                 }
             }
         }
@@ -124,7 +124,7 @@ class ImportVC: UIViewController {
                 
             }
             
-            CKContainer.defaultContainer().publicCloudDatabase.addOperation(op)
+            CKContainer.default().publicCloudDatabase.add(op)
         }
         
         op.completionBlock = {
@@ -135,9 +135,9 @@ class ImportVC: UIViewController {
             
             if let error = error {
                 
-                ui(.Async) {
-                    MessageBarManager.sharedInstance().showMessageWithTitle("Fetch Dump", description: error.localizedDescription, type: MessageBarMessageTypeError)
-                    self.dismissViewControllerAnimated(true, completion: .None)
+                ui(.async) {
+                    MessageBarManager.sharedInstance().showMessage(withTitle: "Fetch Dump", description: error.localizedDescription, type: MessageBarMessageTypeError)
+                    self.dismiss(animated: true, completion: .none)
                 }
                 
                 print(error)
@@ -146,20 +146,20 @@ class ImportVC: UIViewController {
             }
         }
         
-        CKContainer.defaultContainer().publicCloudDatabase.addOperation(op)
+        CKContainer.default().publicCloudDatabase.add(op)
     }
 
-    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         
         switch keyPath {
             
         case "fractionCompleted"?:
             
-            if let progress = object as? NSProgress {
+            if let progress = object as? Progress {
                 
                 print("fraction: \(progress.fractionCompleted)")
                 
-                ui(.Async) {
+                ui(.async) {
                     self.progressView.setProgress(Float(progress.fractionCompleted), animated: true)
                     //progressView.setProgress(CGFloat(progress.fractionCompleted), animated: true)
                 }

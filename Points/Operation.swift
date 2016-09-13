@@ -8,7 +8,7 @@
 
 import Foundation
 
-typealias OperationBlock = (operation: Operation)->()
+typealias OperationBlock = (_ operation: Operation)->()
 
 typealias co = ConcurrentOperation
 typealias so = SerialOperation
@@ -17,24 +17,24 @@ typealias bo = BlockOperation
 class BlockOperation: Operation {
     var block: OperationBlock
     
-    init (_ block: OperationBlock) {
+    init (_ block: @escaping OperationBlock) {
         self.block = block
         
         super.init()
         
-        self.name = "Block Operation \(NSUUID().UUIDString)"
+        self.name = "Block Operation \(UUID().uuidString)"
     }
     
     override func start() {
         super.start()
-        if finished { return }
+        if isFinished { return }
         
-        block(operation: self)
+        block(self)
     }
 }
 
 class ConcurrentOperation: GroupOperation {
-    override weak var operationQueue: NSOperationQueue? {
+    override weak var operationQueue: OperationQueue? {
         didSet {
             for op in queue.operations {
                 if let op = op as? Operation { op.operationQueue = operationQueue }
@@ -47,33 +47,33 @@ class ConcurrentOperation: GroupOperation {
         
         self.name = name
         
-        queue.suspended = true
+        queue.isSuspended = true
         
         if operations.count > 0 { schedule(operations) }
     }
     
     convenience init (_ name: String, _ operations: Operation...) {
-        let name = "Concurrent Operation \(NSUUID().UUIDString)"
+        let name = "Concurrent Operation \(UUID().uuidString)"
         self.init(name, operations: operations)
     }
     
     convenience init (_ operations: Operation...) {
-        let name = "Concurrent Operation \(NSUUID().UUIDString)"
+        let name = "Concurrent Operation \(UUID().uuidString)"
         self.init(name, operations: operations)
     }
     
     convenience init (_ operations: [Operation]) {
-        let name = "Concurrent Operation \(NSUUID().UUIDString)"
+        let name = "Concurrent Operation \(UUID().uuidString)"
         self.init(name, operations: operations)
     }
     
-    func schedule(operations: [Operation]) {
+    func schedule(_ operations: [Operation]) {
         queue.addOperations(operations, waitUntilFinished: false)
-        queue.addOperationWithBlock {
-            self.state = .Finished
+        queue.addOperation {
+            self.state = .finished
         }
         
-        let lastOp = queue.operations.last as! NSBlockOperation
+        let lastOp = queue.operations.last as! Foundation.BlockOperation
         for op in queue.operations.filter({ [unowned lastOp] in $0 !== lastOp }) {
             lastOp.addDependency(op)
         }
@@ -82,7 +82,7 @@ class ConcurrentOperation: GroupOperation {
 }
 
 class SerialOperation: GroupOperation {
-    override weak var operationQueue: NSOperationQueue? {
+    override weak var operationQueue: OperationQueue? {
         didSet {
             // Do not count last NSBlockOperation...may be able to be removed with waitUntilFinished
             for op in queue.operations[0..<queue.operations.count-1] {
@@ -96,7 +96,7 @@ class SerialOperation: GroupOperation {
         
         self.name = name
         
-        queue.suspended = true
+        queue.isSuspended = true
         
         if operations.count > 0 { schedule(operations) }
     }
@@ -106,16 +106,16 @@ class SerialOperation: GroupOperation {
     }
     
     convenience init (_ operations: Operation...) {
-        let name = "Serial Operation \(NSUUID().UUIDString)"
+        let name = "Serial Operation \(UUID().uuidString)"
         self.init(name, operations: operations)
     }
     
     convenience init (_ operations: [Operation]) {
-        let name = "Serial Operation \(NSUUID().UUIDString)"
+        let name = "Serial Operation \(UUID().uuidString)"
         self.init(name, operations: operations)
     }
     
-    func schedule(operations: [Operation]) {
+    func schedule(_ operations: [Operation]) {
         //var index = 0
         
         queue.addOperations(
@@ -129,39 +129,39 @@ class SerialOperation: GroupOperation {
             waitUntilFinished: false
         )
         
-        queue.addOperationWithBlock { self.state = .Finished }
+        queue.addOperation { self.state = .finished }
         
         queue.operations.last!.addDependency(queue.operations[queue.operations.count - 2])
     }
 }
 
 class GroupOperation: Operation {
-    let queue = NSOperationQueue()
+    let queue = OperationQueue()
     //func schedule(operations: [Operation]) { }
     
     override func start() {
         super.start()
         
-        queue.suspended = false
+        queue.isSuspended = false
     }
 }
 
-class Operation: NSOperation {
-    weak var operationQueue: NSOperationQueue?
+class Operation: Foundation.Operation {
+    weak var operationQueue: OperationQueue?
     
-    internal var completion: (Operation->Void)?
+    internal var completion: ((Operation)->Void)?
     
     // MARK: Types
     
     enum State {
-        case Ready, Executing, Finished, Cancelled, Paused
+        case ready, executing, finished, cancelled, paused
         func keyPath() -> String {
             switch self {
-            case Ready: return "isReady"
-            case Executing: return "isExecuting"
-            case Finished: return "isFinished"
-            case Cancelled: return "isCancelled"
-            case Paused: return "isPaused"
+            case .ready: return "isReady"
+            case .executing: return "isExecuting"
+            case .finished: return "isFinished"
+            case .cancelled: return "isCancelled"
+            case .paused: return "isPaused"
             }
         }
     }
@@ -169,19 +169,19 @@ class Operation: NSOperation {
     
     // MARK: Properties
     
-    var state = State.Ready {
+    var state = State.ready {
         willSet {
-            willChangeValueForKey(newValue.keyPath())
-            willChangeValueForKey(state.keyPath())
+            willChangeValue(forKey: newValue.keyPath())
+            willChangeValue(forKey: state.keyPath())
         }
         didSet {
-            didChangeValueForKey(oldValue.keyPath())
-            didChangeValueForKey(state.keyPath())
+            didChangeValue(forKey: oldValue.keyPath())
+            didChangeValue(forKey: state.keyPath())
         }
     }
     
-    override func willChangeValueForKey(key: String) {
-        super.willChangeValueForKey(key)
+    override func willChangeValue(forKey key: String) {
+        super.willChangeValue(forKey: key)
     }
     
     
@@ -189,23 +189,23 @@ class Operation: NSOperation {
     
     var paused: Bool {
         get {
-            return state == .Paused
+            return state == .paused
         }
         set {
-            state = newValue ? .Paused : .Ready
+            state = newValue ? .paused : .ready
         }
     }
     
-    override var ready: Bool { return super.ready && state == .Ready }
-    override var executing: Bool { return state == .Executing }
-    override var finished: Bool { return state == .Finished }
-    override var asynchronous: Bool { return true }
+    override var isReady: Bool { return super.isReady && state == .ready }
+    override var isExecuting: Bool { return state == .executing }
+    override var isFinished: Bool { return state == .finished }
+    override var isAsynchronous: Bool { return true }
     
     override func start() {
-        state = cancelled ? .Finished : .Executing
+        state = isCancelled ? .finished : .executing
         
         if name == nil {
-            name = "\(self.dynamicType)".componentsSeparatedByString(".").last
+            name = "\(type(of: self))".components(separatedBy: ".").last
         }
     }
     
@@ -213,12 +213,12 @@ class Operation: NSOperation {
     // MARK: NSOperationQueue management
     
     func cancelOperationQueue() {
-        self.state = .Cancelled
+        self.state = .cancelled
     }
     
     func done() {
         completion?(self)
-        state = .Finished
+        state = .finished
     }
     
     func next() {

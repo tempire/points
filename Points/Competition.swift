@@ -16,7 +16,7 @@ protocol StringImport {
 extension StringImport {
     
     init(_ string: String) throws {
-        try self.init(strings: string.componentsSeparatedByString("^"))
+        try self.init(strings: string.components(separatedBy: "^"))
     }
 }
 
@@ -24,18 +24,28 @@ class Competition: Object, StringImport {
     dynamic var _id: String = ""
     dynamic var wsdcId: Int = 0
     dynamic var points: Int = 0
-    dynamic private var _divisionName: String = ""
-    dynamic private var _result: String = ""
-    dynamic private var _role: String = ""
+    dynamic fileprivate var _divisionName: String = ""
+    dynamic fileprivate var _result: String = ""
+    dynamic fileprivate var _role: String = ""
     dynamic var eventId: Int = 0
-    dynamic var year: Int = 0 // for sorting, realm does not support supporting on child relationships
-    dynamic var month: Int = 0 // for sorting
+    dynamic var year: Int = 0 // denormalized for sorting, realm does not support sorting on child relationships
+    dynamic var month: Int = 0 // denormalized for sorting
     dynamic var eventYear: EventYear!
     dynamic var divisionNameDisplayOrder: Int = 0
     
     dynamic var partnerCompetition: Competition?
     
+    let media = List<Media>()
     let dancer = LinkingObjects(fromType: Dancer.self, property: "competitions")
+    
+    var id: UUID {
+        get {
+            return UUID(uuidString: _id)!
+        }
+        set {
+            _id = newValue.uuidString
+        }
+    }
     
     var divisionName: WSDC.DivisionName {
         get {
@@ -69,23 +79,23 @@ class Competition: Object, StringImport {
     }
     
     override static func ignoredProperties() -> [String] {
-        return ["divisionName", "result", "role"]
+        return ["id", "divisionName", "result", "role"]
     }
     
     convenience required init(strings: [String]) throws {
         self.init()
         
         guard let wsdcId = Int(strings[0]),
-            divisionName = WSDC.DivisionName(abbreviation: strings[1]),
-            points = Int(strings[2]),
-            role = WSDC.Competition.Role(tinyRaw: strings[4]),
-            eventId = Int(strings[5]),
-            year = Int(strings[6]) else {
+            let divisionName = WSDC.DivisionName(abbreviation: strings[1]),
+            let points = Int(strings[2]),
+            let role = WSDC.Competition.Role(tinyRaw: strings[4]),
+            let eventId = Int(strings[5]),
+            let year = Int(strings[6]) else {
                 
-                throw NSError(domain: .SerializedParsing, code: .Competition, message: "Could not parse competition: \(strings)")
+                throw NSError(domain: .serializedParsing, code: .competition, message: "Could not parse competition: \(strings)")
         }
         
-        self._id = NSUUID().UUIDString
+        self._id = UUID().uuidString
         self.wsdcId = wsdcId
         self.points = points
         self.divisionName = divisionName

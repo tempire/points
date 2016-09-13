@@ -10,16 +10,18 @@ target 'Points' do
   #pod 'MPMessagePack', '1.3.5'
   #pod 'YSMessagePack', '1.6.0'
   #pod 'YSMessagePack', :git => 'https://github.com/tempire/YSMessagePack'
-  pod 'RealmSwift', '1.0.2'
+  #pod 'RealmSwift', '1.0.2'
   #pod 'TSMessages', '0.9.12'
   pod 'MessageBarManager'
-  pod 'BTree', '2.1.0'
+  #pod 'BTree', '2.1.0'
   pod 'M13ProgressSuite', '1.2.7'
   pod 'ChameleonFramework', '2.1.0'
   #pod 'ITDAvatarPlaceholder', '0.1.0'
   pod 'Reveal-iOS-SDK', '1.6.2'
   pod 'MGSwipeTableCell', '1.5.5'
   pod 'Spotify-iOS-SDK', '0.17.0'
+  pod 'Realm', :git => 'https://github.com/realm/realm-cocoa.git', :submodules => true
+  pod 'RealmSwift', :git => 'https://github.com/realm/realm-cocoa.git', :submodules => true
 end
 
 target 'cli' do
@@ -39,6 +41,7 @@ post_install do |installer|
       config.build_settings['EXPANDED_CODE_SIGN_IDENTITY'] = ""
       config.build_settings['CODE_SIGNING_REQUIRED'] = "NO"
       config.build_settings['CODE_SIGNING_ALLOWED'] = "NO"
+      config.build_settings['SWIFT_VERSION'] = '3.0'
     end
   end
 end

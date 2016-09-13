@@ -10,17 +10,17 @@ import Foundation
 import CloudKit
 
 protocol WSDCGetOperationDelegate: class {
-    func didCompleteCompetitorIdsRetrieval(operation: WSDCGetOperation, competitorIds: [Int], completion: Void->Void)
-    func didCompleteCompetitorsRetrieval(operation: WSDCGetOperation, competitors: [WSDC.Competitor])
-    func didCancelOperation(operation: WSDCGetOperation, competitors: [WSDC.Competitor])
-    func didPackRetrievedData(operation: WSDCGetOperation, data: NSData)
-    func errorReported(operation: WSDCGetOperation, error: NSError, requeuing: Bool)
-    func shouldRequeueAfterError(operation: WSDCGetOperation, error: NSError, competitorId: Int) -> Bool
+    func didCompleteCompetitorIdsRetrieval(_ operation: WSDCGetOperation, competitorIds: [Int], completion: @escaping (Void)->Void)
+    func didCompleteCompetitorsRetrieval(_ operation: WSDCGetOperation, competitors: [WSDC.Competitor])
+    func didCancelOperation(_ operation: WSDCGetOperation, competitors: [WSDC.Competitor])
+    func didPackRetrievedData(_ operation: WSDCGetOperation, data: Data)
+    func errorReported(_ operation: WSDCGetOperation, error: NSError, requeuing: Bool)
+    func shouldRequeueAfterError(_ operation: WSDCGetOperation, error: NSError, competitorId: Int) -> Bool
 }
 
-class WSDCGetOperation: Operation, NSProgressReporting {
-    let queue = NSOperationQueue()
-    let progress: NSProgress
+class WSDCGetOperation: Operation, ProgressReporting {
+    let queue = OperationQueue()
+    let progress: Progress
     
     //var throughputTimes = [NSTimeInterval]()
     
@@ -39,7 +39,7 @@ class WSDCGetOperation: Operation, NSProgressReporting {
     lazy var lastOp: Operation = {
         return bo { [unowned self] op in
             
-            if self.cancelled {
+            if self.isCancelled {
                 self.delegate?.didCancelOperation(self, competitors: self.competitors)
                 
                 return op.done()
@@ -60,9 +60,9 @@ class WSDCGetOperation: Operation, NSProgressReporting {
         }
     }()
     
-    func pack(competitors: [WSDC.Competitor]) throws -> NSData {
+    func pack(_ competitors: [WSDC.Competitor]) throws -> Data {
         
-        var date = NSDate()
+        var date = Date()
         
         var serialized = (
             dancers: [String](),
@@ -102,30 +102,30 @@ class WSDCGetOperation: Operation, NSProgressReporting {
             events.first!.name,
             events.first!.location,
             String(events.first!.date.month()),
-            events.map { String($0.date.year() - 2000) }.joinWithSeparator(",")
-            ].joinWithSeparator("^")
+            events.map { String($0.date.year() - 2000) }.joined(separator: ",")
+            ].joined(separator: "^")
             
             return string
         }
         
-        var strings = "__events__\n" + serialized.events.joinWithSeparator("\n")
-        strings += "\n__competitions__\n" + serialized.competitions.joinWithSeparator("\n")
-        strings += "\n__dancers__\n" + serialized.dancers.joinWithSeparator("\n")
+        var strings = "__events__\n" + serialized.events.joined(separator: "\n")
+        strings += "\n__competitions__\n" + serialized.competitions.joined(separator: "\n")
+        strings += "\n__dancers__\n" + serialized.dancers.joined(separator: "\n")
         
-        let data = strings.dataUsingEncoding(NSUTF8StringEncoding)
+        let data = strings.data(using: String.Encoding.utf8)
         
-        print("SERIALIZATION TIME: \(NSDate().timeIntervalSinceDate(date))")
+        print("SERIALIZATION TIME: \(Date().timeIntervalSince(date))")
         
-        date = NSDate()
+        date = Date()
         
-        let compressed = try BZipCompression.compressedDataWithData(data, blockSize: BZipDefaultBlockSize, workFactor: BZipDefaultWorkFactor)
+        let compressed = try BZipCompression.compressedData(with: data, blockSize: BZipDefaultBlockSize, workFactor: BZipDefaultWorkFactor)
         
-        print("COMPRESSION TIME: \(NSDate().timeIntervalSinceDate(date))")
+        print("COMPRESSION TIME: \(Date().timeIntervalSince(date))")
         
         return compressed
     }
 
-    init(maxConcurrentCount: Int, delegate: WSDCGetOperationDelegate, progress: NSProgress) {
+    init(maxConcurrentCount: Int, delegate: WSDCGetOperationDelegate, progress: Progress) {
         self.maxConcurrentCount = maxConcurrentCount
         queue.maxConcurrentOperationCount = maxConcurrentCount
         self.progress = progress
@@ -148,7 +148,7 @@ class WSDCGetOperation: Operation, NSProgressReporting {
             
             self.progress.totalUnitCount += self.competitorIds.count
             
-            self.queue.suspended = true
+            self.queue.isSuspended = true
             
             self.queue.addOperation(self.lastOp)
             
@@ -158,12 +158,12 @@ class WSDCGetOperation: Operation, NSProgressReporting {
                 (0..<rangeMax).map { _ in self.competitorOp(self.competitorIds.removeLast()) },
                 waitUntilFinished:  false
             )
-            self.queue.suspended = false
+            self.queue.isSuspended = false
         }
     }
     
     deinit {
-        print("-DEINIT \(self.dynamicType)")
+        print("-DEINIT \(type(of: self))")
     }
     
     func getCompetitorIds() -> [Int] {
@@ -178,7 +178,7 @@ class WSDCGetOperation: Operation, NSProgressReporting {
             
             return bo { [unowned self] op in
                 
-                if self.cancelled {
+                if self.isCancelled {
                     return op.done()
                 }
                 
@@ -186,7 +186,7 @@ class WSDCGetOperation: Operation, NSProgressReporting {
                     
                     switch result {
                         
-                    case .Success(let searchResults):
+                    case .success(let searchResults):
                         
                         for competitor in searchResults.competitors {
                             print("letter \(letter) inserted")
@@ -197,14 +197,14 @@ class WSDCGetOperation: Operation, NSProgressReporting {
                         
                         op.done()
                         
-                    case .Error(let error):
+                    case .error(let error):
                         self.progress.completedUnitCount += 1
                         self.errors.append(error.nsError)
                         self.delegate?.errorReported(self, error: error.nsError, requeuing: false)
                         
                         op.done()
                         
-                    case .NetworkError(let error):
+                    case .networkError(let error):
                         self.progress.completedUnitCount += 1
                         self.errors.append(error)
                         self.delegate?.errorReported(self, error: error, requeuing: false)
@@ -246,7 +246,7 @@ class WSDCGetOperation: Operation, NSProgressReporting {
         queue.addOperations(ops, waitUntilFinished: false)
     }
     
-    func competitorOp(id: Int) -> Operation {
+    func competitorOp(_ id: Int) -> Operation {
         //let time = NSDate()
         
         let op = bo { [unowned self] op in
@@ -255,7 +255,7 @@ class WSDCGetOperation: Operation, NSProgressReporting {
                 return
             }
             
-            if self.cancelled {
+            if self.isCancelled {
                 return op.done()
             }
             
@@ -264,17 +264,17 @@ class WSDCGetOperation: Operation, NSProgressReporting {
                 
                 switch result {
                     
-                case .Success(let competitor):
+                case .success(let competitor):
                     self.competitors.append(competitor)
                     
-                case .Error(let error):
+                case .error(let error):
                     self.errors.append(error.nsError)
                     
                     //let requeue = delegate.shouldRequeueAfterError(self, error: error.nsError, competitorId: id)
                     //delegate.errorReported(self, error: error.nsError, requeuing: requeue)
                     delegate.errorReported(self, error: error.nsError, requeuing: false)
                 
-                case .NetworkError(let error):
+                case .networkError(let error):
                     self.errors.append(error)
                     
                     

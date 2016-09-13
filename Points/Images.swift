@@ -10,6 +10,8 @@
 
 enum Asset: String {
   case _889_Sort_Descending_Selected = "889-sort-descending-selected"
+  case Apple = "apple"
+  case Cloud = "cloud"
   case Glyphicons_174_Play = "glyphicons-174-play"
   case Glyphicons_175_Pause = "glyphicons-175-pause"
   case Glyphicons_193_Remove_Sign = "glyphicons-193-remove-sign"
@@ -18,8 +20,12 @@ enum Asset: String {
   case Icon_Error = "icon-error"
   case Icon_Info = "icon-info"
   case Icon_Success = "icon-success"
-  case Partner_Group = "partner group"
+  case Itunes = "itunes"
+  case Partner_Group = "partner-group"
   case Partner = "partner"
+  case Spotify_Selected = "spotify-selected"
+  case Vimeo = "vimeo"
+  case Youtube = "youtube"
 
   var image: Image {
     return Image(asset: self)

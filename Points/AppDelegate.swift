@@ -16,33 +16,34 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var window: UIWindow?
     
-    func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-        print("hinkle ok")
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         
-        let notificationSettings = UIUserNotificationSettings(forTypes: [.Alert, .Badge, .Sound], categories: .None)
+        let notificationSettings = UIUserNotificationSettings(types: [.alert, .badge, .sound], categories: .none)
         application.registerUserNotificationSettings(notificationSettings)
         application.registerForRemoteNotifications()
         
         //if let remoteNotification = launchOptions?[UIApplicationLaunchOptionsRemoteNotificationKey] as? [NSObject:AnyObject] {
         //    self.application(application, didReceiveRemoteNotification: remoteNotification)
         //}
+
+        try! configureRealm()
         
-        NSURLSession.sharedSession().configuration.timeoutIntervalForResource = 600
-        NSURLSession.sharedSession().configuration.timeoutIntervalForRequest = 300
+        URLSession.shared.configuration.timeoutIntervalForResource = 600
+        URLSession.shared.configuration.timeoutIntervalForRequest = 300
         
         Points.addSubscriptionForNewPoints { subscription, error in
             print(error)
         }
         
-        completeUI(.None)
+        completeUI(.none)
 
         return true
     }
     
-    func configureRealm() throws -> Realm {
+    func configureRealm() throws {
         
         Realm.Configuration.defaultConfiguration = Realm.Configuration(
-            schemaVersion: 1,
+            schemaVersion: 2,
             migrationBlock: { migration, oldSchemaVersion in
                 
                 switch oldSchemaVersion {
@@ -51,7 +52,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     break
                     //self.migrateRealmFrom0To1(migration)
                     
-                case 1:
+                case 1, 2:
                     break
                     //self.migrateRealmFrom1To2(migration)
                     
@@ -61,50 +62,51 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         )
         
-        return try Realm()
+        let realm = try Realm()
+        print("Realm Schema initialized: \(realm.schema)")
     }
     
 
     
-    func completeUI(completion: (Void->Void)?) {
-        ui(.Async) {
-            self.window = UIWindow(frame: UIScreen.mainScreen().bounds)
-            self.window?.rootViewController = Storyboard.Main.viewController(TabBarController)
+    func completeUI(_ completion: ((Void)->Void)?) {
+        ui(.async) {
+            self.window = UIWindow(frame: UIScreen.main.bounds)
+            self.window?.rootViewController = Storyboard.Main.viewController(TabBarController.self)
             self.window?.makeKeyAndVisible()
             completion?()
         }
     }
     
-    func applicationWillResignActive(application: UIApplication) {
+    func applicationWillResignActive(_ application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
     }
     
-    func applicationDidEnterBackground(application: UIApplication) {
+    func applicationDidEnterBackground(_ application: UIApplication) {
         // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
     }
     
-    func applicationWillEnterForeground(application: UIApplication) {
+    func applicationWillEnterForeground(_ application: UIApplication) {
         // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
     }
     
-    func applicationDidBecomeActive(application: UIApplication) {
+    func applicationDidBecomeActive(_ application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
     }
     
-    func applicationWillTerminate(application: UIApplication) {
+    func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
     
     
     // MARK: APNS
     
-    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
+    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         
         print(userInfo)
         
-        completionHandler(.NoData)
+        completionHandler(.noData)
         
         return;
         
@@ -112,32 +114,32 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         //completionHandler(.NoData)
     
         if let userInfo = userInfo as? [String:NSObject],
-            queryNotification = CKNotification(fromRemoteNotificationDictionary: userInfo) as? CKQueryNotification {
+            let queryNotification = CKNotification(fromRemoteNotificationDictionary: userInfo) as? CKQueryNotification {
             
             // Store this elsewhere so that fetchNotificationChangesCompletionBlock can retrieve the most recent record id
             let recordID = queryNotification.recordID
             
-            let op = CKFetchNotificationChangesOperation(previousServerChangeToken: .None)
+            let op = CKFetchNotificationChangesOperation(previousServerChangeToken: .none)
             
             op.notificationChangedBlock = { notification in
                 
-                guard let notification = notification as? CKQueryNotification, id = notification.notificationID else {
+                guard let notification = notification as? CKQueryNotification, let id = notification.notificationID else {
                     return
                 }
                 
                 switch notification.queryNotificationReason {
-                case .RecordCreated:
+                case .recordCreated:
                     guard let recordId = notification.recordID else {
                         return
                     }
                     
-                    CKContainer.defaultContainer().publicCloudDatabase.fetchRecordWithID(recordId) { record, error in
-                        if let data = record?["data"] as? NSData, date = record?["date"] as? NSDate {
+                    CKContainer.default().publicCloudDatabase.fetch(withRecordID: recordId) { record, error in
+                        if let data = record?["data"] as? Data, let _ = record?["date"] as? Date {
                     
                             do {
                                 // Write to database
                                 let realm = try Realm()
-                                let dump = try Dump(id: NSUUID(), date: NSDate(), version: 0, data: data)
+                                let dump = try Dump(id: UUID(), date: Date(), version: 0, data: data)
                                 
                                 try realm.write {
                                     realm.add(dump, update: true)
@@ -151,10 +153,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     
                     print("created")
                     
-                case .RecordUpdated:
+                case .recordUpdated:
                     print("updated")
                     
-                case .RecordDeleted:
+                case .recordDeleted:
                     print("deleted")
                 }
                 
@@ -162,7 +164,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 
                 // Do not mark read before it's retrieved, do this in fetchNotificationChangesCompletionBlock
                 let op = CKMarkNotificationsReadOperation(notificationIDsToMarkRead: [id])
-                CKContainer.defaultContainer().addOperation(op)
+                CKContainer.default().add(op)
             }
             
             op.completionBlock = {
@@ -175,22 +177,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 
             }
             
-            CKContainer.defaultContainer().addOperation(op)
+            CKContainer.default().add(op)
             
             print(recordID)
         }
     }
     
-    func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         print("\(deviceToken)")
         let token = "\(deviceToken)"
-            .stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: "<>"))
-            .stringByReplacingOccurrencesOfString(" ", withString: "")
+            .trimmingCharacters(in: CharacterSet(charactersIn: "<>"))
+            .replacingOccurrences(of: " ", with: "")
 
         print(token)
     }
-    
-    func application(application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: NSError) {
+
+    private func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: NSError) {
         //
     }
 }
@@ -200,11 +202,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 extension AppDelegate {
     
-    func application(application: UIApplication, continueUserActivity userActivity: NSUserActivity, restorationHandler: ([AnyObject]?) -> Void) -> Bool {
+    @objc(application:continueUserActivity:restorationHandler:) func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([Any]?) -> Void) -> Bool {
         
         if let tabVC = window?.rootViewController as? TabBarController,
-            navVC = tabVC.selectedViewController as? UINavigationController,
-            vc = navVC.viewControllers.last as? DancerVC where userActivity.activityType == CSSearchableItemActionType {
+            let navVC = tabVC.selectedViewController as? UINavigationController,
+            let vc = navVC.viewControllers.last as? DancerVC , userActivity.activityType == CSSearchableItemActionType {
             vc.restoreUserActivityState(userActivity)
         }
     

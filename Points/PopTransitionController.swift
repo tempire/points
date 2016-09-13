@@ -11,20 +11,21 @@ import UIKit
 
 class PopTransitionController: NSObject, UIViewControllerAnimatedTransitioning {
     
-    func transitionDuration(transitionContext: UIViewControllerContextTransitioning?) -> NSTimeInterval {
+    func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
         return 0.3
     }
     
-    func animateTransition(transitionContext: UIViewControllerContextTransitioning) {
-        if let fromVC = transitionContext.viewControllerForKey(UITransitionContextFromViewControllerKey),
-            toVC = transitionContext.viewControllerForKey(UITransitionContextToViewControllerKey),
-            containerView = transitionContext.containerView() {
+    func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
+        if let fromVC = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.from),
+            let toVC = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.to) {
             
-            toVC.view.frame = transitionContext.finalFrameForViewController(toVC)
+            let containerView = transitionContext.containerView
+            
+            toVC.view.frame = transitionContext.finalFrame(for: toVC)
             containerView.insertSubview(toVC.view, belowSubview: fromVC.view)
             
-            UIView.animateWithDuration(
-                0.3,
+            UIView.animate(
+                withDuration: 0.3,
                 
                 animations: {
                     fromVC.view.frame = CGRect(
@@ -33,7 +34,7 @@ class PopTransitionController: NSObject, UIViewControllerAnimatedTransitioning {
                     ) },
                 
                 completion: { finished in
-                    transitionContext.completeTransition(!transitionContext.transitionWasCancelled())
+                    transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
                 }
             )
         }

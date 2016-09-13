@@ -17,8 +17,8 @@ class EventYear: Object {
     
     let competitions = LinkingObjects(fromType: Competition.self, property: "eventYear")
     
-    lazy var date: NSDate = {
-        return NSDate("\(self.year)-\(self.month)-01T00:00:00Z", format: .ISO8601)!
+    lazy var date: Date = {
+        return Date("\(self.year)-\(self.month)-01T00:00:00Z", format: .iso8601)!
     }()
     
     override static func primaryKey() -> String? {
@@ -29,20 +29,20 @@ class EventYear: Object {
         return ["date"]
     }
     
-    class func createEvents(strings: [String]) throws -> [EventYear] {
+    class func createEvents(_ strings: [String]) throws -> [EventYear] {
         
         guard let month = Int(strings[3]),
-            id = Int(strings[0]) else {
+            let id = Int(strings[0]) else {
                 
-                throw NSError(domain: .SerializedParsing, code: .Event, message: "Could not parse event: \(strings)")
+                throw NSError(domain: .serializedParsing, code: .event, message: "Could not parse event: \(strings)")
         }
         
         let location = strings[2]
         let name = strings[1]
 
-        return strings[4].componentsSeparatedByString(",").flatMap {
+        return strings[4].components(separatedBy: ",").flatMap {
             guard let year = Int($0) else {
-                return .None
+                return .none
             }
             
             return EventYear(
@@ -56,10 +56,14 @@ class EventYear: Object {
     convenience required init(month: Int, year: Int, event: Event) {
         self.init()
         
-        self.id = [String(event.id), String(month), String(year)].joinWithSeparator("^")
+        self.id = [String(event.id), String(month), String(year)].joined(separator: "^")
         self.month = month
         self.year = year
         self.event = event
+    }
+    
+    var shortDateString: String {
+        return String(date.shortMonthToString() + "\n" + String(date.year()))
     }
 }
 

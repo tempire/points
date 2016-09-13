@@ -39,7 +39,7 @@ class AdminVC: UIViewController {
         }
     }
     
-    @IBAction func cancel(sender: UIButton) {
+    @IBAction func cancel(_ sender: UIButton) {
         guard let op = wsdcGetOperation else {
             return
         }
@@ -49,33 +49,33 @@ class AdminVC: UIViewController {
         //op.state = .Cancelled
     }
     
-    @IBAction func toggleWSDCGet(sender: UIButton) {
+    @IBAction func toggleWSDCGet(_ sender: UIButton) {
         
         guard let op = wsdcGetOperation else {
             startOp()
-            cancelButton.hidden = false
-            sender.setImage(UIImage(asset: .Glyphicons_175_Pause), forState: .Normal)
+            cancelButton.isHidden = false
+            sender.setImage(UIImage(asset: .Glyphicons_175_Pause), for: UIControlState())
             return
         }
         
-        if op.queue.suspended {
+        if op.queue.isSuspended {
             // paused, set play
             
-            cancelButton.hidden = true
-            op.queue.suspended = false
-            sender.setImage(UIImage(asset: .Glyphicons_175_Pause), forState: .Normal)
+            cancelButton.isHidden = true
+            op.queue.isSuspended = false
+            sender.setImage(UIImage(asset: .Glyphicons_175_Pause), for: UIControlState())
         }
             
         else {
             // playing, set paused
             
-            cancelButton.hidden = false
-            op.queue.suspended = true
-            sender.setImage(UIImage(asset: .Glyphicons_174_Play), forState: .Normal)
+            cancelButton.isHidden = false
+            op.queue.isSuspended = true
+            sender.setImage(UIImage(asset: .Glyphicons_174_Play), for: UIControlState())
         }
     }
     
-    @IBAction func saveToCloudKit(sender: UIButton) {
+    @IBAction func saveToCloudKit(_ sender: UIButton) {
         
     }
     
@@ -88,28 +88,28 @@ class AdminVC: UIViewController {
         
         do {
             let realm = try Realm()
-            dumps = realm.objects(Dump).sorted("date", ascending: false)
+            dumps = realm.allObjects(ofType: Dump.self).sorted(onProperty: "date", ascending: false)
             
             token = dumps.addNotificationBlock { changes in
                 self.tableView?.reloadData()
             }
         }
         catch let error as NSError {
-            ui(.Async) {
-                MessageBarManager.sharedInstance().showMessageWithTitle("Show", description: error.localizedDescription, type: MessageBarMessageTypeError, duration: 60)
+            ui(.async) {
+                MessageBarManager.sharedInstance().showMessage(withTitle: "Show", description: error.localizedDescription, type: MessageBarMessageTypeError, duration: 60)
             }
             
             print(error)
         }
     }
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
-        guard let row = tableView.indexPathForSelectedRow?.row, dump = dumps?[row] else {
+        guard let row = (tableView.indexPathForSelectedRow as NSIndexPath?)?.row, let dump = dumps?[row] else {
             return
         }
         
-        switch segue.destinationViewController {
+        switch segue.destination {
             
         case let vc as DumpVC:
             vc.dump = dump
@@ -121,7 +121,7 @@ class AdminVC: UIViewController {
    
     func startOp() {
         
-        let progress = NSProgress()
+        let progress = Progress()
         
         progress.cancellationHandler = {
             progress.removeObserver(self, forKeyPath: "fractionCompleted", context: &context)
@@ -130,12 +130,12 @@ class AdminVC: UIViewController {
 
         progress.addObserver(self,
                              forKeyPath: "fractionCompleted",
-                             options: [.Initial, .New, .Old],
+                             options: [.initial, .new, .old],
                              context: &context
         )
         
         let op = WSDCGetOperation(maxConcurrentCount: 10, delegate: self, progress: progress)
-        NSOperationQueue().addOperation(op)
+        OperationQueue().addOperation(op)
         wsdcGetOperation = op
         
     }
@@ -143,16 +143,16 @@ class AdminVC: UIViewController {
 }
 
 extension AdminVC: UINavigationControllerDelegate {
-    func navigationController(navigationController: UINavigationController, willShowViewController viewController: UIViewController, animated: Bool) {
+    func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
         navigationController.setNavigationBarHidden(viewController == self, animated: animated)
     }
 }
 
 extension AdminVC: WSDCGetOperationDelegate {
     
-    func errorReported(operation: WSDCGetOperation, error: NSError, requeuing: Bool) {
-        ui(.Async) {
-            MessageBarManager.sharedInstance().showMessageWithTitle("Sync", description: error.localizedDescription, type: requeuing ? MessageBarMessageTypeInfo : MessageBarMessageTypeError, duration: 60)
+    func errorReported(_ operation: WSDCGetOperation, error: NSError, requeuing: Bool) {
+        ui(.async) {
+            MessageBarManager.sharedInstance().showMessage(withTitle: "Sync", description: error.localizedDescription, type: requeuing ? MessageBarMessageTypeInfo : MessageBarMessageTypeError, duration: 60)
         }
         
         print(error)
@@ -163,11 +163,11 @@ extension AdminVC: WSDCGetOperationDelegate {
         }
     }
     
-    func shouldRequeueAfterError(operation: WSDCGetOperation, error: NSError, competitorId: Int) -> Bool {
+    func shouldRequeueAfterError(_ operation: WSDCGetOperation, error: NSError, competitorId: Int) -> Bool {
         return true
     }
     
-    func didCancelOperation(operation: WSDCGetOperation, competitors: [WSDC.Competitor]) {
+    func didCancelOperation(_ operation: WSDCGetOperation, competitors: [WSDC.Competitor]) {
         
         var message = "Cancelled when \(operation.progress.localizedDescription)"
         
@@ -175,94 +175,104 @@ extension AdminVC: WSDCGetOperationDelegate {
             message += " \(error.localizedDescription)"
         }
         
-        ui(.Async) {
-            UIView.transitionWithView(self.view,
+        ui(.async) {
+            UIView.transition(with: self.view,
                                       duration: 0.3,
-                                      options: .TransitionCrossDissolve,
+                                      options: .transitionCrossDissolve,
                                       animations: {
-                                        self.cancelButton.hidden = true
+                                        self.cancelButton.isHidden = true
                                         self.progressLabel.text = message
-                                        self.playButton.setImage(UIImage(asset: .Glyphicons_174_Play), forState: .Normal) },
+                                        self.playButton.setImage(UIImage(asset: .Glyphicons_174_Play), for: UIControlState()) },
                                       completion: { finished in
-                                        self.wsdcGetOperation = .None }
+                                        self.wsdcGetOperation = .none }
             )
         }
         
-        ui(.Async, afterDelay: 10) {
+        ui(.async, afterDelay: 10) {
             
-            if self.wsdcGetOperation != .None {
+            if self.wsdcGetOperation != .none {
                 return
             }
             
-            UIView.transitionWithView(self.view,
+            UIView.transition(with: self.view,
                                       duration: 0.3,
-                                      options: .TransitionCrossDissolve,
+                                      options: .transitionCrossDissolve,
                                       animations: {
-                                        self.progressLabel.text = .None
-                                        self.progressDetailLabel.text = .None },
+                                        self.progressLabel.text = .none
+                                        self.progressDetailLabel.text = .none },
                                       completion: { finished in }
             )
         }
     }
-    
-    func didCompleteCompetitorIdsRetrieval(operation: WSDCGetOperation, competitorIds: [Int], completion: Void->Void){
+
+    func didCompleteCompetitorIdsRetrieval(_ operation: WSDCGetOperation, competitorIds: [Int], completion: @escaping (Void) -> Void) {
         progressLabel.text = "Retrieved \(competitorIds.count) ids"
         
-        delay(2, dispatch: .Async, queue: dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0)) {
+        delay(2, dispatch: .async, queue: DispatchQueue.global(qos: DispatchQoS.QoSClass.userInitiated)) {
             completion()
         }
     }
     
-    func didCompleteCompetitorsRetrieval(operation: WSDCGetOperation, competitors: [WSDC.Competitor]) {
+    /*
+    func didCompleteCompetitorIdsRetrieval(_ operation: WSDCGetOperation, competitorIds: [Int], completion: @escaping (Void)->Void){
+        progressLabel.text = "Retrieved \(competitorIds.count) ids"
+        
+        delay(2, dispatch: .async, queue: DispatchQueue.global(qos: DispatchQoS.QoSClass.userInitiated)) {
+            completion()
+        }
+    }
+    */
+    
+    func didCompleteCompetitorsRetrieval(_ operation: WSDCGetOperation, competitors: [WSDC.Competitor]) {
         //
     }
     
-    func didPackRetrievedData(operation: WSDCGetOperation, data: NSData) {
+    func didPackRetrievedData(_ operation: WSDCGetOperation, data: Data) {
         do {
             operation.progress.removeObserver(self, forKeyPath: "fractionCompleted", context: &context)
             
             // Write to database
             let realm = try Realm()
-            let dump = try Dump(id: NSUUID(), date: NSDate(), version: 0, data: data)
+            let dump = try Dump(id: UUID(), date: Date(), version: 0, data: data)
             
             try realm.write {
-                realm.deleteAll()
+                realm.deleteAllObjects()
                 realm.add(dump, update: true)
                 
-                ui(.Async) {
-                    let vc = Storyboard.Main.viewController(ImportVC)
+                ui(.async) {
+                    let vc = Storyboard.Main.viewController(ImportVC.self)
                     vc.dump = dump
-                    self.presentViewController(vc, animated: true, completion: .None)
+                    self.present(vc, animated: true, completion: .none)
                 }
             }
             
             // Save to cloudkit
-            CKContainer.defaultContainer().publicCloudDatabase.saveRecord(CKRecord.createDump(dump)) { record, error in
+            CKContainer.default().publicCloudDatabase.save(CKRecord.createDump(dump), completionHandler: { record, error in
                 if let error = error {
                     
-                    ui(.Async) {
-                        MessageBarManager.sharedInstance().showMessageWithTitle("CloudKit Save", description: error.localizedDescription, type: MessageBarMessageTypeError, duration: 60)
+                    ui(.async) {
+                        MessageBarManager.sharedInstance().showMessage(withTitle: "CloudKit Save", description: error.localizedDescription, type: MessageBarMessageTypeError, duration: 60)
                     }
                     
                     print(error)
                 }
-            }
+            }) 
         }
         catch let error as NSError {
-            MessageBarManager.sharedInstance().showMessageWithTitle("Load", description: error.localizedDescription, type: MessageBarMessageTypeError, duration: 60)
+            MessageBarManager.sharedInstance().showMessage(withTitle: "Load", description: error.localizedDescription, type: MessageBarMessageTypeError, duration: 60)
             
             print(error)
         }
     }
     
-    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         
         switch keyPath {
             
         case "fractionCompleted"?:
-            if let progress = object as? NSProgress {
+            if let progress = object as? Progress {
                 
-                ui(.Async) {
+                ui(.async) {
                     self.progressView.setProgress(Float(progress.fractionCompleted), animated: true)
                     self.progressLabel.text = progress.localizedDescription
                     self.progressDetailLabel.text = progress.localizedAdditionalDescription
@@ -278,30 +288,30 @@ extension AdminVC: WSDCGetOperationDelegate {
 
 extension AdminVC: UITableViewDataSource {
     
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return dumps?.count ?? 0
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("DumpCell", forIndexPath: indexPath)
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "DumpCell", for: indexPath)
         
         guard let dump = dumps?[indexPath.row] else {
             return cell
         }
         
         cell.textLabel?.text = dump.date.toString
-        cell.detailTextLabel?.text = "\(dump.data.length)"
+        cell.detailTextLabel?.text = "\(dump.data.count)"
         
         return cell
     }
 }
 
 extension AdminVC: UITableViewDelegate {
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         //
     }
 }

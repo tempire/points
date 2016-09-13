@@ -9,18 +9,18 @@
 import Foundation
 
 let documentsDir = NSSearchPathForDirectoriesInDomains(
-    NSSearchPathDirectory.DocumentDirectory,
-    NSSearchPathDomainMask.UserDomainMask,
+    FileManager.SearchPathDirectory.documentDirectory,
+    FileManager.SearchPathDomainMask.userDomainMask,
     true).first!
 
-extension NSData {
+extension Data {
     
-    func writeToDumps(path path: String) throws {
+    func writeToDumps(path: String) throws {
         
-        let folder = "\(documentsDir)/dumps/\(NSDate().toString)"
+        let folder = "\(documentsDir)/dumps/\(Date().toString)"
         
-        try NSFileManager().createDirectoryAtPath(folder, withIntermediateDirectories: true, attributes: .None)
+        try FileManager().createDirectory(atPath: folder, withIntermediateDirectories: true, attributes: .none)
         
-        writeToFile("\(folder)/\(path)", atomically: true)
+        try write(to: URL(fileURLWithPath: "\(folder)/\(path)"), options: [.atomic])
     }
 }

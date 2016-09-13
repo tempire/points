@@ -8,25 +8,25 @@
 
 import Foundation
 
-extension NSURLRequest {
+extension URLRequest {
     
-    func header(header: Header) -> Header? {
+    func header(_ header: Header) -> Header? {
         guard let value = allHTTPHeaderFields?[header.name] else {
-            return .None
+            return .none
         }
         
         switch header {
-        case .Beacon(_):
-            return .Beacon(NSUUID(UUIDString: value)!)
+        case .beacon(_):
+            return .beacon(UUID(uuidString: value)!)
             
-        case .Date(_):
-            return .Date(NSDate(value, format: .ISO8601)!)
+        case .date(_):
+            return .date(Date(value, format: .iso8601)!)
             
-        case .ResponseTime(_):
-            return .ResponseTime(1)
+        case .responseTime(_):
+            return .responseTime(1)
             
-        case .BasicAuthorization(_):
-            return .None
+        case .basicAuthorization(_):
+            return .none
         }
     }
 }

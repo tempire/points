@@ -12,29 +12,33 @@ import MGSwipeTableCell
 extension MGSwipeButton {
     
     enum SwipeButton: Int {
-        case Partner = 0
-        case Competition
-        case Event
+        case partner = 0
+        case competition
+        case event
         
         init?(_ int: Int?) {
-            guard let int = int, value = SwipeButton(rawValue: int) else {
+            guard let int = int, let value = SwipeButton(rawValue: int) else {
                 return nil
             }
             
             self = value
         }
         
+        var button: MGSwipeButton {
+            return MGSwipeButton(self, backgroundColor: UIColor.darkGray)
+        }
+        
         var description: String {
             
             switch self {
                 
-            case .Partner:
+            case .partner:
                 return "Partner"
                 
-            case .Competition:
+            case .competition:
                 return "Comp"
                 
-            case .Event:
+            case .event:
                 return "Event"
             }
         }
@@ -43,13 +47,13 @@ extension MGSwipeButton {
             
             switch self {
                 
-            case .Partner:
+            case .partner:
                 return UIImage(asset: .Partner_Group)
                 
-            case .Competition:
+            case .competition:
                 return UIImage(asset: .Partner_Group)
                 
-            case .Event:
+            case .event:
                 return UIImage(asset: .Partner_Group)
             }
         }
@@ -58,6 +62,6 @@ extension MGSwipeButton {
     convenience init(_ type: SwipeButton, backgroundColor: UIColor) {
         self.init(title: type.description, icon: type.icon, backgroundColor: backgroundColor)
         setPadding(24)
-        tintColor = .whiteColor()
+        tintColor = UIColor.white
     }
 }

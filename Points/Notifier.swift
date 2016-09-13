@@ -11,31 +11,31 @@ import Foundation
 protocol Notification: RawRepresentable { }
 
 class Notifier {
-    static var notificationCenter = NSNotificationCenter.defaultCenter()
+    static var notificationCenter = NotificationCenter.default
     
     class func listenFor<T: Notification>(
-        notice: T, on: NSObject, with: Selector,
+        _ notice: T, on: NSObject, with: Selector,
         file: String = #file, line: Int = #line, column: Int = #column, function: String = #function) {
         
         if let name = notice.rawValue as? String {
-            notificationCenter.addObserver(on, selector: with, name: name, object: .None)
+            notificationCenter.addObserver(on, selector: with, name: NSNotification.Name(rawValue: name), object: .none)
         }
     }
     
-    class func stopListeningOn(observer: NSObjectProtocol) {
+    class func stopListeningOn(_ observer: NSObjectProtocol) {
         print("*** STOPPED LISTENING on observer: \(observer)")
         notificationCenter.removeObserver(observer)
     }
     
-    class func emit<T: Notification>(name: T, _ object: AnyObject? = .None,
+    class func emit<T: Notification>(_ name: T, _ object: Any? = .none,
                     file: String = #file, line: Int = #line, column: Int = #column, function: String = #function) {
         
-        let notificationCenter = NSNotificationCenter.defaultCenter()
+        let notificationCenter = NotificationCenter.default
         
         if let name = name.rawValue as? String {
-            let fileName: String = file.componentsSeparatedByString("/").last!
+            let fileName: String = file.components(separatedBy: "/").last!
             print("*** EVENT EMITTED FOR \(name) \(fileName):\(line)#\(column).\(function)")
-            notificationCenter.postNotificationName(name, object: object)
+            notificationCenter.post(name: Foundation.Notification.Name(rawValue: name), object: object)
             return
         }
         

@@ -10,18 +10,18 @@ import Foundation
 import UIKit
 
 extension UITableView {
-    func dequeueCell<A: UITableViewCell>(type: A.Type, for indexPath: NSIndexPath) -> A {
-        return dequeueReusableCellWithIdentifier("\(A.self)", forIndexPath: indexPath) as! A
+    func dequeueCell<A: UITableViewCell>(_ type: A.Type, for indexPath: IndexPath) -> A {
+        return dequeueReusableCell(withIdentifier: String(describing: A.self), for: indexPath) as! A
     }
     
-    func reloadDataWithDissolve(completion: (Bool->Void)? = .None) {
+    func reloadDataWithDissolve(_ completion: ((Bool)->Void)? = .none) {
         reloadData(0.15, completion: completion)
     }
     
-    func reloadData(duration: NSTimeInterval, completion: (Bool->Void)?) {
-        UIView.transitionWithView(self,
+    func reloadData(_ duration: TimeInterval, completion: ((Bool)->Void)?) {
+        UIView.transition(with: self,
                                   duration: duration,
-                                  options: .TransitionCrossDissolve,
+                                  options: .transitionCrossDissolve,
                                   animations: {
                                     self.reloadData() },
                                   completion: completion

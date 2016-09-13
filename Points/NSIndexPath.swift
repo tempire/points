@@ -8,9 +8,9 @@
 
 import Foundation
 
-extension NSIndexPath {
+extension IndexPath {
     
-    var nextRow: NSIndexPath {
-        return NSIndexPath(forRow: row + 1, inSection: section)
+    var nextRow: IndexPath {
+        return IndexPath(row: row + 1, section: section)
     }
 }

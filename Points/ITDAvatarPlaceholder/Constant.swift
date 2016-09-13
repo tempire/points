@@ -8,4 +8,4 @@
 
 let kGoldenRatio:CGFloat = 1.61803398875
 
-let kLetterCharacterSet = NSCharacterSet.letterCharacterSet()
+let kLetterCharacterSet = CharacterSet.letters

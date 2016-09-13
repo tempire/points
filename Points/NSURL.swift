@@ -8,19 +8,19 @@
 
 import Foundation
 
-extension NSURL {
+extension Foundation.URL {
     
-    func URL(path: String, parameters: [String:AnyObject]) -> NSURL {
-        let comp = NSURLComponents(string: URLByAppendingPathComponent(path).absoluteString)!
+    func URL(_ path: String, parameters: [String:AnyObject]) -> Foundation.URL {
+        var comp = URLComponents(string: appendingPathComponent(path).absoluteString)!
         
         comp.queryItems = Array(parameters.keys).flatMap {
             guard let value = parameters[$0] else {
-                return .None
+                return .none
             }
             
-            return NSURLQueryItem(name: $0, value: "\(value)")
+            return URLQueryItem(name: $0, value: "\(value)")
         }
         
-        return comp.URL!
+        return comp.url!
     }
 }

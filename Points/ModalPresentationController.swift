@@ -12,7 +12,7 @@ import UIKit
 class ModalPresentationController: UIPresentationController {
     
     lazy var dimmingView: UIView = {
-        let view = UIView(frame: self.containerView?.bounds ?? UIScreen.mainScreen().bounds)
+        let view = UIView(frame: self.containerView?.bounds ?? UIScreen.main.bounds)
         view.backgroundColor = UIColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.5)
         view.alpha = 0.0
         return view
@@ -20,7 +20,7 @@ class ModalPresentationController: UIPresentationController {
     
     override func presentationTransitionWillBegin() {
         guard let containerView = containerView,
-            presentedView = presentedView() else {
+            let presentedView = presentedView else {
                 return
         }
         
@@ -28,59 +28,59 @@ class ModalPresentationController: UIPresentationController {
         containerView.addSubview(dimmingView)
         containerView.addSubview(presentedView)
         
-        presentingViewController.transitionCoordinator()?.animateAlongsideTransition(
-            { context in
+        presentingViewController.transitionCoordinator?.animate(
+            alongsideTransition: { context in
                 self.dimmingView.alpha = 1.0
             },
-            completion: .None
+            completion: .none
         )
     }
     
-    override func presentationTransitionDidEnd(completed: Bool) {
+    override func presentationTransitionDidEnd(_ completed: Bool) {
         if !completed {
             dimmingView.removeFromSuperview()
         }
     }
     
     override func dismissalTransitionWillBegin() {
-        presentingViewController.transitionCoordinator()?.animateAlongsideTransition(
-            { context in
+        presentingViewController.transitionCoordinator?.animate(
+            alongsideTransition: { context in
                 self.dimmingView.alpha = 0
             },
-            completion: .None
+            completion: .none
         )
     }
     
-    override func dismissalTransitionDidEnd(completed: Bool) {
+    override func dismissalTransitionDidEnd(_ completed: Bool) {
         if completed {
             dimmingView.removeFromSuperview()
         }
     }
     
-    override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
-        super.viewWillTransitionToSize(size, withTransitionCoordinator: coordinator)
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
         
         guard let containerView = containerView else {
             return
         }
         
-        coordinator.animateAlongsideTransition(
-            { context in
+        coordinator.animate(
+            alongsideTransition: { context in
                 self.dimmingView.frame = containerView.bounds
                 
             },
-            completion: .None
+            completion: .none
         )
     }
     
-    override func shouldPresentInFullscreen() -> Bool {
+    override var shouldPresentInFullscreen : Bool {
         return false
     }
     
-    override func frameOfPresentedViewInContainerView() -> CGRect {
+    override var frameOfPresentedViewInContainerView : CGRect {
 
         guard let containerView = containerView else {
-            return super.frameOfPresentedViewInContainerView()
+            return super.frameOfPresentedViewInContainerView
         }
         
         let size = presentedViewController.preferredContentSize
@@ -119,7 +119,7 @@ class ModalPresentationController: UIPresentationController {
     }
     
     override func containerViewWillLayoutSubviews() {
-        presentedView()?.frame = frameOfPresentedViewInContainerView()
-        presentedView()?.layer.cornerRadius = 6
+        presentedView?.frame = frameOfPresentedViewInContainerView
+        presentedView?.layer.cornerRadius = 6
     }
 }

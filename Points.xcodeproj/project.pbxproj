@@ -56,6 +56,7 @@
 		F19512E81D38B4DD00EDC276 /* Storyboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F19512E71D38B4DC00EDC276 /* Storyboard.storyboard */; };
 		F19512F11D38D6AB00EDC276 /* DumpVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F19512F01D38D6AB00EDC276 /* DumpVC.swift */; };
 		F19512F41D394CDB00EDC276 /* WSDCTransformOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = F19512F31D394CDB00EDC276 /* WSDCTransformOperation.swift */; };
+		F1A6816D1D7F6FB200C044FC /* UIButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A6816C1D7F6FB200C044FC /* UIButton.swift */; };
 		F1A75C3F1D336F7E0070AAD8 /* amain.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A75C3E1D336F7E0070AAD8 /* amain.swift */; };
 		F1A75C4C1D33784C0070AAD8 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A75C4B1D33784C0070AAD8 /* main.swift */; };
 		F1A75C501D3378760070AAD8 /* WSDC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F17FA7D71D336DB8001B99AF /* WSDC.swift */; };
@@ -77,6 +78,7 @@
 		F1BB63181D3C359E00A1CC9D /* NSURLRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1BB63171D3C359E00A1CC9D /* NSURLRequest.swift */; };
 		F1CE6D3E1D610A530089F6C4 /* NVCTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1CE6D3D1D610A530089F6C4 /* NVCTransition.swift */; };
 		F1CE6D471D610B350089F6C4 /* PopTransitionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1CE6D461D610B350089F6C4 /* PopTransitionController.swift */; };
+		F1DB45621D7A41F700C5C4D2 /* Media.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1DB45611D7A41F700C5C4D2 /* Media.swift */; };
 		F1DDF9751D39B6C800EEB426 /* Points.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1DDF9741D39B6C800EEB426 /* Points.swift */; };
 		F1DDF9811D3B1ECD00EEB426 /* NSData.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1DDF9801D3B1ECD00EEB426 /* NSData.swift */; };
 		F1DDF98A1D3B7CA800EEB426 /* NSError.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1DDF9891D3B7CA800EEB426 /* NSError.swift */; };
@@ -86,6 +88,7 @@
 		F1EB04381D3842EF004EEA56 /* AdminVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1EB04371D3842EF004EEA56 /* AdminVC.swift */; };
 		F1EB043A1D3843C3004EEA56 /* CompetitorsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1EB04391D3843C3004EEA56 /* CompetitorsVC.swift */; };
 		F1EB043D1D3845D8004EEA56 /* Images.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1EB043C1D3845D8004EEA56 /* Images.swift */; };
+		F1F14C3C1D82948900E44024 /* UIStoryboardSegue.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1F14C3B1D82948900E44024 /* UIStoryboardSegue.swift */; };
 		F6FBA6C9DB47563C577008A7 /* Pods_Points.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 457A6E2B9397E7CFA99E9A52 /* Pods_Points.framework */; };
 /* End PBXBuildFile section */
 
@@ -225,6 +228,7 @@
 		F19512E71D38B4DC00EDC276 /* Storyboard.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Storyboard.storyboard; sourceTree = "<group>"; };
 		F19512F01D38D6AB00EDC276 /* DumpVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DumpVC.swift; sourceTree = "<group>"; };
 		F19512F31D394CDB00EDC276 /* WSDCTransformOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WSDCTransformOperation.swift; sourceTree = "<group>"; };
+		F1A6816C1D7F6FB200C044FC /* UIButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIButton.swift; sourceTree = "<group>"; };
 		F1A75C3E1D336F7E0070AAD8 /* amain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = amain.swift; sourceTree = "<group>"; };
 		F1A75C421D3374670070AAD8 /* Points-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Points-Bridging-Header.h"; sourceTree = "<group>"; };
 		F1A75C491D33784C0070AAD8 /* cli */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = cli; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -241,6 +245,7 @@
 		F1BB63171D3C359E00A1CC9D /* NSURLRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSURLRequest.swift; sourceTree = "<group>"; };
 		F1CE6D3D1D610A530089F6C4 /* NVCTransition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NVCTransition.swift; sourceTree = "<group>"; };
 		F1CE6D461D610B350089F6C4 /* PopTransitionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PopTransitionController.swift; sourceTree = "<group>"; };
+		F1DB45611D7A41F700C5C4D2 /* Media.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Media.swift; sourceTree = "<group>"; };
 		F1DDF9741D39B6C800EEB426 /* Points.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Points.swift; sourceTree = "<group>"; };
 		F1DDF9801D3B1ECD00EEB426 /* NSData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSData.swift; sourceTree = "<group>"; };
 		F1DDF9891D3B7CA800EEB426 /* NSError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSError.swift; sourceTree = "<group>"; };
@@ -250,6 +255,7 @@
 		F1EB04371D3842EF004EEA56 /* AdminVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdminVC.swift; sourceTree = "<group>"; };
 		F1EB04391D3843C3004EEA56 /* CompetitorsVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompetitorsVC.swift; sourceTree = "<group>"; };
 		F1EB043C1D3845D8004EEA56 /* Images.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Images.swift; sourceTree = "<group>"; };
+		F1F14C3B1D82948900E44024 /* UIStoryboardSegue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIStoryboardSegue.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -356,6 +362,7 @@
 				F1A75C3E1D336F7E0070AAD8 /* amain.swift */,
 				F17FA7E31D336DD7001B99AF /* NSMutableURLRequest.swift */,
 				F17FA7C51D336D46001B99AF /* Main.storyboard */,
+				F1DB45611D7A41F700C5C4D2 /* Media.swift */,
 				F19512E71D38B4DC00EDC276 /* Storyboard.storyboard */,
 				F19512E31D38B39E00EDC276 /* Realm */,
 				F1EB04351D384147004EEA56 /* Storyboard.swift */,
@@ -365,9 +372,11 @@
 				F1EB04371D3842EF004EEA56 /* AdminVC.swift */,
 				F1EB04391D3843C3004EEA56 /* CompetitorsVC.swift */,
 				F15CA9251D3DF45E00B69279 /* String.swift */,
+				F1A6816C1D7F6FB200C044FC /* UIButton.swift */,
 				F17FA7CA1D336D46001B99AF /* LaunchScreen.storyboard */,
 				F17FA7CD1D336D46001B99AF /* Info.plist */,
 				F1A75C421D3374670070AAD8 /* Points-Bridging-Header.h */,
+				F1F14C3B1D82948900E44024 /* UIStoryboardSegue.swift */,
 				F1AB6D4E1D406AFB00642EAE /* Maps.swift */,
 				F110AA861D4421EC008F603A /* UIView.swift */,
 				F110AA8F1D4440F6008F603A /* UILabel.swift */,
@@ -500,12 +509,13 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0730;
-				LastUpgradeCheck = 0730;
+				LastUpgradeCheck = 0800;
 				ORGANIZATIONNAME = "Zombie Dolphin";
 				TargetAttributes = {
 					F17FA7BD1D336D46001B99AF = {
 						CreatedOnToolsVersion = 7.3.1;
 						DevelopmentTeam = 4R4B84UU3E;
+						LastSwiftMigration = 0800;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 1;
@@ -749,6 +759,7 @@
 				F17FA7D61D336D87001B99AF /* CloudKit.swift in Sources */,
 				F17FA7DE1D336DC8001B99AF /* Operation.swift in Sources */,
 				F17FA7E01D336DCE001B99AF /* NSDate.swift in Sources */,
+				F1DB45621D7A41F700C5C4D2 /* Media.swift in Sources */,
 				F17FA7E41D336DD7001B99AF /* NSMutableURLRequest.swift in Sources */,
 				F1CE6D3E1D610A530089F6C4 /* NVCTransition.swift in Sources */,
 				F19512F41D394CDB00EDC276 /* WSDCTransformOperation.swift in Sources */,
@@ -762,11 +773,13 @@
 				F1A9E01C1D46B393001A80BF /* UIImage+ITDAvatarPlaceholder.swift in Sources */,
 				F15CA9261D3DF45E00B69279 /* String.swift in Sources */,
 				F19512E01D38880600EDC276 /* BZipCompression.m in Sources */,
+				F1A6816D1D7F6FB200C044FC /* UIButton.swift in Sources */,
 				F131AA081D3DD02800B82BB9 /* Event.swift in Sources */,
 				F1DDF98A1D3B7CA800EEB426 /* NSError.swift in Sources */,
 				F14809741D60F0B0000E18E7 /* MGSwipeButton.swift in Sources */,
 				F17762CE1D3FFEAB00ACB9A7 /* ModalPresentationController.swift in Sources */,
 				F17FA7C21D336D46001B99AF /* AppDelegate.swift in Sources */,
+				F1F14C3C1D82948900E44024 /* UIStoryboardSegue.swift in Sources */,
 				F131A9EB1D3CA0F700B82BB9 /* Notifier.swift in Sources */,
 				F110AA901D4440F6008F603A /* UILabel.swift in Sources */,
 				F1E27A8B1D467D0600612196 /* Int.swift in Sources */,
@@ -845,8 +858,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
@@ -895,8 +910,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
@@ -919,6 +936,7 @@
 					"-lz",
 				);
 				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -928,6 +946,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 2F18B8706C993E3CF2A45991 /* Pods-Points.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Points/Points.entitlements;
@@ -941,6 +960,7 @@
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Points/Points-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -948,6 +968,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 92FDCCA70C3E77232FDA9F24 /* Pods-Points.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Points/Points.entitlements;
@@ -959,6 +980,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Points/Points-Bridging-Header.h";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};

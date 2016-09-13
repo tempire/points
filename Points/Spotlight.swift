@@ -29,7 +29,7 @@ class Spotlight {
         case Dancer = "com.zombiedolphin.points.dancer"
     }
     
-    static func createItem(id: String, domain: Domain, attributeSet: CSSearchableItemAttributeSet) -> CSSearchableItem {
+    static func createItem(_ id: String, domain: Domain, attributeSet: CSSearchableItemAttributeSet) -> CSSearchableItem {
         return CSSearchableItem(
             uniqueIdentifier: id,
             domainIdentifier: domain.rawValue,
@@ -37,32 +37,32 @@ class Spotlight {
         )
     }
     
-    static func indexItems(items: [CSSearchableItem], completion: ((NSError?)->Void)? = .None) {
-        CSSearchableIndex.defaultSearchableIndex().indexSearchableItems(items) { error in
-            if let error = error {
-                Notifier.emit(SpotlightNotice.IndexError, ["error": error.localizedDescription])
+    static func indexItems(_ items: [CSSearchableItem], completion: ((Error?)->Void)? = .none) {
+        CSSearchableIndex.default().indexSearchableItems(items) { error in
+            if let error = error as? NSError {
+                Notifier.emit(SpotlightNotice.IndexError, ["error": error.localizedDescription as AnyObject])
             }
-            completion?(error)
+            completion?(error as NSError?)
         }
     }
     
-    static func removeAll(completion: (NSError?->Void)) {
-        CSSearchableIndex.defaultSearchableIndex().deleteAllSearchableItemsWithCompletionHandler(completion)
+    static func removeAll(_ completion: @escaping (Error?)->Void) {
+        CSSearchableIndex.default().deleteAllSearchableItems(completionHandler: completion)
     }
     
-    static func removeItems(ids: [String], completion: ((NSError?)->Void)? = .None) {
-        CSSearchableIndex.defaultSearchableIndex().deleteSearchableItemsWithIdentifiers(ids) { error in
-            if let error = error {
+    static func removeItems(_ ids: [String], completion: ((Error?)->Void)? = .none) {
+        CSSearchableIndex.default().deleteSearchableItems(withIdentifiers: ids) { error in
+            if let error = error as? NSError {
                 Notifier.emit(SpotlightNotice.RemoveError, ["error": error.localizedDescription])
             }
-            completion?(error)
+            completion?(error as NSError?)
         }
     }
     
-    static func replaceItem(item: CSSearchableItem) {
+    static func replaceItem(_ item: CSSearchableItem) {
         Spotlight.removeItems([item.uniqueIdentifier]) { error in
-            if error == .None {
-                Spotlight.indexItems([item], completion: .None)
+            if error == nil {
+                Spotlight.indexItems([item], completion: .none)
             }
         }
     }

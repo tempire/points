@@ -8,23 +8,23 @@
 import Foundation
 
 enum Header {
-    case Beacon(NSUUID)
-    case Date(NSDate)
-    case ResponseTime(NSTimeInterval)
-    case BasicAuthorization(username: String, password: String)
+    case beacon(UUID)
+    case date(Foundation.Date)
+    case responseTime(TimeInterval)
+    case basicAuthorization(username: String, password: String)
     
     var name: String {
         switch self {
-        case .Beacon(_):
+        case .beacon(_):
             return "X-Beacon"
             
-        case .Date(_):
+        case .date(_):
             return "X-Date"
             
-        case .ResponseTime(_):
+        case .responseTime(_):
             return "X-ResponseTime"
             
-        case .BasicAuthorization(_):
+        case .basicAuthorization(_):
             return "Authorization"
         }
     }
@@ -37,44 +37,44 @@ extension NSMutableURLRequest {
         case POST
     }
     
-    convenience init(url: NSURL, method: Method, parameters: [String:AnyObject] = [:]) {
+    convenience init(url: URL, method: Method, parameters: [String:AnyObject] = [:]) {
         self.init()
         
-        URL = url
-        HTTPMethod = method.rawValue
+        self.url = url
+        httpMethod = method.rawValue
         setValue("application/x-www-form-urlencoded; charset=utf-8", forHTTPHeaderField: "Content-Type")
         addFormParameters(parameters)
     }
     
-    func addFormParameters(parameters: [String:AnyObject]) {
-        let comp = NSURLComponents(string: "")! //URLByAppendingPathComponent(path).absoluteString)!
+    func addFormParameters(_ parameters: [String:AnyObject]) {
+        var comp = URLComponents(string: "")! //URLByAppendingPathComponent(path).absoluteString)!
         
         comp.queryItems = Array(parameters.keys).flatMap {
             guard let value = parameters[$0] else {
-                return .None
+                return .none
             }
             
-            return NSURLQueryItem(name: $0, value: "\(value)")
+            return URLQueryItem(name: $0, value: "\(value)")
         }
         
-        HTTPBody = comp.URL?.query?.dataUsingEncoding(NSUTF8StringEncoding)
+        httpBody = comp.url?.query?.data(using: String.Encoding.utf8)
     }
 
-    func setHeader(header: Header) {
+    func setHeader(_ header: Header) {
         var value = ""
         
         switch header {
-        case let .Beacon(beacon):
-            value = beacon.UUIDString
+        case let .beacon(beacon):
+            value = beacon.uuidString
             
-        case let .Date(date):
-            value = date.toString(format: .ISO8601)
+        case let .date(date):
+            value = date.toString(format: .iso8601)
             
-        case let .ResponseTime(interval):
+        case let .responseTime(interval):
             value = String(interval)
             
-        case let .BasicAuthorization(credentials):
-            let encoded = "\(credentials.username):\(credentials.password)".dataUsingEncoding(NSUTF8StringEncoding)?.base64EncodedStringWithOptions([]) ?? ""
+        case let .basicAuthorization(credentials):
+            let encoded = "\(credentials.username):\(credentials.password)".data(using: String.Encoding.utf8)?.base64EncodedString(options: []) ?? ""
             value = "Basic \(encoded)"
         }
         

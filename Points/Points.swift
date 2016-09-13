@@ -8,30 +8,29 @@
 
 import Foundation
 import CloudKit
-import BTree
 import RealmSwift
 import CoreSpotlight
 
 enum Points {
     
-    static func addSubscriptionForNewPoints(completion: (CKSubscription?, NSError?)->Void) {
-        let publicDatabase = CKContainer.defaultContainer().publicCloudDatabase
+    static func addSubscriptionForNewPoints(_ completion: @escaping (CKSubscription?, CKSubscription.Error?)->Void) {
+        let publicDatabase = CKContainer.default().publicCloudDatabase
         
-        let op = CKSubscription(.Dumps, options: [.FiresOnRecordCreation, .FiresOnRecordUpdate, .FiresOnRecordDeletion])
+        let op = CKSubscription(.Dumps, options: [.firesOnRecordCreation, .firesOnRecordUpdate, .firesOnRecordDeletion])
         let info = CKNotificationInfo()
         info.alertBody = "Dumps Subscription"
         info.shouldBadge = true
         info.shouldSendContentAvailable = true
         
-        publicDatabase.saveSubscription(op, completionHandler: completion)
+        publicDatabase.save(op, completionHandler: completion)
     }
     
-    static func importData(data: NSData, into realm: Realm, with progress: NSProgress) throws {
+    static func importData(_ data: Data, into realm: Realm, with progress: Progress) throws {
         
-        let uncompressed = try BZipCompression.decompressedDataWithData(data)
+        let uncompressed = try BZipCompression.decompressedData(with: data)
         
-        guard let strings = String(data: uncompressed, encoding: NSUTF8StringEncoding)?.componentsSeparatedByString("\n") else {
-            throw NSError(domain: .SerializedParsing, code: .Strings, message: "Could not parse data as strings - uncompressed data length: \(data.length)")
+        guard let strings = String(data: uncompressed, encoding: String.Encoding.utf8)?.components(separatedBy: "\n") else {
+            throw NSError(domain: .serializedParsing, code: .strings, message: "Could not parse data as strings - uncompressed data length: \(data.count)")
         }
         
         let objects = try Points.objects(strings, progress: progress)
@@ -60,7 +59,7 @@ enum Points {
         var lead: Competition?
     }
     
-    static func objects(strings: [String], progress: NSProgress) throws -> [Object] {
+    static func objects(_ strings: [String], progress: Progress) throws -> [Object] {
         
         var objects = [Object]()
         var compsByDancerId = [Int:[Competition]]()
@@ -73,9 +72,9 @@ enum Points {
         var identifier = ""
         
         for string in strings where string.characters.count > 2 {
-            
-            if string[string.startIndex..<string.startIndex.advancedBy(2)] == "__" {
-                identifier = string[string.startIndex.advancedBy(2)..<string.endIndex.advancedBy(-2)]
+
+            if string[string.startIndex..<string.index(string.startIndex, offsetBy: -2)] == "__" {
+                identifier = string[string.index(string.startIndex, offsetBy: 2)..<string.index(string.startIndex, offsetBy: -2)]
                 progress.completedUnitCount += 1
                 continue
             }
@@ -83,11 +82,11 @@ enum Points {
             switch identifier {
                 
             case "events":
-                let eventYears = try EventYear.createEvents(string.componentsSeparatedByString("^"))
+                let eventYears = try EventYear.createEvents(string.components(separatedBy: "^"))
                 
                 eventYears.forEach {
                     objects.append($0)
-                    let key = [String($0.event.id), String($0.year)].joinWithSeparator("^")
+                    let key = [String($0.event.id), String($0.year)].joined(separator: "^")
                     eventYearsByIdAndYear[key] = $0
                 }
                 
@@ -97,7 +96,7 @@ enum Points {
                 
                 let competition = try Competition(string)
                 
-                let key = [String(competition.eventId), String(competition.year)].joinWithSeparator("^")
+                let key = [String(competition.eventId), String(competition.year)].joined(separator: "^")
                 competition.eventYear = eventYearsByIdAndYear[key]
                 competition.month = competition.eventYear.month
                 
@@ -109,17 +108,17 @@ enum Points {
                 
                 // Assign partner if has placement
                 
-                if case .Placement(let placement) = competition.result {
+                if case .placement(let placement) = competition.result {
                     
                     let key = [
                         String(placement),
                         String(competition.eventId),
                         competition.divisionName.abbreviation,
                         String(competition.year)
-                        ].joinWithSeparator("^")
+                        ].joined(separator: "^")
                     
                     if partnerComps[key] == nil {
-                        partnerComps[key] = PartnerComp(follow: .None, lead: .None)
+                        partnerComps[key] = PartnerComp(follow: .none, lead: .none)
                     }
                     
                     switch competition.role {
@@ -155,19 +154,19 @@ enum Points {
                 progress.completedUnitCount += 1
                 
             default:
-                throw NSError(domain: .SerializedParsing, code: .SectionTitle, message: "Could not parse section title in strings data: \(identifier)")
+                throw NSError(domain: .serializedParsing, code: .sectionTitle, message: "Could not parse section title in strings data: \(identifier)")
             }
         }
         
         for case let competition as Competition in objects {
-            if case .Placement(let placement) = competition.result {
+            if case .placement(let placement) = competition.result {
                 
                 let key = [
                     String(placement),
                     String(competition.eventId),
                     competition.divisionName.abbreviation,
                     String(competition.year)
-                    ].joinWithSeparator("^")
+                    ].joined(separator: "^")
                 
                 switch competition.role {
                     

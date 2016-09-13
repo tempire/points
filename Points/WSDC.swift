@@ -11,6 +11,7 @@ import CloudKit
 
 func ==(lhs: WSDC.Event, rhs: WSDC.Event) -> Bool { return rhs.hashValue == lhs.hashValue }
 func ==(lhs: WSDC.Competition.Result, rhs: WSDC.Competition.Result) -> Bool { return rhs.hashValue == lhs.hashValue }
+func <(lhs: WSDC.DivisionName, rhs: WSDC.DivisionName) -> Bool { return rhs.hashValue < lhs.hashValue }
 
 class WSDC {
     
@@ -41,10 +42,10 @@ class WSDC {
         
         var json: JSONObject {
             return [
-                "id": id,
-                "firstName": firstName,
-                "lastName": lastName,
-                "wsdcId": wsdcId,
+                "id": id as AnyObject,
+                "firstName": firstName as AnyObject,
+                "lastName": lastName as AnyObject,
+                "wsdcId": wsdcId as AnyObject,
             ]
         }
     }
@@ -62,7 +63,7 @@ class WSDC {
             try firstName = json.value("dancer.first_name")
             try lastName = json.value("dancer.last_name")
             
-            if let json = json["placements"] as? JSONObject, _ = json["West Coast Swing"] {
+            if let json = json["placements"] as? JSONObject, let _ = json["West Coast Swing"] {
                 divisions = try! json.value("West Coast Swing")
             }
             else {
@@ -72,13 +73,13 @@ class WSDC {
         
         var json: JSONObject {
             return [
-                "id": id,
-                "wsdcId": wsdcId,
-                "first_name": firstName,
-                "last_name": lastName,
+                "id": id as AnyObject,
+                "wsdcId": wsdcId as AnyObject,
+                "first_name": firstName as AnyObject,
+                "last_name": lastName as AnyObject,
                 "placements": [
                     "West Coast Swing": divisions.map { $0.json }
-                ]
+                ] as AnyObject
             ]
         }
         
@@ -88,11 +89,10 @@ class WSDC {
         
         var serialized: String {
             return [
-                //id,
                 wsdcId,
                 firstName,
                 lastName
-            ].componentsJoinedByString("^")
+                ].joined(separator: "^")
         }
     }
     
@@ -110,14 +110,14 @@ class WSDC {
         
         var json: JSONObject {
             return [
-                "competitions": competitions.map { $0.json },
+                "competitions": competitions.map { $0.json } as [Any],
                 "name": name.description,
                 "total_points": totalPoints
             ]
         }
     }
     
-    enum DivisionName: String, JSONValueType {
+    enum DivisionName: String, JSONValueType, Comparable {
         case JRS = "Juniors"
         case SPH = "Sophisticated"
         case MSTR = "Masters"
@@ -135,17 +135,17 @@ class WSDC {
         
         static var rankOrder: [DivisionName:Int] {
             
-            return [NEW, NOV, INT, ADV, ALS, CHMP].enumerate().reduce([:]) { tmp, tuple in
+            return [NEW, NOV, INT, ADV, ALS, CHMP].enumerated().reduce([:]) { tmp, tuple in
                 var dict = tmp
-                dict[tuple.element] = tuple.index
+                dict[tuple.element] = tuple.offset
                 return dict
             }
         }
         
         static var displayOrder: [DivisionName:Int] {
-            return DivisionName.values.enumerate().reduce([:]) { tmp, tuple in
+            return DivisionName.values.enumerated().reduce([:]) { tmp, tuple in
                 var dict = tmp
-                dict[tuple.element] = tuple.index
+                dict[tuple.element] = tuple.offset
                 return dict
             }
         }
@@ -163,7 +163,7 @@ class WSDC {
             case .ADV:
                 return 45
             default:
-                return .None
+                return .none
             }
         }
         
@@ -176,7 +176,7 @@ class WSDC {
             case .ADV:
                 return .ALS
             default:
-                return .None
+                return .none
             }
         }
         
@@ -206,7 +206,7 @@ class WSDC {
         }
         
         init?(description: String?) {
-            guard let rawValue = description, name = DivisionName(rawValue: rawValue) else {
+            guard let rawValue = description, let name = DivisionName(rawValue: rawValue) else {
                 return nil
             }
             
@@ -215,28 +215,28 @@ class WSDC {
         
         init?(abbreviation: String?) {
             switch abbreviation {
-            case "JRS"?: self = JRS
-            case "INV"?: self = INV
-            case "CHMP"?: self = CHMP
-            case "ALS"?: self = ALS
-            case "SPH"?: self = SPH
-            case "MSTR"?: self = MSTR
-            case "TCH"?: self = TCH
-            case "NEW"?: self = NEW
-            case "NOV"?: self = NOV
-            case "INT"?: self = INT
-            case "ADV"?: self = ADV
-            case "PRO"?: self = PRO
+            case "JRS"?: self = .JRS
+            case "INV"?: self = .INV
+            case "CHMP"?: self = .CHMP
+            case "ALS"?: self = .ALS
+            case "SPH"?: self = .SPH
+            case "MSTR"?: self = .MSTR
+            case "TCH"?: self = .TCH
+            case "NEW"?: self = .NEW
+            case "NOV"?: self = .NOV
+            case "INT"?: self = .INT
+            case "ADV"?: self = .ADV
+            case "PRO"?: self = .PRO
             default: return nil
             }
         }
         
-        static func JSONValue(object: Any) throws -> DivisionName {
+        static func JSONValue(_ object: Any) throws -> DivisionName {
             if let name = DivisionName(abbreviation: object as? String) {
                 return name
             }
             
-            throw JSONError.TypeMismatch(expected: self, actual: object.dynamicType)
+            throw JSONError.typeMismatch(expected: self, actual: type(of: object))
         }
     }
     
@@ -256,8 +256,8 @@ class WSDC {
             
             var color: UIColor {
                 switch self {
-                case Lead: return UIColor.lead
-                case Follow: return UIColor.follow
+                case .Lead: return UIColor.lead
+                case .Follow: return UIColor.follow
                 }
             }
             
@@ -281,18 +281,18 @@ class WSDC {
             
             init?(_ value: String) {
                 switch value {
-                case "leader": self = Lead
-                case "follower": self = Follow
+                case "leader": self = .Lead
+                case "follower": self = .Follow
                 default: return nil
                 }
             }
             
-            static func JSONValue(object: Any) throws -> Role {
-                if let string = object as? String, role = Role(string) {
+            static func JSONValue(_ object: Any) throws -> Role {
+                if let string = object as? String, let role = Role(string) {
                     return role
                 }
                 
-                throw JSONError.TypeMismatch(expected: self, actual: object.dynamicType)
+                throw JSONError.typeMismatch(expected: self, actual: type(of: object))
             }
         }
         
@@ -301,15 +301,15 @@ class WSDC {
                 return tinyRaw.hashValue
             }
             
-            case Placement(Int)
-            case Final
+            case placement(Int)
+            case final
             
             init(string: String) throws {
                 if string == "F" {
-                    self = .Final
+                    self = .final
                 }
                 else if let int = Int(string) {
-                    self = .Placement(int)
+                    self = .placement(int)
                 }
                 else {
                     throw NSError(domain: "", code: 0, userInfo: [:])
@@ -318,9 +318,9 @@ class WSDC {
             
             var description: String {
                 switch self {
-                case let .Placement(int):
+                case let .placement(int):
                     return String(int) + ext + " Place"
-                case .Final:
+                case .final:
                     return "Finals"
                 }
             }
@@ -329,17 +329,17 @@ class WSDC {
                 
                 switch self {
                     
-                case let .Placement(int):
+                case let .placement(int):
                     return "\(int)"
                     
-                case .Final:
+                case .final:
                     return "F"
                 }
             }
             
             var ext: String {
                 switch self {
-                case let .Placement(int):
+                case let .placement(int):
                     switch int {
                     case 1: return "st"
                     case 2: return "nd"
@@ -357,27 +357,27 @@ class WSDC {
                 
                 switch self {
                     
-                case .Placement(let int):
+                case .placement(let int):
                     return int
                     
-                case .Final:
+                case .final:
                     return 6
                 }
             }
             
-            static func JSONValue(object: Any) throws -> Result {
+            static func JSONValue(_ object: Any) throws -> Result {
                 guard let string = object as? String else {
-                    throw JSONError.TypeMismatch(expected: self, actual: object.dynamicType)
+                    throw JSONError.typeMismatch(expected: self, actual: type(of: object))
                 }
                 
                 if let int = Int(string) {
-                    return .Placement(int)
+                    return .placement(int)
                 }
                 else if string == "F" {
-                    return .Final
+                    return .final
                 }
                 
-                throw JSONError.TypeMismatch(expected: self, actual: object.dynamicType)
+                throw JSONError.typeMismatch(expected: self, actual: type(of: object))
             }
         }
         
@@ -390,10 +390,10 @@ class WSDC {
         
         var json: JSONObject {
             return [
-                "points": points,
-                "result": result.description,
-                "role": role.description,
-                "event": event.json
+                "points": points as AnyObject,
+                "result": result.description as AnyObject,
+                "role": role.description as AnyObject,
+                "event": event.json as AnyObject
             ]
         }
         
@@ -406,19 +406,19 @@ class WSDC {
                 result.tinyRaw,
                 role.tinyRaw,
                 event.id,
-                "\(event.date.year()-2000)"
-            ].componentsJoinedByString("^")
+                Int(event.date.year()-2000)
+            ].joined(separator: "^")
         }
     }
     
     struct Event: JSONStruct, Hashable {
         var hashValue: Int { return id.hashValue + date.hashValue }
         
-        var date: NSDate
+        var date: Date
         var id: Int
         var location: String
         var name: String
-        var url: NSURL?
+        var url: URL?
         
         init(json: JSONObject) throws {
             try date = json.value("date")
@@ -430,14 +430,14 @@ class WSDC {
         
         var json: JSONObject {
             var dict: JSONObject = [
-                "date": date.toString(format: .WSDCEventMonth),
-                "id": id,
-                "location": location,
-                "name": name
+                "date": date.toString(format: .wsdcEventMonth) as AnyObject,
+                "id": id as AnyObject,
+                "location": location as AnyObject,
+                "name": name as AnyObject
             ]
-            
+
             if let url = url {
-                dict["url"] = url.absoluteString
+                dict["url"] = url.absoluteString as AnyObject?
             }
             
             return dict
@@ -446,11 +446,11 @@ class WSDC {
         var serialized: String {
             return [
                 date.month(),
-                date.year()-2000,
+                Int(date.year()-2000),
                 id,
                 location,
                 name
-            ].componentsJoinedByString("^")
+            ].joined(separator: "^")
         }
     }
 }

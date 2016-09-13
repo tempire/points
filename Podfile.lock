@@ -1,5 +1,4 @@
 PODS:
-  - BTree (2.1.0)
   - ChameleonFramework (2.1.0):
     - ChameleonFramework/Default (= 2.1.0)
   - ChameleonFramework/Default (2.1.0)
@@ -15,26 +14,43 @@ PODS:
   - Spotify-iOS-SDK (0.17.0)
 
 DEPENDENCIES:
-  - BTree (= 2.1.0)
   - ChameleonFramework (= 2.1.0)
   - M13ProgressSuite (= 1.2.7)
   - MessageBarManager
   - MGSwipeTableCell (= 1.5.5)
-  - RealmSwift (= 1.0.2)
+  - Realm (from `https://github.com/realm/realm-cocoa.git`)
+  - RealmSwift (from `https://github.com/realm/realm-cocoa.git`)
   - Reveal-iOS-SDK (= 1.6.2)
   - Spotify-iOS-SDK (= 0.17.0)
 
+EXTERNAL SOURCES:
+  Realm:
+    :git: https://github.com/realm/realm-cocoa.git
+    :submodules: true
+  RealmSwift:
+    :git: https://github.com/realm/realm-cocoa.git
+    :submodules: true
+
+CHECKOUT OPTIONS:
+  Realm:
+    :commit: 742e530446e7c3b74abdf902b9109ab8f1086753
+    :git: https://github.com/realm/realm-cocoa.git
+    :submodules: true
+  RealmSwift:
+    :commit: 742e530446e7c3b74abdf902b9109ab8f1086753
+    :git: https://github.com/realm/realm-cocoa.git
+    :submodules: true
+
 SPEC CHECKSUMS:
-  BTree: 222c6467bfce63490dfe0b588dd2a61d9e0c54bd
   ChameleonFramework: d21a3cc247abfe5e37609a283a8238b03575cf64
   M13ProgressSuite: 03d194af6359da440641ba758aed5a18b0386a86
   MessageBarManager: 168344bc3b916f1761c87c3fcf3cec4d6ec360e6
   MGSwipeTableCell: bafeb5f351124544c9364ecbdf24c7b06a37d340
-  Realm: 9d5c46a4d7d27958530a8dfc58f63a99e5c2cba3
-  RealmSwift: 82f3ac5e24530143dddfde2033acc0d308f27d96
+  Realm: 2948cfa3a05b7acc446abc4c124d443df646c8de
+  RealmSwift: 4816c8608630a9a00bba6d726bb30b4bab6dd6bf
   Reveal-iOS-SDK: e2250b3c155bcfac53ae223ddc1f76d08f206c33
   Spotify-iOS-SDK: 9703e35df012ef12a37736feaa5ee1ee3fcd12f8
 
-PODFILE CHECKSUM: 8f61785f1333c625c79ac957d00d1ae94275b737
+PODFILE CHECKSUM: aea6051a02361056ae9dda1b786f6c68567173bb
 
 COCOAPODS: 1.0.1

@@ -15,7 +15,7 @@ struct Resource<A: JSONStruct>: CustomStringConvertible {
         return "request: \(request)"
     }
     
-    init(url: NSURL, method: NSMutableURLRequest.Method) {
+    init(url: URL, method: NSMutableURLRequest.Method) {
         request = NSMutableURLRequest(
             url: url,
             method: method
@@ -24,57 +24,57 @@ struct Resource<A: JSONStruct>: CustomStringConvertible {
 }
 
 enum ResourceResult<A: JSONStruct> {
-    case Success(A)
-    case Error(JSONError)
-    case NetworkError(NSError)
+    case success(A)
+    case error(JSONError)
+    case networkError(NSError)
 }
 
 class WebService {
-    static let wsdcBaseURL = NSURL(string: "http://wsdc-points.us-west-2.elasticbeanstalk.com")!
+    static let wsdcBaseURL = URL(string: "http://wsdc-points.us-west-2.elasticbeanstalk.com")!
     
-    static var session = NSURLSession.sharedSession()
+    static var session = URLSession.shared
     
-    class func load<A: JSONStruct>(resource: Resource<A>, completion: (ResourceResult<A>)->Void) {
+    class func load<A: JSONStruct>(_ resource: Resource<A>, completion: @escaping (ResourceResult<A>)->Void) {
         
-        resource.request.setHeader(.Date(NSDate()))
+        resource.request.setHeader(.date(Date()))
         
-        WebService.session.dataTaskWithRequest(resource.request) { data, response, error in
-            if let error = error {
+        WebService.session.dataTask(with: resource.request as URLRequest, completionHandler: { data, response, error in
+            if let error = error as? NSError {
                 return completion(
-                    .NetworkError(
-                        NSError(domain: NSError.Domain.Network.description, code: error.code, userInfo: error.userInfo)))
+                    .networkError(
+                        NSError(domain: NSError.Domain.network.description, code: error.code, userInfo: error.userInfo)))
             }
             
             do {
-                completion(.Success(try A(data: data)))
+                completion(.success(try A(data: data)))
             }
             catch let error as JSONError {
-                completion(.Error(error))
+                completion(.error(error))
             }
             catch let error as NSError {
-                completion(.Error(JSONError.UnexpectedError(error)))
+                completion(.error(JSONError.unexpectedError(error)))
             }
-            }.resume()
+            }) .resume()
     }
     
-    class func search(query: String) -> Resource<WSDC.SearchResults> {
+    class func search(_ query: String) -> Resource<WSDC.SearchResults> {
         let resource = Resource<WSDC.SearchResults>(
-            url: WebService.wsdcBaseURL.URLByAppendingPathComponent("/lookup/find"),
+            url: WebService.wsdcBaseURL.appendingPathComponent("/lookup/find"),
             method: .POST
         )
         
-        resource.request.addFormParameters(["q": query])
+        resource.request.addFormParameters(["q": query as AnyObject])
         
         return resource
     }
     
-    class func competitor(wsdcId: Int) -> Resource<WSDC.Competitor> {
+    class func competitor(_ wsdcId: Int) -> Resource<WSDC.Competitor> {
         let resource = Resource<WSDC.Competitor>(
-            url: WebService.wsdcBaseURL.URLByAppendingPathComponent("/lookup/find"),
+            url: WebService.wsdcBaseURL.appendingPathComponent("/lookup/find"),
             method: .POST
         )
         
-        resource.request.addFormParameters(["num": "\(wsdcId)"])
+        resource.request.addFormParameters(["num": "\(wsdcId)" as AnyObject])
         
         return resource
     }

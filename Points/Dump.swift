@@ -21,14 +21,14 @@ import RealmSwift
 import CloudKit
 
 protocol PrimaryKeyIdObject: class {
-    var id: NSUUID { get set }
+    var id: UUID { get set }
 }
 
 class Dump: Object, PrimaryKeyIdObject {
     dynamic var _id: String = ""
-    dynamic var date: NSDate = NSDate()
+    dynamic var date: Date = Date()
     dynamic var version: Int = 0
-    dynamic var data: NSData = NSData()
+    dynamic var data: Data = Data()
     
     override static func primaryKey() -> String? {
         return "_id"
@@ -38,12 +38,12 @@ class Dump: Object, PrimaryKeyIdObject {
         return ["id"]
     }
     
-    var id: NSUUID {
+    var id: UUID {
         get {
-            return NSUUID(UUIDString: _id)!
+            return UUID(uuidString: _id)!
         }
         set {
-            _id = newValue.UUIDString
+            _id = newValue.uuidString
         }
     }
     
@@ -51,10 +51,10 @@ class Dump: Object, PrimaryKeyIdObject {
         self.init()
         
         guard let _id = record["id"] as? String,
-            id = NSUUID(UUIDString: _id),
-            date = record["date"] as? NSDate,
-            version = record["version"] as? Int,
-            data = record["data"] as? NSData else {
+            let id = UUID(uuidString: _id),
+            let date = record["date"] as? Date,
+            let version = record["version"] as? Int,
+            let data = record["data"] as? Data else {
                 return
         }
         
@@ -64,7 +64,7 @@ class Dump: Object, PrimaryKeyIdObject {
         self.data = data
     }
     
-    convenience init(id: NSUUID, date: NSDate, version: Int, data: NSData) throws {
+    convenience init(id: UUID, date: Date, version: Int, data: Data) throws {
         self.init()
         
         self.id = id

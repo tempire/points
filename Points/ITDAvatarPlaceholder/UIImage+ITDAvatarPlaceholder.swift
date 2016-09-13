@@ -12,30 +12,30 @@ import ChameleonFramework
 public extension UIImage {
     
     public static func createAvatarPlaceholder(userFullName name: String, placeholderSize: CGSize, maxLettersCount: Int = 3,
-                                                            font: UIFont = UIFont.systemFontOfSize(14)) -> UIImage {
+                                                            font: UIFont = UIFont.systemFont(ofSize: 14)) -> UIImage {
         let text = name.toAvatarPlaceholderText(maxLettersCount)
         let bgColor = UIColor.forAvatarPlaceholderBackground(userFullName: name)
         
         return createAvatarPlaceholder(withText: text, withBackgroundColor: bgColor, placeholderSize: placeholderSize, font: font)
     }
     
-    private static func createAvatarPlaceholder(withText text: String, withBackgroundColor bgColor: UIColor,
-                                                         placeholderSize: CGSize, font: UIFont = UIFont.systemFontOfSize(14)) -> UIImage {
+    fileprivate static func createAvatarPlaceholder(withText text: String, withBackgroundColor bgColor: UIColor,
+                                                         placeholderSize: CGSize, font: UIFont = UIFont.systemFont(ofSize: 14)) -> UIImage {
         let textColor = UIColor(contrastingBlackOrWhiteColorOn: bgColor, isFlat: true)
-        let textImage = createTextImage(text, textColor: textColor, font: font.fontWithSize(placeholderSize.height))
+        let textImage = createTextImage(text, textColor: textColor!, font: font.withSize(placeholderSize.height))
         
         return createAvatarPlaceholder(textImage, bgColor: bgColor, placeholderSize: placeholderSize)
     }
     
-    private static func createTextImage(text: String, textColor: UIColor, font: UIFont) -> UIImage? {
+    fileprivate static func createTextImage(_ text: String, textColor: UIColor, font: UIFont) -> UIImage? {
         guard text.characters.count > 0 else { return nil }
         
         let attr:[String:AnyObject] = [NSFontAttributeName: font, NSForegroundColorAttributeName: textColor]
-        let textSize = text.sizeWithAttributes(attr)
+        let textSize = text.size(attributes: attr)
         
         UIGraphicsBeginImageContext(textSize)
         
-        text.drawInRect(CGRect(origin: CGPoint.zero, size: textSize), withAttributes: attr)
+        text.draw(in: CGRect(origin: CGPoint.zero, size: textSize), withAttributes: attr)
         
         let textImage = UIGraphicsGetImageFromCurrentImageContext();
         
@@ -44,28 +44,28 @@ public extension UIImage {
         return textImage
     }
     
-    private static func createAvatarPlaceholder(textImage: UIImage?, bgColor: UIColor, placeholderSize: CGSize) -> UIImage {
+    fileprivate static func createAvatarPlaceholder(_ textImage: UIImage?, bgColor: UIColor, placeholderSize: CGSize) -> UIImage {
         UIGraphicsBeginImageContext(placeholderSize)
         
         let context = UIGraphicsGetCurrentContext();
         
-        CGContextSetFillColorWithColor(context, bgColor.CGColor)
+        context?.setFillColor(bgColor.cgColor)
         
         //CGContextFillRect(context, CGRect(origin: CGPoint.zero, size: placeholderSize))
-        CGContextFillEllipseInRect(context, CGRect(origin: CGPoint.zero, size: placeholderSize))
+        context?.fillEllipse(in: CGRect(origin: CGPoint.zero, size: placeholderSize))
         
         if let textImageRect = getAvatarPlaceholderTextImageRect(textImage, placeholderSize) {
-            textImage?.drawInRect(textImageRect)
+            textImage?.draw(in: textImageRect)
         }
         
         let avatarPlaceholder = UIGraphicsGetImageFromCurrentImageContext()
         
         UIGraphicsEndImageContext()
         
-        return avatarPlaceholder
+        return avatarPlaceholder!
     }
     
-    private static func getAvatarPlaceholderTextImageRect(textImage: UIImage?, _ placeholderSize: CGSize) -> CGRect? {
+    fileprivate static func getAvatarPlaceholderTextImageRect(_ textImage: UIImage?, _ placeholderSize: CGSize) -> CGRect? {
         guard let textSize = textImage?.size else { return nil }
         
         let maxHeight = placeholderSize.height/kGoldenRatio
@@ -81,6 +81,6 @@ public extension UIImage {
         let originX = (placeholderSize.width - width) / 2
         let originY = (placeholderSize.height - height) / 2
         
-        return CGRectMake(originX, originY, width, height)
+        return CGRect(x: originX, y: originY, width: width, height: height)
     }
 }

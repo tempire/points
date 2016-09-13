@@ -9,14 +9,13 @@
 import Foundation
 
 enum Dispatch {
-    case Sync
-    case Async
+    case sync
+    case async
 }
 
-infix operator ??= {
-}
+infix operator ??=
 
-func ??=(inout left: Any?, right: AnyObject) -> Any {
+func ??=(left: inout Any?, right: AnyObject) -> Any {
     if left == nil {
         left = right
     }
@@ -24,34 +23,30 @@ func ??=(inout left: Any?, right: AnyObject) -> Any {
     return left!
 }
 
-func ui(dispatch: Dispatch, afterDelay: Double = 0, closure: Void->Void) {
-    delay(afterDelay, dispatch: dispatch, queue: dispatch_get_main_queue(), closure: closure)
+func ui(_ dispatch: Dispatch, afterDelay: Double = 0, closure: @escaping (Void)->Void) {
+    delay(afterDelay, dispatch: dispatch, queue: DispatchQueue.main, closure: closure)
 }
 
-func dispatch(queue: dispatch_queue_t, _ dispatch: Dispatch, block: Void->Void) {
+func dispatch(_ queue: DispatchQueue, _ dispatch: Dispatch, block: @escaping (Void)->Void) {
     
     switch dispatch {
         
-    case .Sync:
-        dispatch_sync(queue, block)
+    case .sync:
+        queue.sync(execute: block)
         
-    case .Async:
-        dispatch_async(queue, block)
+    case .async:
+        queue.async(execute: block)
     }
 }
 
-func delay(delay:Double, dispatch _dispatch: Dispatch, queue: dispatch_queue_t, closure: Void->Void) {
+func delay(_ delay:Double, dispatch _dispatch: Dispatch, queue: DispatchQueue, closure: @escaping (Void)->Void) {
     
-    if _dispatch == .Sync && delay == 0 {
+    if _dispatch == .sync && delay == 0 {
         return dispatch(queue, _dispatch, block: closure)
     }
     
-    dispatch_after(
-        dispatch_time(
-            DISPATCH_TIME_NOW,
-            Int64(delay * Double(NSEC_PER_SEC))
-        ),
-        queue, {
+    queue.asyncAfter(
+        deadline: DispatchTime.now() + Double(Int64(delay * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC), execute: {
             dispatch(queue, _dispatch, block: closure)
         }
     )
