@@ -65,6 +65,66 @@ class EventYear: Object {
     var shortDateString: String {
         return String(date.shortMonthToString() + "\n" + String(date.year()))
     }
+    
+    var divisions: [WSDC.DivisionName:Division] {
+        var divisions: [WSDC.DivisionName:Division] = [:]
+
+        competitions.forEach { competition in
+            var division = divisions[competition.divisionName] ?? Division(placements: [], finalists: [])
+                
+            switch competition.result {
+                
+            case .placement(let placementIndex):
+                division.placements[placementIndex]?.partners.append(competition)
+                
+            case .final:
+                division.finalists.append(competition)
+            }
+        }
+        
+        return divisions
+    }
+
+    struct Division {
+        var placements: [Placement?]
+        var finalists: [Competition]
+        
+        func index(index: Int) -> Placement? {
+            return placements[index]
+        }
+        
+        var first: Placement? {
+            return placements[0]
+        }
+        
+        var second: Placement? {
+            return placements[1]
+        }
+        
+        var third: Placement? {
+            return placements[2]
+        }
+        
+        var fourth: Placement? {
+            return placements[3]
+        }
+        
+        var fifth: Placement? {
+            return placements[4]
+        }
+        
+        struct Placement {
+            var partners: [Competition]
+            
+            var lead: Competition? {
+                return partners.filter { $0.role == .Lead }.first
+            }
+
+            var follow: Competition? {
+                return partners.filter { $0.role == .Follow }.first
+            }
+        }
+    }
 }
 
 class Event: Object {
