@@ -606,12 +606,22 @@ extension DancerVC {
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
+        guard let cell = sender as? UIView else {
+            return
+        }
+        
         switch segue.identifierType {
             
         case .Partner?:
             if let vc = segue.destination as? DancerVC,
-                let source = rowSourceForCell(containingView: sender as? UIView) {
+                let source = rowSourceForCell(containingView: cell) {
                 vc.dancer = source.competition.partnerCompetition?.dancer.first
+            }
+            
+        case .Division?:
+            if let vc = segue.destination as? CompetitionVC,
+                let source = rowSourceForCell(containingView: cell) {
+                vc.division = source.competition.eventYear.divisions[source.competition.divisionName]
             }
             
         case .none:

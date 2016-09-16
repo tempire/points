@@ -70,50 +70,65 @@ class EventYear: Object {
         var divisions: [WSDC.DivisionName:Division] = [:]
 
         competitions.forEach { competition in
-            var division = divisions[competition.divisionName] ?? Division(placements: [], finalists: [])
+            var division = divisions[competition.divisionName] ?? Division(name: competition.divisionName, placements: [], finalists: [])
                 
             switch competition.result {
                 
             case .placement(let placementIndex):
-                division.placements[placementIndex]?.partners.append(competition)
+                if let _ = division.index(index: placementIndex) {
+                    division.placements[placementIndex - 1].partners.append(competition)
+                }
+                else {
+                    var placement = Division.Placement(result: competition.result, partners: [])
+                    for _ in 0..<placementIndex {
+                        division.placements.append(placement)
+                    }
+                    
+                    placement.partners.append(competition)
+                    division.placements[placementIndex - 1] = placement
+                }
                 
             case .final:
                 division.finalists.append(competition)
             }
+            
+            divisions[competition.divisionName] = division
         }
         
         return divisions
     }
 
     struct Division {
-        var placements: [Placement?]
+        var name: WSDC.DivisionName
+        var placements: [Placement]
         var finalists: [Competition]
-        
+
         func index(index: Int) -> Placement? {
-            return placements[index]
+            return index >= placements.count ? .none : placements[index]
         }
         
         var first: Placement? {
-            return placements[0]
+            return placements.count <= 0 ? .none : placements[0]
         }
         
         var second: Placement? {
-            return placements[1]
+            return placements.count <= 1 ? .none : placements[1]
         }
         
         var third: Placement? {
-            return placements[2]
+            return placements.count <= 2 ? .none : placements[2]
         }
         
         var fourth: Placement? {
-            return placements[3]
+            return placements.count <= 3 ? .none : placements[3]
         }
         
         var fifth: Placement? {
-            return placements[4]
+            return placements.count <= 4 ? .none : placements[4]
         }
         
         struct Placement {
+            var result: WSDC.Competition.Result
             var partners: [Competition]
             
             var lead: Competition? {

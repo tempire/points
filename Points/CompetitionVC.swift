@@ -10,23 +10,23 @@ import Foundation
 import UIKit
 
 private struct RowSource {
-    var lead: Competition
-    var follow: Competition
-    var media: [Media]
-    var songs: [Media]
-    var videos: [Media]
+    var type: WSDC.Competition.Result
+    var partners: [Competition]
 }
 
 class CompetitionVC: UIViewController {
     
     fileprivate var rowSource: [RowSource] = []
     
-    var eventYear: EventYear {
+    var division: EventYear.Division! {
         didSet {
-            var pairs = [(lead: Competition, follow: Competition)]()
             
-            eventYear.competitions.forEach { competition in
-                
+            division.placements.forEach { placement in
+                rowSource.append(RowSource(type: placement.result, partners: placement.partners))
+            }
+            
+            division.finalists.forEach { finalist in
+                rowSource.append(RowSource(type: finalist.result, partners: [finalist]))
             }
         }
     }
@@ -38,6 +38,14 @@ class CompetitionVC: UIViewController {
     @IBOutlet weak var divisionNameLabel: UILabel!
     @IBOutlet weak var competitionTypeLabel: UILabel!
 
+    lazy var headerScrollView: UIScrollView = {
+        let view = UIScrollView()
+        view.backgroundColor = .lightGray
+        view.scrollsToTop = false
+        view.showsHorizontalScrollIndicator = false
+        return view
+    }()
+    
     @IBOutlet weak var tableView: UITableView! {
         didSet {
             tableView.scrollsToTop = true
@@ -77,7 +85,7 @@ extension CompetitionVC: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        return divisionScrollView
+        return headerScrollView
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -94,35 +102,31 @@ extension CompetitionVC: UITableViewDataSource {
         //    ? tableView.dequeueCell(DancerCompCell.self, for: indexPath)
         //    : tableView.dequeueCell(DancerCompDetailsCell.self, for: indexPath)
         
-        let cell = tableView.dequeueCell(DancerCompCell.self, for: indexPath)
+        let cell = tableView.dequeueCell(CompetitionCell.self, for: indexPath)
         
-        let source = rowSource[(indexPath as NSIndexPath).row]
-        cell.rowSource = source
+        let source = rowSource[indexPath.row]
         
-        cell.selectionStyle = .none
-        //let backgroundView = UIView()
-        //backgroundView.backgroundColor = cell.backgroundColor
-        //cell.selectedBackgroundView = backgroundView
+        cell.placementLabel.text = source.partners.first?.result.description
         
-        //if let cell = cell as? DancerCompCell {
-        cell.resultLabel.text = source.result.description
-        cell.divisionNameLabel.text = source.divisionName.description
-        cell.eventNameLabel.text = source.eventName
-        //cell.eventNameLabel.text = competition.eventYear.event.name
-        cell.eventDateLabel.text = source.eventDateDescription
-        cell.eventLocationLabel.text = source.eventLocation
-        cell.pointsCircleView.backgroundColor = source.role == .Lead ? .lead : .follow
-        cell.pointsLabel.text = source.points
-        cell.pointsLabel.backgroundColor = cell.pointsCircleView.backgroundColor
+        cell.firstPartnerLabel.text = source.partners.first?.dancer.first?.name
+        cell.firstPartnerRoleLabel.text = source.partners.first?.role.tinyRaw
+        cell.firstPartnerPointsLabel.text = "\(source.partners.first?.points ?? 0)"
         
-        cell.partnerRoleView.isHidden = source.partnerName == .none
-        cell.partnerRoleView.backgroundColor = source.partnerRole == .Lead ? .lead : .follow
-        cell.partnerRoleLabel.text = source.partnerRole?.tinyRaw.uppercased()
-        cell.partnerRoleLabel.backgroundColor = cell.partnerRoleView.backgroundColor
-        cell.partnerNameLabel.text = source.partnerName
-        //}
+        print("RESULT: \(source.partners.first?.result.description)")
+        print("NAMES: \(source.partners.flatMap { $0.dancer.first?.name })")
+        print("COUNT: \(source.partners.count)")
+        if source.partners.count <= 1 {
+            cell.secondPartnerGroupViewHeightConstraint.constant = 0
+        }
+        else {
+            cell.secondPartnerLabel.text = source.partners.last?.dancer.first?.name
+            cell.secondPartnerRoleLabel.text = source.partners.last?.role.tinyRaw
+            cell.secondPartnerPointsLabel.text = "\(source.partners.last?.points ?? 0)"
+        }
         
+        cell.detailsGroupViewZeroHeightConstraint.constant = 0
         
+        /*
         cell.videoScrollView.constrainEdgesHorizontally((0..<3).map { index -> UIImageView in
             
             let url = URL(string: "https://img.youtube.com/vi/qNtcB_ZBZOw/\(index).jpg")!
@@ -141,6 +145,7 @@ extension CompetitionVC: UITableViewDataSource {
             return imageView
             }
         )
+        */
         
         return cell
     }
@@ -149,7 +154,7 @@ extension CompetitionVC: UITableViewDataSource {
 extension CompetitionVC: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
+        /*
         guard let cell = tableView.cellForRow(at: indexPath) as? DancerCompCell,
             rowSource[(indexPath as NSIndexPath).row].type == .main else {
                 return
@@ -196,6 +201,7 @@ extension CompetitionVC: UITableViewDelegate {
         //detailsCellVisible[detailsCellIndexPath.row] = !detailsCellVisible[detailsCellIndexPath.row]
         
         //tableView.reloadRowsAtIndexPaths([detailsCellIndexPath], withRowAnimation: .Automatic)
+        */
     }
 }
 
@@ -213,6 +219,8 @@ class CompetitionCell: UITableViewCell {
     @IBOutlet weak var secondPartnerLabel: UILabel!
     @IBOutlet weak var secondPartnerPointsCircleView: UIView!
     @IBOutlet weak var secondPartnerPointsLabel: UILabel!
+    
+    @IBOutlet weak var secondPartnerGroupViewHeightConstraint: NSLayoutConstraint!
     
     @IBOutlet var detailsGroupViewZeroHeightConstraint: NSLayoutConstraint! {
         didSet {
