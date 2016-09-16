@@ -109,7 +109,7 @@ class DancerVC: UIViewController {
     }
     @IBOutlet weak var wsdcIdLabel: UILabel! {
         didSet {
-            wsdcIdLabel.text = String(dancer.id)
+            wsdcIdLabel.text = "\(dancer.id)"
         }
     }
     
@@ -391,11 +391,15 @@ extension DancerVC {
 
 extension DancerVC: UITableViewDataSource {
 
-    private func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+    var heightForHeader: CGFloat {
+        return tableView(tableView, heightForHeaderInSection: 0)
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 56
     }
     
-    private func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         return divisionScrollView
     }
     
@@ -571,7 +575,7 @@ extension DancerVC: MGSwipeTableCellDelegate {
             
         case .partner?:
             if let dancer = rowSource[(indexPath as NSIndexPath).row].competition.partnerCompetition?.dancer.first {
-                let vc = Storyboard.Main.viewController(DancerVC)
+                let vc = Storyboard.Main.viewController(DancerVC.self)
                 vc.dancer = dancer
                 navigationController?.pushViewController(vc, animated: true)
             }
@@ -593,7 +597,7 @@ extension DancerVC: MGSwipeTableCellDelegate {
 extension DancerVC {
     
     fileprivate func rowSourceForCell(containingView view: UIView?) -> RowSource? {
-        return view?.superviewMatching(DancerCompCell)?.rowSource
+        return view?.superviewMatching(DancerCompCell.self)?.rowSource
     }
     
     override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
@@ -657,7 +661,7 @@ extension DancerVC: UIScrollViewDelegate {
 
         let pointImmediatelyBelowTableViewHeader = CGPoint(
             x: 5,
-            y: tableView.contentOffset.y + tableView(tableView, heightForHeaderInSection: 0)
+            y: tableView.contentOffset.y + heightForHeader
         )
         
         let title = rowTitle(

@@ -77,7 +77,7 @@ class WSDC {
                 "wsdcId": wsdcId as AnyObject,
                 "first_name": firstName as AnyObject,
                 "last_name": lastName as AnyObject,
-                "placements": [
+                "placements": [ 
                     "West Coast Swing": divisions.map { $0.json }
                 ] as AnyObject
             ]
@@ -89,7 +89,7 @@ class WSDC {
         
         var serialized: String {
             return [
-                wsdcId,
+                "\(wsdcId)",
                 firstName,
                 lastName
                 ].joined(separator: "^")
@@ -399,14 +399,13 @@ class WSDC {
         
         func serialized(withId id: Int, andDivision divisionName: DivisionName) -> String {
             return [
-                id,
-                //divisionName.serialized,
+                "\(id)",
                 divisionName.abbreviation,
-                points,
+                "\(points)",
                 result.tinyRaw,
                 role.tinyRaw,
-                event.id,
-                Int(event.date.year()-2000)
+                "\(event.id)",
+                "\(event.date.year() - 2000))"
             ].joined(separator: "^")
         }
     }
@@ -445,12 +444,12 @@ class WSDC {
         
         var serialized: String {
             return [
-                date.month(),
-                Int(date.year()-2000),
-                id,
+                "\(date.month())",
+                "\(date.year() - 2000)",
+                "\(id)",
                 location,
-                name
-            ].joined(separator: "^")
+                name,
+                ].joined(separator: "^")
         }
     }
 }

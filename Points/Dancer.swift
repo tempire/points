@@ -76,7 +76,7 @@ class Dancer: Object, StringImport {
         
         var points: [WSDC.DivisionName:Int] = [:]
         
-        var min = WSDC.DivisionName.NOV
+        let min = WSDC.DivisionName.NOV
         var max = WSDC.DivisionName.NOV
         
         for comp in competitions {

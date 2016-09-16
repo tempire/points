@@ -11,6 +11,7 @@
 		F110AA871D4421EC008F603A /* UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F110AA861D4421EC008F603A /* UIView.swift */; };
 		F110AA901D4440F6008F603A /* UILabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F110AA8F1D4440F6008F603A /* UILabel.swift */; };
 		F11645D11D6FEEC500EE7FAD /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F11645D01D6FEEC500EE7FAD /* CloudKit.framework */; };
+		F126800D1D8A52FF00EB1DB7 /* CompetitionVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F126800C1D8A52FF00EB1DB7 /* CompetitionVC.swift */; };
 		F131A9EB1D3CA0F700B82BB9 /* Notifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = F131A9EA1D3CA0F700B82BB9 /* Notifier.swift */; };
 		F131A9F41D3D80C000B82BB9 /* UIColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F131A9F31D3D80BF00B82BB9 /* UIColor.swift */; };
 		F131A9F81D3D95E400B82BB9 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F131A9F71D3D95E400B82BB9 /* TabBarController.swift */; };
@@ -181,6 +182,7 @@
 		F110AA8F1D4440F6008F603A /* UILabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UILabel.swift; sourceTree = "<group>"; };
 		F11645CF1D6FEE7800EE7FAD /* Points.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Points.entitlements; sourceTree = "<group>"; };
 		F11645D01D6FEEC500EE7FAD /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
+		F126800C1D8A52FF00EB1DB7 /* CompetitionVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompetitionVC.swift; sourceTree = "<group>"; };
 		F131A9EA1D3CA0F700B82BB9 /* Notifier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Notifier.swift; sourceTree = "<group>"; };
 		F131A9F31D3D80BF00B82BB9 /* UIColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIColor.swift; sourceTree = "<group>"; };
 		F131A9F71D3D95E400B82BB9 /* TabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
@@ -341,6 +343,7 @@
 				F1DDF98B1D3BFE9E00EEB426 /* CloudKitGetDumpOperation.swift */,
 				F19512F31D394CDB00EDC276 /* WSDCTransformOperation.swift */,
 				F15CA92E1D3DFA4F00B69279 /* DancerVC.swift */,
+				F126800C1D8A52FF00EB1DB7 /* CompetitionVC.swift */,
 				F1AF6ADE1D75251C000E8037 /* UIScrollView.swift */,
 				F1AF6AE71D7527DD000E8037 /* NSIndexPath.swift */,
 				F14809731D60F0B0000E18E7 /* MGSwipeButton.swift */,
@@ -786,6 +789,7 @@
 				F1EB043D1D3845D8004EEA56 /* Images.swift in Sources */,
 				F17FA7D81D336DB8001B99AF /* WSDC.swift in Sources */,
 				F17FA7D41D336D83001B99AF /* NSPredicate.swift in Sources */,
+				F126800D1D8A52FF00EB1DB7 /* CompetitionVC.swift in Sources */,
 				F1BB63181D3C359E00A1CC9D /* NSURLRequest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

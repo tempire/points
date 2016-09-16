@@ -112,9 +112,9 @@ extension CompetitorsVC: UITableViewDataSource {
         
         let points = dancer.points(forDivision: dancer.rank.max)
         cell.divisionLeadPointsLabel.isHidden = points[.Lead] == 0
-        cell.divisionLeadPointsLabel.text = String(points[.Lead]!)
+        cell.divisionLeadPointsLabel.text = "\(points[.Lead]!)"
         cell.divisionFollowPointsLabel.isHidden = points[.Follow] == 0
-        cell.divisionFollowPointsLabel.text = String(points[.Follow]!)
+        cell.divisionFollowPointsLabel.text = "\(points[.Follow]!)"
         
         return cell
     }
@@ -212,7 +212,7 @@ extension CompetitorsVC {
         case .began:
             if direction == .right {
                 interactivePopTransition = UIPercentDrivenInteractiveTransition()
-                navigationController?.popViewController(animated: true)
+                _ = navigationController?.popViewController(animated: true)
             }
             
         case .changed:

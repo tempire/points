@@ -13,7 +13,7 @@ import CoreSpotlight
 
 enum Points {
     
-    static func addSubscriptionForNewPoints(_ completion: @escaping (CKSubscription?, CKSubscription.Error?)->Void) {
+    static func addSubscriptionForNewPoints(_ completion: @escaping (CKSubscription?, NSError?)->Void) {
         let publicDatabase = CKContainer.default().publicCloudDatabase
         
         let op = CKSubscription(.Dumps, options: [.firesOnRecordCreation, .firesOnRecordUpdate, .firesOnRecordDeletion])
@@ -21,8 +21,10 @@ enum Points {
         info.alertBody = "Dumps Subscription"
         info.shouldBadge = true
         info.shouldSendContentAvailable = true
-        
-        publicDatabase.save(op, completionHandler: completion)
+
+        publicDatabase.save(op, completionHandler: { subscription, error in
+            completion(subscription, error as? NSError)
+        })
     }
     
     static func importData(_ data: Data, into realm: Realm, with progress: Progress) throws {
@@ -73,8 +75,9 @@ enum Points {
         
         for string in strings where string.characters.count > 2 {
 
-            if string[string.startIndex..<string.index(string.startIndex, offsetBy: -2)] == "__" {
-                identifier = string[string.index(string.startIndex, offsetBy: 2)..<string.index(string.startIndex, offsetBy: -2)]
+            
+            if string[string.startIndex..<string.index(string.startIndex, offsetBy: 2)] == "__" {
+                identifier = string[string.index(string.startIndex, offsetBy: 2)..<string.index(string.endIndex, offsetBy: -2)]
                 progress.completedUnitCount += 1
                 continue
             }

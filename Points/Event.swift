@@ -65,6 +65,21 @@ class EventYear: Object {
     var shortDateString: String {
         return String(date.shortMonthToString() + "\n" + String(date.year()))
     }
+    
+    var divisions:
+}
+
+struct Division {
+    var finalists: [Competition]
+    var placements: [Placement]
+    
+    struct Placement {
+        var partners: [Competition]
+        
+        // Optionals - allow for missing data and/or multiple partners for 3-for-alls and such
+        var lead: Competition?
+        var follow: Competition?
+    }
 }
 
 class Event: Object {
