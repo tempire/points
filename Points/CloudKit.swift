@@ -58,9 +58,9 @@ extension CKRecord {
         let record = CKRecord(.Dumps, id: dump.id as UUID)
         
         record["id"] = dump.id.uuidString as CKRecordValue?
-        record["date"] = dump.date
+        record["date"] = dump.date as CKRecordValue?
         record["version"] = dump.version as CKRecordValue?
-        record["data"] = dump.data
+        record["data"] = dump.data as CKRecordValue?
         
         return record
     }

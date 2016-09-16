@@ -87,9 +87,12 @@ extension Date {
         case .iso8601:
             var s = string
             if string.hasSuffix(" 00:00") {
-                s = s.substring(to: s.length-6) + "GMT"
+                s = s.substring(to: s.length-6) as NSString
+                s = s.appending("GMT") as NSString
+                
             } else if string.hasSuffix("Z") {
-                s = s.substring(to: s.length-1) + "GMT"
+                s = s.substring(to: s.length-1) as NSString
+                s = s.appending("GMT") as NSString
             }
             let formatter = DateFormatter()
             formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZZZ"
