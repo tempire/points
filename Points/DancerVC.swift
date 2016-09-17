@@ -443,6 +443,8 @@ extension DancerVC: UITableViewDataSource {
             cell.partnerRoleLabel.text = source.partnerRole?.tinyRaw.uppercased()
             cell.partnerRoleLabel.backgroundColor = cell.partnerRoleView.backgroundColor
             cell.partnerNameLabel.text = source.partnerName
+        
+            cell.partnerButton.isHidden = source.partnerName == .none
         //}
         
         
@@ -601,7 +603,31 @@ extension DancerVC {
     }
     
     override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
-        return UIStoryboardSegue.SegueIdentifier(identifier) != .none
+
+        guard let cell = sender as? UIView,
+            let identifier = UIStoryboardSegue.SegueIdentifier(identifier) else {
+                return false
+        }
+        
+        switch identifier {
+            
+        case .partner:
+            if let source = rowSourceForCell(containingView: cell),
+                let _ = source.competition.partnerCompetition?.dancer.first {
+                return true
+            }
+
+        case .division:
+            if let source = rowSourceForCell(containingView: cell),
+                let _ = source.competition.eventYear.divisions[source.competition.divisionName] {
+                return true
+            }
+            
+        case .firstPartner, .secondPartner:
+            break
+        }
+        
+        return false
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -615,8 +641,9 @@ extension DancerVC {
             
         case .partner:
             if let vc = segue.destination as? DancerVC,
-                let source = rowSourceForCell(containingView: cell) {
-                vc.dancer = source.competition.partnerCompetition?.dancer.first
+                let source = rowSourceForCell(containingView: cell),
+                let dancer = source.competition.partnerCompetition?.dancer.first {
+                vc.dancer = dancer
             }
             
         case .division:
