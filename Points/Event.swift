@@ -70,24 +70,29 @@ class EventYear: Object {
         var divisions: [WSDC.DivisionName:Division] = [:]
 
         competitions.forEach { competition in
+            
+            //print("NAME: \(competition.dancer.first?.name) DIVISION: \(competition.divisionName), RESULT: \(competition.result.description)")
+            
             var division = divisions[competition.divisionName] ?? Division(name: competition.divisionName, placements: [], finalists: [])
                 
             switch competition.result {
                 
             case .placement(let placementIndex):
+                
                 if let _ = division.index(index: placementIndex) {
                     division.placements[placementIndex - 1].partners.append(competition)
+                    division.placements[placementIndex - 1].result = competition.result
                 }
                 else {
                     var placement = Division.Placement(result: competition.result, partners: [])
-                    for _ in 0..<placementIndex {
+                    for _ in division.placements.count..<placementIndex {
                         division.placements.append(placement)
                     }
                     
                     placement.partners.append(competition)
                     division.placements[placementIndex - 1] = placement
                 }
-                
+
             case .final:
                 division.finalists.append(competition)
             }
@@ -104,7 +109,7 @@ class EventYear: Object {
         var finalists: [Competition]
 
         func index(index: Int) -> Placement? {
-            return index >= placements.count ? .none : placements[index]
+            return index - 1 >= placements.count ? .none : placements[index - 1]
         }
         
         var first: Placement? {

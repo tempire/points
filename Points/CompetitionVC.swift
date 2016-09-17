@@ -20,24 +20,36 @@ class CompetitionVC: UIViewController {
     
     var division: EventYear.Division! {
         didSet {
+            print("---")
             
-            division.placements.forEach { placement in
+            division.placements.enumerated().forEach { index, placement in
+                //print("INDEX: \(index), RESULT: \(placement.result), PARTNER COUNT: \(placement.partners.count), PARTNERS: \(placement.partners.first?.dancer.first?.name) - \(placement.partners.last?.dancer.first?.name)")
                 rowSource.append(RowSource(type: placement.result, partners: placement.partners))
             }
             
-            division.finalists.forEach { finalist in
+            division.finalists.enumerated().forEach { index, finalist in
+                //print("INDEX: \(index), RESULT: \(finalist.result)")
                 rowSource.append(RowSource(type: finalist.result, partners: [finalist]))
             }
+            
+            rowSource.enumerated().forEach { index, source in
+                //print("INDEX: \(index), RESULT: \(source.type), PARTNER COUNT: \(source.partners.count), PARTNERS: \(soure.partners.first?.dancer.first?.name) - \(source.partners.last?.dancer.first?.name)")
+            }
+            
+            print("---")
         }
     }
     
     var peek: Bool = false
-
+    var suspendScrollingHeaderHighlighting = false
+    
     @IBOutlet weak var conventionDateLabel: UILabel!
     @IBOutlet weak var conventionNameLabel: UILabel!
     @IBOutlet weak var divisionNameLabel: UILabel!
     @IBOutlet weak var competitionTypeLabel: UILabel!
 
+    @IBOutlet weak var backgroundHeaderViewHeightConstraint: NSLayoutConstraint!
+    
     lazy var headerScrollView: UIScrollView = {
         let view = UIScrollView()
         view.backgroundColor = .lightGray
@@ -98,29 +110,28 @@ extension CompetitionVC: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        //let cell = rowSource.count >= indexPath.row && rowSource[indexPath.row].type == .Main
-        //    ? tableView.dequeueCell(DancerCompCell.self, for: indexPath)
-        //    : tableView.dequeueCell(DancerCompDetailsCell.self, for: indexPath)
-        
         let cell = tableView.dequeueCell(CompetitionCell.self, for: indexPath)
         
         let source = rowSource[indexPath.row]
+        cell.rowSource = source
+        
+        print("INDEXPATH: \(indexPath.row), NAME: \(source.partners.first?.dancer.first?.name), RESULT: \(source.partners.first?.result)")
+
+        cell.selectionStyle = .none
         
         cell.placementLabel.text = source.partners.first?.result.description
         
         cell.firstPartnerLabel.text = source.partners.first?.dancer.first?.name
-        cell.firstPartnerRoleLabel.text = source.partners.first?.role.tinyRaw
+        cell.firstPartnerRoleLabel.text = source.partners.first?.role.tinyRaw.uppercased()
         cell.firstPartnerPointsLabel.text = "\(source.partners.first?.points ?? 0)"
         
-        print("RESULT: \(source.partners.first?.result.description)")
-        print("NAMES: \(source.partners.flatMap { $0.dancer.first?.name })")
-        print("COUNT: \(source.partners.count)")
         if source.partners.count <= 1 {
             cell.secondPartnerGroupViewHeightConstraint.constant = 0
         }
         else {
+            cell.secondPartnerGroupViewHeightConstraint.constant = 60
             cell.secondPartnerLabel.text = source.partners.last?.dancer.first?.name
-            cell.secondPartnerRoleLabel.text = source.partners.last?.role.tinyRaw
+            cell.secondPartnerRoleLabel.text = source.partners.last?.role.tinyRaw.uppercased()
             cell.secondPartnerPointsLabel.text = "\(source.partners.last?.points ?? 0)"
         }
         
@@ -205,15 +216,154 @@ extension CompetitionVC: UITableViewDelegate {
     }
 }
 
+// Segue
+
+extension CompetitionVC {
+    
+    fileprivate func rowSourceForCell(containingView view: UIView?) -> RowSource? {
+        return view?.superviewMatching(CompetitionCell.self)?.rowSource
+    }
+    
+    override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
+        return UIStoryboardSegue.SegueIdentifier(identifier) != .none
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        guard let cell = sender as? UIView,
+            let identifier = segue.identifierType else {
+                return
+        }
+        
+        
+        switch identifier {
+            
+        case .firstPartner, .secondPartner:
+            if let vc = segue.destination as? DancerVC,
+                let source = rowSourceForCell(containingView: cell) {
+                vc.dancer = identifier == .firstPartner
+                    ? source.partners.first?.dancer.first
+                    : source.partners.last?.dancer.first
+            }
+            
+        case .division, .partner:
+            break
+        }
+    }
+}
+
+
+// Scrollview delegate
+
+extension CompetitionVC: UIScrollViewDelegate {
+    
+    func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+        suspendScrollingHeaderHighlighting = false
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        
+        if tableView.contentOffset.y > 0-50 && tableView.contentOffset.y < 500 { // (300-56) {
+            backgroundHeaderViewHeightConstraint.constant = max(max(conventionNameLabel.bounds.height, 56), 300 - self.tableView.contentOffset.y)
+        }
+        
+        /*
+        if suspendScrollingHeaderHighlighting {
+            return
+        }
+        
+
+        let pointImmediatelyBelowTableViewHeader = CGPoint(
+            x: 5,
+            y: tableView.contentOffset.y + heightForHeader
+        )
+        
+        let title = rowTitle(
+            firstVisibleRow(
+                scrollView: scrollView,
+                indexPath: tableView.indexPathForRow(at: pointImmediatelyBelowTableViewHeader)
+            )
+        )
+        
+        for case let button as UIButton in headerScrollView.subviews where button.currentTitle == title {
+            highlight(button: button)
+            return
+        }
+         */
+    }
+    
+    /*
+    func cellTitleIsVisible(_ rect: CGRect) -> Bool {
+        return rect.origin.y < 97
+    }
+    
+    func cellTitleIsHidden(_ rect: CGRect) -> Bool {
+        return rect.origin.y > 105
+    }
+    
+    fileprivate func rowTitle(_ source: RowSource?) -> String? {
+        
+        switch sort {
+            
+        case .divisionName:
+            return source?.divisionName.description
+            
+        case .placement:
+            return source?.result.description
+            
+        case .date:
+            return String(source?.eventDate.year())
+        }
+    }
+    
+    fileprivate func row(forIndexPath indexPath: IndexPath) -> RowSource {
+        return rowSource[(indexPath as NSIndexPath).row]
+        //return rowSource[Int(floor(Float(indexPath.row / 2)))]
+    }
+    
+    fileprivate func firstVisibleRow(scrollView: UIScrollView, indexPath tmp: IndexPath?) -> RowSource? {
+        
+        guard let indexPath = tmp else {
+            return .none
+        }
+        
+        let cellRectWithinTableView = tableView.convert(tableView.rectForRow(at: indexPath), to: tableView.superview)
+        
+        if scrollView.scrolledAboveContentView {
+            return rowSource.first
+        }
+            
+        else if scrollView.atBottomOfContentView {
+            return rowSource.last
+        }
+            
+        else if cellTitleIsHidden(cellRectWithinTableView) {
+            return row(forIndexPath: indexPath)
+        }
+            
+        else if cellTitleIsVisible(cellRectWithinTableView) {
+            return row(forIndexPath: indexPath.nextRow)
+        }
+        
+        return .none
+    }
+    */
+}
+
 class CompetitionCell: UITableViewCell {
+    
+    fileprivate var rowSource: RowSource!
+    
     @IBOutlet weak var placementLabel: UILabel!
     
+    @IBOutlet weak var firstParterButton: UIButton!
     @IBOutlet weak var firstPartnerRoleCircleView: UIView!
     @IBOutlet weak var firstPartnerRoleLabel: UILabel!
     @IBOutlet weak var firstPartnerLabel: UILabel!
     @IBOutlet weak var firstPartnerPointsCircleView: UIView!
     @IBOutlet weak var firstPartnerPointsLabel: UILabel!
     
+    @IBOutlet weak var secondPartnerButton: UIButton!
     @IBOutlet weak var secondPartnerRoleCircleView: UIView!
     @IBOutlet weak var secondPartnerRoleLabel: UILabel!
     @IBOutlet weak var secondPartnerLabel: UILabel!

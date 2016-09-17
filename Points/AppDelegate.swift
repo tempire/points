@@ -48,13 +48,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 
                 switch oldSchemaVersion {
                     
-                case 0: // Previously unspecified version == 0
+                case 0, 1, 2: // Previously unspecified version == 0
                     break
-                    //self.migrateRealmFrom0To1(migration)
-                    
-                case 1, 2:
-                    break
-                    //self.migrateRealmFrom1To2(migration)
                     
                 default:
                     break
@@ -63,7 +58,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         )
         
         let realm = try Realm()
-        print("Realm Schema initialized: \(realm.schema)")
+        print("Realm Schema initialized")
     }
     
 
@@ -160,7 +155,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     print("deleted")
                 }
                 
-                print(op.moreComing)
+                print("MORE COMING: \(op.moreComing)")
                 
                 // Do not mark read before it's retrieved, do this in fetchNotificationChangesCompletionBlock
                 let op = CKMarkNotificationsReadOperation(notificationIDsToMarkRead: [id])
@@ -179,17 +174,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             
             CKContainer.default().add(op)
             
-            print(recordID)
+            print("RECORDID: \(recordID)")
         }
     }
     
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        print("\(deviceToken)")
+        print("DEVICETOKEN: \(deviceToken)")
         let token = "\(deviceToken)"
             .trimmingCharacters(in: CharacterSet(charactersIn: "<>"))
             .replacingOccurrences(of: " ", with: "")
 
-        print(token)
+        print("TOKEN: \(token)")
     }
 
     private func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: NSError) {

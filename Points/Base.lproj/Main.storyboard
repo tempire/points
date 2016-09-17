@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11201" systemVersion="15G31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11201" systemVersion="15G1004" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
@@ -38,15 +38,14 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="618"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="EL0-E4-5Qb">
-                                <frame key="frameInset" minY="80" width="600" height="520"/>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="EL0-E4-5Qb">
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="DumpCell" textLabel="IAc-xF-RPb" detailTextLabel="UQ3-r4-KcA" style="IBUITableViewCellStyleSubtitle" id="UsS-so-DgA">
-                                        <rect key="frame" x="0.0" y="28" width="600" height="44"/>
+                                        <rect key="frame" x="0.0" y="28" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="UsS-so-DgA" id="ZIc-nM-F7W">
-                                            <frame key="frameInset" width="600" height="43.5"/>
+                                            <frame key="frameInset" width="375" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="IAc-xF-RPb">
@@ -74,42 +73,45 @@
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
-                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="8yD-ie-DVK">
-                                <frame key="frameInset" minY="20" width="600" height="60"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8yD-ie-DVK">
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="18y-7x-zHi">
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="44" id="OCb-4c-m80"/>
+                                        </constraints>
                                         <state key="normal" title="Button" image="glyphicons-174-play"/>
                                         <connections>
                                             <action selector="toggleWSDCGet:" destination="Uyr-fs-Xt4" eventType="touchUpInside" id="kye-ZK-HJx"/>
                                         </connections>
                                     </button>
-                                    <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" misplaced="YES" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="4rd-Qn-4oY">
-                                        <frame key="frameInset" minY="58" width="600" height="2"/>
+                                    <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="4rd-Qn-4oY">
                                         <constraints>
                                             <constraint firstAttribute="height" constant="2" id="WJy-IZ-4iy"/>
                                         </constraints>
                                     </progressView>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Gum-sS-EnB">
-                                        <frame key="frameInset" minX="542" minY="16" width="42" height="34"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Gum-sS-EnB">
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GZI-Hy-Q2h">
-                                        <frame key="frameInset" minX="550" minY="8" width="42" height="21"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GZI-Hy-Q2h">
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8Aa-t3-GjU">
-                                        <frame key="frameInset" minX="102" minY="14" width="26" height="26"/>
+                                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8Aa-t3-GjU">
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="44" id="fbc-V7-2cm"/>
+                                        </constraints>
                                         <state key="normal" image="glyphicons-193-remove-sign"/>
                                         <connections>
                                             <action selector="cancel:" destination="Uyr-fs-Xt4" eventType="touchUpInside" id="KHh-pb-KHj"/>
                                         </connections>
                                     </button>
-                                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zmc-ye-Zsl">
-                                        <frame key="frameInset" minX="144" minY="12" width="114" height="30"/>
+                                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zmc-ye-Zsl">
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="44" id="W4p-oS-l8L"/>
+                                        </constraints>
                                         <state key="normal" title="Save to CloudKit"/>
                                         <connections>
                                             <action selector="saveToCloudKit:" destination="Uyr-fs-Xt4" eventType="touchUpInside" id="PVf-Rb-6dZ"/>
@@ -243,7 +245,7 @@
                         <viewControllerLayoutGuide type="bottom" id="qJA-KV-qzN"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="N3l-7L-Uvh">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="951"/>
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="1000"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="200" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="LUv-CN-snn">
@@ -383,7 +385,7 @@
                                                                 <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Xm3-7l-SpF">
                                                                     <state key="normal" title="Competitors" image="glyphicons-44-group"/>
                                                                     <connections>
-                                                                        <segue destination="w0S-gP-JIu" kind="show" identifier="Division" id="Mv3-3G-3J7">
+                                                                        <segue destination="w0S-gP-JIu" kind="show" identifier="division" id="Mv3-3G-3J7">
                                                                             <segue key="commit" inheritsFrom="parent" id="6DT-DR-2VR"/>
                                                                             <segue key="preview" inheritsFrom="commit" id="Qk4-Dc-SU5"/>
                                                                         </segue>
@@ -395,7 +397,7 @@
                                                                     </constraints>
                                                                     <state key="normal" title="Partner" image="partner-group"/>
                                                                     <connections>
-                                                                        <segue destination="sic-BJ-2T2" kind="show" identifier="Partner" id="9jj-pz-EtA">
+                                                                        <segue destination="sic-BJ-2T2" kind="show" identifier="partner" id="9jj-pz-EtA">
                                                                             <segue key="commit" inheritsFrom="parent" id="GEK-0l-SUv"/>
                                                                             <segue key="preview" inheritsFrom="commit" id="vOl-aE-qzq"/>
                                                                         </segue>
@@ -946,7 +948,7 @@
                         <viewControllerLayoutGuide type="bottom" id="haA-TG-MDQ"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="79X-IH-KS2">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="951"/>
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="1000"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="200" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="g1R-kw-80e">
@@ -963,7 +965,7 @@
                                         <rect key="frame" x="0.0" y="272" width="600" height="600"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ZrS-8I-4AG" id="IW2-LM-pK0">
-                                            <frame key="frameInset" width="600" height="599.5"/>
+                                            <frame key="frameInset" width="600" height="599"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="1000" text="First Place" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KvF-xw-DO7">
@@ -973,8 +975,16 @@
                                                 </label>
                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="sKB-jV-ofa" userLabel="Partners Group View">
                                                     <subviews>
-                                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="mYg-rw-7IS" userLabel="First Partner Group View">
+                                                        <view contentMode="scaleToFill" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="mYg-rw-7IS" userLabel="First Partner Group View">
                                                             <subviews>
+                                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nWj-HF-KO3">
+                                                                    <connections>
+                                                                        <segue destination="sic-BJ-2T2" kind="show" identifier="firstPartner" id="64N-8X-D0I">
+                                                                            <segue key="commit" inheritsFrom="parent" id="Uw0-DF-RhD"/>
+                                                                            <segue key="preview" inheritsFrom="commit" id="URo-aq-UNP"/>
+                                                                        </segue>
+                                                                    </connections>
+                                                                </button>
                                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2Jc-wz-trq" userLabel="First Partner Role Circle View">
                                                                     <subviews>
                                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="L" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Kk3-aR-y4a" userLabel="First Partner Role Label">
@@ -1017,18 +1027,31 @@
                                                             </subviews>
                                                             <color key="backgroundColor" red="0.10196078568696976" green="0.10196078568696976" blue="0.10196078568696976" alpha="1" colorSpace="calibratedRGB"/>
                                                             <constraints>
-                                                                <constraint firstItem="q7M-a1-uwg" firstAttribute="centerY" secondItem="2Jc-wz-trq" secondAttribute="centerY" id="1th-L2-oYp"/>
+                                                                <constraint firstItem="q7M-a1-uwg" firstAttribute="top" secondItem="mYg-rw-7IS" secondAttribute="top" id="0yu-sR-h1q"/>
                                                                 <constraint firstAttribute="height" constant="60" id="2iw-gQ-d3r"/>
                                                                 <constraint firstItem="2Jc-wz-trq" firstAttribute="leading" secondItem="mYg-rw-7IS" secondAttribute="leading" constant="20" id="FJ9-b1-WxX"/>
-                                                                <constraint firstItem="2Jc-wz-trq" firstAttribute="top" secondItem="mYg-rw-7IS" secondAttribute="top" constant="20" id="glT-Va-SNZ"/>
+                                                                <constraint firstItem="nWj-HF-KO3" firstAttribute="top" secondItem="mYg-rw-7IS" secondAttribute="top" id="GAc-Fj-L8T"/>
+                                                                <constraint firstAttribute="trailing" secondItem="nWj-HF-KO3" secondAttribute="trailing" id="GQT-SI-h49"/>
+                                                                <constraint firstAttribute="bottom" secondItem="q7M-a1-uwg" secondAttribute="bottom" id="Hv4-PS-jI4"/>
+                                                                <constraint firstAttribute="bottom" secondItem="nWj-HF-KO3" secondAttribute="bottom" id="L2B-Fh-fHe"/>
                                                                 <constraint firstItem="q7M-a1-uwg" firstAttribute="leading" secondItem="2Jc-wz-trq" secondAttribute="trailing" constant="16" id="hjs-yj-VGc"/>
                                                                 <constraint firstItem="OoK-ns-9r1" firstAttribute="leading" secondItem="q7M-a1-uwg" secondAttribute="trailing" id="jWn-g5-CtG"/>
                                                                 <constraint firstItem="OoK-ns-9r1" firstAttribute="centerY" secondItem="q7M-a1-uwg" secondAttribute="centerY" id="llx-4r-Lda"/>
                                                                 <constraint firstAttribute="trailing" secondItem="OoK-ns-9r1" secondAttribute="trailing" constant="20" id="uxr-EL-xeX"/>
+                                                                <constraint firstItem="2Jc-wz-trq" firstAttribute="centerY" secondItem="mYg-rw-7IS" secondAttribute="centerY" id="xgz-5U-Pqn"/>
+                                                                <constraint firstItem="nWj-HF-KO3" firstAttribute="leading" secondItem="mYg-rw-7IS" secondAttribute="leading" id="zq7-Fe-mYX"/>
                                                             </constraints>
                                                         </view>
-                                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7e0-my-7Wk" userLabel="Second Partner Group View">
+                                                        <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7e0-my-7Wk" userLabel="Second Partner Group View">
                                                             <subviews>
+                                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="psN-ux-uCp">
+                                                                    <connections>
+                                                                        <segue destination="sic-BJ-2T2" kind="show" identifier="secondPartner" id="c5s-Q0-R5w">
+                                                                            <segue key="commit" inheritsFrom="parent" id="RUq-hE-cFp"/>
+                                                                            <segue key="preview" inheritsFrom="commit" id="1Fa-RR-dLT"/>
+                                                                        </segue>
+                                                                    </connections>
+                                                                </button>
                                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="uW5-je-CfV" userLabel="Second Partner Role Circle View">
                                                                     <subviews>
                                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="L" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="i7l-9t-18p" userLabel="Second Partner Role Label">
@@ -1071,14 +1094,19 @@
                                                             </subviews>
                                                             <color key="backgroundColor" red="0.10196078568696976" green="0.10196078568696976" blue="0.10196078568696976" alpha="1" colorSpace="calibratedRGB"/>
                                                             <constraints>
-                                                                <constraint firstItem="WLJ-4S-NWq" firstAttribute="centerY" secondItem="Igp-DK-ugs" secondAttribute="centerY" id="1Hj-oT-Bbt"/>
                                                                 <constraint firstAttribute="height" constant="60" id="3pw-rQ-pg2"/>
-                                                                <constraint firstItem="Igp-DK-ugs" firstAttribute="centerY" secondItem="uW5-je-CfV" secondAttribute="centerY" id="EIQ-Qc-q4X"/>
-                                                                <constraint firstAttribute="bottom" secondItem="uW5-je-CfV" secondAttribute="bottom" constant="20" id="Gdj-mM-nHF"/>
                                                                 <constraint firstItem="WLJ-4S-NWq" firstAttribute="leading" secondItem="Igp-DK-ugs" secondAttribute="trailing" id="OjN-xS-qDi"/>
+                                                                <constraint firstItem="psN-ux-uCp" firstAttribute="top" secondItem="7e0-my-7Wk" secondAttribute="top" id="Q58-rg-hzv"/>
+                                                                <constraint firstItem="psN-ux-uCp" firstAttribute="leading" secondItem="7e0-my-7Wk" secondAttribute="leading" id="SsC-wP-ufl"/>
+                                                                <constraint firstItem="Igp-DK-ugs" firstAttribute="top" secondItem="7e0-my-7Wk" secondAttribute="top" id="ZRv-CA-ODk"/>
+                                                                <constraint firstItem="uW5-je-CfV" firstAttribute="centerY" secondItem="7e0-my-7Wk" secondAttribute="centerY" id="ZlZ-Wn-HDy"/>
+                                                                <constraint firstItem="WLJ-4S-NWq" firstAttribute="centerY" secondItem="uW5-je-CfV" secondAttribute="centerY" id="cXm-5L-b3u"/>
                                                                 <constraint firstAttribute="trailing" secondItem="WLJ-4S-NWq" secondAttribute="trailing" constant="20" id="fe1-0o-aqf"/>
                                                                 <constraint firstItem="uW5-je-CfV" firstAttribute="leading" secondItem="7e0-my-7Wk" secondAttribute="leading" constant="20" id="gil-yl-xH3"/>
                                                                 <constraint firstItem="Igp-DK-ugs" firstAttribute="leading" secondItem="uW5-je-CfV" secondAttribute="trailing" constant="16" id="kqd-G5-QEL"/>
+                                                                <constraint firstAttribute="trailing" secondItem="psN-ux-uCp" secondAttribute="trailing" id="rm3-WZ-eLk"/>
+                                                                <constraint firstAttribute="bottom" secondItem="Igp-DK-ugs" secondAttribute="bottom" id="tUQ-9I-gM5"/>
+                                                                <constraint firstAttribute="bottom" secondItem="psN-ux-uCp" secondAttribute="bottom" id="y8u-eX-rJb"/>
                                                             </constraints>
                                                         </view>
                                                     </subviews>
@@ -1212,6 +1240,7 @@
                                             <outlet property="appleMusicButton" destination="Fn7-oG-bgf" id="PHa-Ar-wBm"/>
                                             <outlet property="competitorsButton" destination="uLs-fH-Lub" id="03E-3J-Cls"/>
                                             <outlet property="detailsGroupViewZeroHeightConstraint" destination="RtS-Y2-qHC" id="rRR-g1-dEg"/>
+                                            <outlet property="firstParterButton" destination="nWj-HF-KO3" id="3aQ-Yp-48H"/>
                                             <outlet property="firstPartnerLabel" destination="q7M-a1-uwg" id="RFi-uv-qSV"/>
                                             <outlet property="firstPartnerPointsCircleView" destination="OoK-ns-9r1" id="2In-eH-IHO"/>
                                             <outlet property="firstPartnerPointsLabel" destination="2U3-oL-0km" id="hYm-p0-K5N"/>
@@ -1220,6 +1249,7 @@
                                             <outlet property="musicButton" destination="1Qg-3f-cSb" id="DTd-ez-Wdm"/>
                                             <outlet property="partnerButton" destination="1mk-8D-Llc" id="nhO-rt-mDT"/>
                                             <outlet property="placementLabel" destination="KvF-xw-DO7" id="FMG-9u-BKb"/>
+                                            <outlet property="secondPartnerButton" destination="psN-ux-uCp" id="pTP-Ae-WaM"/>
                                             <outlet property="secondPartnerGroupViewHeightConstraint" destination="3pw-rQ-pg2" id="5bo-td-Dbu"/>
                                             <outlet property="secondPartnerLabel" destination="Igp-DK-ugs" id="lwE-Wi-J1a"/>
                                             <outlet property="secondPartnerPointsCircleView" destination="WLJ-4S-NWq" id="f3t-rV-foj"/>
@@ -1318,6 +1348,7 @@
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <size key="freeformSize" width="600" height="1000"/>
                     <connections>
+                        <outlet property="backgroundHeaderViewHeightConstraint" destination="teR-Kl-0zH" id="Bnu-Ar-RsW"/>
                         <outlet property="competitionTypeLabel" destination="Q6e-4N-UON" id="9ac-LC-sg3"/>
                         <outlet property="conventionDateLabel" destination="pBq-zj-cYf" id="NXg-oW-Pe0"/>
                         <outlet property="conventionNameLabel" destination="pzF-m0-xAS" id="tSd-nT-aOM"/>
@@ -1342,8 +1373,8 @@
         <image name="spotify-selected" width="28" height="28"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="CAB-zj-pWK"/>
-        <segue reference="YYd-r9-Xpe"/>
+        <segue reference="c5s-Q0-R5w"/>
         <segue reference="Mv3-3G-3J7"/>
+        <segue reference="YYd-r9-Xpe"/>
     </inferredMetricsTieBreakers>
 </document>

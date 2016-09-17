@@ -64,7 +64,7 @@ class WSDC {
             try lastName = json.value("dancer.last_name")
             
             if let json = json["placements"] as? JSONObject, let _ = json["West Coast Swing"] {
-                divisions = try! json.value("West Coast Swing")
+                divisions = try json.value("West Coast Swing")
             }
             else {
                 divisions = []
@@ -405,7 +405,7 @@ class WSDC {
                 result.tinyRaw,
                 role.tinyRaw,
                 "\(event.id)",
-                "\(event.date.year() - 2000))"
+                "\(event.date.year() - 2000)"
             ].joined(separator: "^")
         }
     }
@@ -417,14 +417,14 @@ class WSDC {
         var id: Int
         var location: String
         var name: String
-        var url: URL?
+        //var url: URL?
         
         init(json: JSONObject) throws {
             try date = json.value("date")
             try id = json.value("id")
             try location = json.value("location")
             try name = json.value("name")
-            try url = json.value("url")
+            //try url = json.value("url")
         }
         
         var json: JSONObject {
@@ -435,9 +435,9 @@ class WSDC {
                 "name": name as AnyObject
             ]
 
-            if let url = url {
-                dict["url"] = url.absoluteString as AnyObject?
-            }
+            //if let url = url {
+            //    dict["url"] = url.absoluteString as AnyObject?
+            //}
             
             return dict
         }

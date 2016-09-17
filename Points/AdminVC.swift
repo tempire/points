@@ -207,7 +207,7 @@ extension AdminVC: WSDCGetOperationDelegate {
 
     func didCompleteCompetitorIdsRetrieval(_ operation: WSDCGetOperation, competitorIds: [Int], completion: @escaping (Void) -> Void) {
         progressLabel.text = "Retrieved \(competitorIds.count) ids"
-        
+
         delay(2, dispatch: .async, queue: DispatchQueue.global(qos: DispatchQoS.QoSClass.userInitiated)) {
             completion()
         }

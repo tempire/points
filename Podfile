@@ -17,9 +17,9 @@ target 'Points' do
   pod 'M13ProgressSuite', '1.2.7'
   pod 'ChameleonFramework', '2.1.0'
   #pod 'ITDAvatarPlaceholder', '0.1.0'
-  pod 'Reveal-iOS-SDK', '1.6.2'
+  pod 'Reveal-SDK' #, '1.6.2'
   pod 'MGSwipeTableCell', '1.5.5'
-  pod 'Spotify-iOS-SDK', '0.17.0'
+  #pod 'Spotify-iOS-SDK', '0.17.0'
   pod 'Realm', :git => 'https://github.com/realm/realm-cocoa.git', :submodules => true
   pod 'RealmSwift', :git => 'https://github.com/realm/realm-cocoa.git', :submodules => true
 end

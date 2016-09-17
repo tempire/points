@@ -49,6 +49,7 @@ class WSDCGetOperation: Operation, ProgressReporting {
                 self.delegate?.didCompleteCompetitorsRetrieval(self, competitors: self.competitors)
                 
                 let data = try self.pack(self.competitors)
+                //print(self.competitors)
                 try data.writeToDumps(path: "dump.data.bz2")
                 
                 self.delegate?.didPackRetrievedData(self, data: data)
@@ -146,7 +147,9 @@ class WSDCGetOperation: Operation, ProgressReporting {
         
         delegate?.didCompleteCompetitorIdsRetrieval(self, competitorIds: competitorIds) {
             
-            self.progress.totalUnitCount += self.competitorIds.count
+            ui(.async) {
+                self.progress.totalUnitCount += self.competitorIds.count
+            }
             
             self.queue.isSuspended = true
             
@@ -172,7 +175,9 @@ class WSDCGetOperation: Operation, ProgressReporting {
         let letters = "abcdefghijklmnopqrstuvwxyxz"
         var ids: Set<Int> = []
         
-        progress.totalUnitCount = Int64(letters.characters.count)
+        ui(.async) {
+            self.progress.totalUnitCount = Int64(letters.characters.count)
+        }
         
         let ops = letters.characters.map { String($0) }.map { letter -> Operation in
             
@@ -193,19 +198,26 @@ class WSDCGetOperation: Operation, ProgressReporting {
                             ids.insert(competitor.wsdcId)
                         }
                         
-                        self.progress.completedUnitCount += 1
+                        ui(.async) {
+                            self.progress.completedUnitCount += 1
+                        }
                         
                         op.done()
                         
                     case .error(let error):
-                        self.progress.completedUnitCount += 1
+                        ui(.async) {
+                            self.progress.completedUnitCount += 1
+                        }
+                        
                         self.errors.append(error.nsError)
                         self.delegate?.errorReported(self, error: error.nsError, requeuing: false)
                         
                         op.done()
                         
                     case .networkError(let error):
-                        self.progress.completedUnitCount += 1
+                        ui(.async) {
+                            self.progress.completedUnitCount += 1
+                        }
                         self.errors.append(error)
                         self.delegate?.errorReported(self, error: error, requeuing: false)
                         
@@ -221,6 +233,7 @@ class WSDCGetOperation: Operation, ProgressReporting {
     }
     
     func triggerNextCompetitor() {
+        
         let count = queue.maxConcurrentOperationCount - queue.operationCount
         if count <= 0 || competitorIds.count <= 0 {
             return
@@ -269,10 +282,18 @@ class WSDCGetOperation: Operation, ProgressReporting {
                     
                 case .error(let error):
                     self.errors.append(error.nsError)
+                   
+
+                    /*if case .typeMismatchWithKey(let key, let expected, let actual, let raw) = error {
+                        print(error)
+                    }
+                    else {
+                     */
+                    let requeue = delegate.shouldRequeueAfterError(self, error: error.nsError, competitorId: id)
+                    delegate.errorReported(self, error: error.nsError, requeuing: requeue)
                     
-                    //let requeue = delegate.shouldRequeueAfterError(self, error: error.nsError, competitorId: id)
-                    //delegate.errorReported(self, error: error.nsError, requeuing: requeue)
-                    delegate.errorReported(self, error: error.nsError, requeuing: false)
+                    //    delegate.errorReported(self, error: error.nsError, requeuing: false)
+                    //}
                 
                 case .networkError(let error):
                     self.errors.append(error)
@@ -289,7 +310,10 @@ class WSDCGetOperation: Operation, ProgressReporting {
                     }
                 }
                 
-                self.progress.completedUnitCount += 1
+                ui(.async) {
+                    self.progress.completedUnitCount += 1
+                }
+                
                 op.done()
                 self.triggerNextCompetitor()
                 self.lastOp.removeDependency(op)

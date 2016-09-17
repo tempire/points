@@ -10,8 +10,7 @@ PODS:
   - Realm/Headers (1.0.2)
   - RealmSwift (1.0.2):
     - Realm (= 1.0.2)
-  - Reveal-iOS-SDK (1.6.2)
-  - Spotify-iOS-SDK (0.17.0)
+  - Reveal-SDK (2)
 
 DEPENDENCIES:
   - ChameleonFramework (= 2.1.0)
@@ -20,8 +19,7 @@ DEPENDENCIES:
   - MGSwipeTableCell (= 1.5.5)
   - Realm (from `https://github.com/realm/realm-cocoa.git`)
   - RealmSwift (from `https://github.com/realm/realm-cocoa.git`)
-  - Reveal-iOS-SDK (= 1.6.2)
-  - Spotify-iOS-SDK (= 0.17.0)
+  - Reveal-SDK
 
 EXTERNAL SOURCES:
   Realm:
@@ -48,9 +46,8 @@ SPEC CHECKSUMS:
   MGSwipeTableCell: bafeb5f351124544c9364ecbdf24c7b06a37d340
   Realm: 2948cfa3a05b7acc446abc4c124d443df646c8de
   RealmSwift: 4816c8608630a9a00bba6d726bb30b4bab6dd6bf
-  Reveal-iOS-SDK: e2250b3c155bcfac53ae223ddc1f76d08f206c33
-  Spotify-iOS-SDK: 9703e35df012ef12a37736feaa5ee1ee3fcd12f8
+  Reveal-SDK: 4d36a47c7091843eee525b72219e005b90bbac0b
 
-PODFILE CHECKSUM: aea6051a02361056ae9dda1b786f6c68567173bb
+PODFILE CHECKSUM: 75cd7f4aea9d997639c013f3fd0ba7b7377abf85
 
 COCOAPODS: 1.0.1
