@@ -16,6 +16,8 @@ enum Asset: String {
   case Glyphicons_175_Pause = "glyphicons-175-pause"
   case Glyphicons_193_Remove_Sign = "glyphicons-193-remove-sign"
   case Glyphicons_44_Group = "glyphicons-44-group"
+  case Glyphicons_49_Star_Empty = "glyphicons-49-star-empty"
+  case Glyphicons_50_Star = "glyphicons-50-star"
   case Glyphicons_646_Police = "glyphicons-646-police"
   case Icon_Error = "icon-error"
   case Icon_Info = "icon-info"

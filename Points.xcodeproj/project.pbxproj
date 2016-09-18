@@ -77,6 +77,9 @@
 		F1AF6AE81D7527DD000E8037 /* NSIndexPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1AF6AE71D7527DD000E8037 /* NSIndexPath.swift */; };
 		F1BB63141D3C1D2A00A1CC9D /* UITableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1BB63131D3C1D2A00A1CC9D /* UITableView.swift */; };
 		F1BB63181D3C359E00A1CC9D /* NSURLRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1BB63171D3C359E00A1CC9D /* NSURLRequest.swift */; };
+		F1C81D531D8DEEBB00CE5D5C /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = F1C81D521D8DEEBB00CE5D5C /* Settings.bundle */; };
+		F1C81D5C1D8DF0E700CE5D5C /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1C81D5B1D8DF0E700CE5D5C /* AppSettings.swift */; };
+		F1C81D5E1D8E25A600CE5D5C /* FavoritesVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1C81D5D1D8E25A600CE5D5C /* FavoritesVC.swift */; };
 		F1CE6D3E1D610A530089F6C4 /* NVCTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1CE6D3D1D610A530089F6C4 /* NVCTransition.swift */; };
 		F1CE6D471D610B350089F6C4 /* PopTransitionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1CE6D461D610B350089F6C4 /* PopTransitionController.swift */; };
 		F1DB45621D7A41F700C5C4D2 /* Media.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1DB45611D7A41F700C5C4D2 /* Media.swift */; };
@@ -245,6 +248,9 @@
 		F1AF6AE71D7527DD000E8037 /* NSIndexPath.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSIndexPath.swift; sourceTree = "<group>"; };
 		F1BB63131D3C1D2A00A1CC9D /* UITableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UITableView.swift; sourceTree = "<group>"; };
 		F1BB63171D3C359E00A1CC9D /* NSURLRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSURLRequest.swift; sourceTree = "<group>"; };
+		F1C81D521D8DEEBB00CE5D5C /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
+		F1C81D5B1D8DF0E700CE5D5C /* AppSettings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
+		F1C81D5D1D8E25A600CE5D5C /* FavoritesVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FavoritesVC.swift; sourceTree = "<group>"; };
 		F1CE6D3D1D610A530089F6C4 /* NVCTransition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NVCTransition.swift; sourceTree = "<group>"; };
 		F1CE6D461D610B350089F6C4 /* PopTransitionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PopTransitionController.swift; sourceTree = "<group>"; };
 		F1DB45611D7A41F700C5C4D2 /* Media.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Media.swift; sourceTree = "<group>"; };
@@ -362,10 +368,12 @@
 				F17FA7DF1D336DCE001B99AF /* NSDate.swift */,
 				F1BB63171D3C359E00A1CC9D /* NSURLRequest.swift */,
 				F17FA7E11D336DD3001B99AF /* NSURL.swift */,
+				F1C81D5D1D8E25A600CE5D5C /* FavoritesVC.swift */,
 				F1A75C3E1D336F7E0070AAD8 /* amain.swift */,
 				F17FA7E31D336DD7001B99AF /* NSMutableURLRequest.swift */,
 				F17FA7C51D336D46001B99AF /* Main.storyboard */,
 				F1DB45611D7A41F700C5C4D2 /* Media.swift */,
+				F1C81D5B1D8DF0E700CE5D5C /* AppSettings.swift */,
 				F19512E71D38B4DC00EDC276 /* Storyboard.storyboard */,
 				F19512E31D38B39E00EDC276 /* Realm */,
 				F1EB04351D384147004EEA56 /* Storyboard.swift */,
@@ -380,6 +388,7 @@
 				F17FA7CD1D336D46001B99AF /* Info.plist */,
 				F1A75C421D3374670070AAD8 /* Points-Bridging-Header.h */,
 				F1F14C3B1D82948900E44024 /* UIStoryboardSegue.swift */,
+				F1C81D521D8DEEBB00CE5D5C /* Settings.bundle */,
 				F1AB6D4E1D406AFB00642EAE /* Maps.swift */,
 				F110AA861D4421EC008F603A /* UIView.swift */,
 				F110AA8F1D4440F6008F603A /* UILabel.swift */,
@@ -629,6 +638,7 @@
 				F17FA7C91D336D46001B99AF /* Assets.xcassets in Resources */,
 				F17FA7C71D336D46001B99AF /* Main.storyboard in Resources */,
 				F1A75C5A1D337E810070AAD8 /* acompetitors.data in Resources */,
+				F1C81D531D8DEEBB00CE5D5C /* Settings.bundle in Resources */,
 				F19512E81D38B4DD00EDC276 /* Storyboard.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -758,6 +768,7 @@
 				F131A9FD1D3DC58C00B82BB9 /* Dancer.swift in Sources */,
 				F131A9FA1D3D970100B82BB9 /* UIViewController.swift in Sources */,
 				F1BB63141D3C1D2A00A1CC9D /* UITableView.swift in Sources */,
+				F1C81D5E1D8E25A600CE5D5C /* FavoritesVC.swift in Sources */,
 				F19512F11D38D6AB00EDC276 /* DumpVC.swift in Sources */,
 				F17FA7D61D336D87001B99AF /* CloudKit.swift in Sources */,
 				F17FA7DE1D336DC8001B99AF /* Operation.swift in Sources */,
@@ -770,6 +781,7 @@
 				F17762BB1D3FE59E00ACB9A7 /* ImportVC.swift in Sources */,
 				F131A9F41D3D80C000B82BB9 /* UIColor.swift in Sources */,
 				F19512DF1D38880600EDC276 /* BZipCompression.h in Sources */,
+				F1C81D5C1D8DF0E700CE5D5C /* AppSettings.swift in Sources */,
 				F131AA061D3DCB4E00B82BB9 /* Competition.swift in Sources */,
 				F15CA92F1D3DFA4F00B69279 /* DancerVC.swift in Sources */,
 				F1AB6D4F1D406AFB00642EAE /* Maps.swift in Sources */,

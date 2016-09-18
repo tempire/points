@@ -31,7 +31,7 @@ extension UIViewController {
         performSegue(withIdentifier: "\(A.self)", sender: sender)
     }
     
-    func performSegueWithIdentifier(_ identifier: UIStoryboardSegue.Identifier, sender: AnyObject?) {
+    func performSegueWithIdentifier(_ identifier: UIStoryboardSegue.SegueIdentifier, sender: AnyObject?) {
         performSegue(withIdentifier: "\(identifier)", sender: sender)
     }
     

@@ -43,13 +43,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func configureRealm() throws {
         
         Realm.Configuration.defaultConfiguration = Realm.Configuration(
-            schemaVersion: 2,
+            schemaVersion: 3,
             migrationBlock: { migration, oldSchemaVersion in
                 
                 switch oldSchemaVersion {
                     
-                case 0, 1, 2: // Previously unspecified version == 0
+                case 0, 1:
                     break
+                    
+                case 2:
+                    migration.enumerateObjects(ofType: Dancer.className()) { oldObject, newObject in
+                        newObject!["favorite"] = false
+                    }
                     
                 default:
                     break

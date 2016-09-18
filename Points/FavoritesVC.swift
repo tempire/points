@@ -1,115 +1,101 @@
 //
-//  CompetitorsVC.swift
+//  FavoritesVC.swift
 //  Points
 //
-//  Created by Glen Hinkle on 7/14/16.
+//  Created by Glen Hinkle on 9/17/16.
 //  Copyright © 2016 Zombie Dolphin. All rights reserved.
 //
 
 import Foundation
 import UIKit
 import RealmSwift
-import MessageBarManager
 
-class CompetitorsVC: UIViewController {
-    
+private struct RowSource {
+    var dancer: Dancer
+}
+
+class FavoritesVC: UIViewController {
+
     var interactivePopTransition: UIPercentDrivenInteractiveTransition?
     
-    var token: NotificationToken?
-    var token2: NotificationToken?
-    
-    var results: Results<Dancer>! {
-        didSet {
-            tableView?.reloadDataWithDissolve()
-        }
-    }
-    
-    var highlightedIndexPath: IndexPath?
-    
-    var filterString: String? {
-        didSet {
-            let objects = try! Realm().allObjects(ofType: Dancer.self)
-            
-            var predicate = NSPredicate.all
-            
-            if let filterString = filterString, let int = Int(filterString) {
-                predicate = NSPredicate(format: "id = %d", int)
-            }
-            else if let filterString = filterString {
-                predicate = NSPredicate(format: "name CONTAINS[c] %@ OR _maxRank BEGINSWITH %@", filterString, filterString)
-            }
-            
-            results = objects.filter(using: predicate)
-        }
-    }
-    
-    @IBOutlet weak var headerView: UIView!
-    @IBOutlet weak var searchTextField: UITextField!
+    fileprivate var rowSource: [RowSource] = []
     
     @IBOutlet weak var tableView: UITableView! {
         didSet {
+            tableView.scrollsToTop = true
             tableView.dataSource = self
-            tableView.keyboardDismissMode = .interactive
-            //tableView.contentInset = UIEdgeInsets(top: 8, left: 0, bottom: 0, right: 0)
-            tableView.estimatedRowHeight = 66
-            tableView.rowHeight = UITableViewAutomaticDimension
             tableView.separatorStyle = .none
+            tableView.allowsSelection = true
+            tableView.estimatedRowHeight = 130
+            tableView.rowHeight = UITableViewAutomaticDimension
+            //tableView.delegate = self
+            tableView.backgroundColor = UIColor.charcoal.dark
+            
+            let backgroundView = UIView()
+            tableView.backgroundView = .none
+            tableView.backgroundView = backgroundView
+            backgroundView.backgroundColor = UIColor.charcoal.dark
+            
+            let barView = UIView()
+            barView.translatesAutoresizingMaskIntoConstraints = false
+            backgroundView.addSubview(barView)
+            barView.backgroundColor = UIColor.charcoal.light
+            barView.widthAnchor.constraint(equalToConstant: 2).isActive = true
+            barView.topAnchor.constraint(equalTo: backgroundView.topAnchor).isActive = true
+            barView.bottomAnchor.constraint(equalTo: backgroundView.bottomAnchor).isActive = true
+            barView.leftAnchor.constraint(equalTo: backgroundView.leftAnchor, constant: 84).isActive = true
         }
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let realm = try! Realm()
-        
-        results = realm.allObjects(ofType: Dancer.self)
-        
-        token = results.addNotificationBlock { note in
-            self.tableView?.reloadData()
-        }
-        
         navigationController?.delegate = self
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        initializeRowSource()
+    }
     
-        if self.results.count == 0 {
-            self.performSegueWithIdentifier(.importer, sender: self)
-            //self.performSegueWithVC(ImportVC.self, sender: self)
+    func initializeRowSource() {
+        do {
+            rowSource = try Realm().allObjects(ofType: Dancer.self).filter(using: "favorite == true").map { dancer in
+                
+                RowSource(
+                    dancer: dancer
+                )
+            }
+            
+            tableView.reloadData()
+        }
+        catch let error as NSError {
+            
         }
     }
-    
-    deinit {
-        print("-DEINIT \(type(of: self))")
-    }
 }
 
-extension CompetitorsVC {
-    @IBAction func search(_ sender: UITextField) {
-        filterString = sender.text
-    }
-}
-
-extension CompetitorsVC: UITableViewDataSource {
+extension FavoritesVC: UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return results.count
+        return rowSource.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueCell(CompetitorsCell.self, for: indexPath)
+        let cell = tableView.dequeueCell(FavoritesCell.self, for: indexPath)
+        cell.selectionStyle = .none
         cell.delegate = self
         
-        let dancer = results[indexPath.row]
+        let dancer = rowSource[indexPath.row].dancer
         
         cell.favoritesButton.setImage(UIImage(asset: dancer.favorite ? .Glyphicons_50_Star : .Glyphicons_49_Star_Empty), for: .normal)
-
+        
         cell.avatarPlaceholderView.backgroundColor = .lightGray
         cell.avatarInitialsLabel.text = dancer.name.firstLetters
         cell.nameLabel.text = dancer.name
@@ -117,13 +103,11 @@ extension CompetitorsVC: UITableViewDataSource {
         cell.wsdcIdLabel.text = "\(dancer.id)"
         
         let points = dancer.points(forDivision: dancer.rank.max)
-        cell.pointsGroupViewZeroWidthConstraint.isActive = points.values.reduce(0) { $0 + $1 } == 0
-        
         cell.divisionLeadPointsLabel.isHidden = points[.Lead] == 0
         cell.divisionLeadPointsLabel.text = "\(points[.Lead]!)"
         cell.divisionFollowPointsLabel.isHidden = points[.Follow] == 0
         cell.divisionFollowPointsLabel.text = "\(points[.Follow]!)"
-
+        
         return cell
     }
     
@@ -147,33 +131,49 @@ extension CompetitorsVC: UITableViewDataSource {
             
         case .dancer:
             guard let vc = segue.destination as? DancerVC,
-                let cell = sender as? CompetitorsCell,
+                let cell = sender as? FavoritesCell,
                 let indexPath = tableView.indexPath(for: cell) else {
                     return
             }
-
-            vc.dancer = results[indexPath.row]
+            
+            vc.dancer = rowSource[indexPath.row].dancer
             vc.peek = segue.identifier == "peek"
             print("SETTING PEEK TO \(vc.peek)")
             
             tableView.deselectRow(at: indexPath, animated: true)
 
-        case .importer:
-            guard let vc = segue.destination as? ImportVC else {
-                return
-            }
-            
-            vc.modalPresentationStyle = .custom
-            vc.transitioningDelegate = self
-            
-        case .partner, .firstPartner, .secondPartner, .division:
+        case .partner, .firstPartner, .secondPartner, .division, .importer:
             break
         }
     }
-    
 }
 
-extension CompetitorsVC: UIViewControllerTransitioningDelegate {
+
+extension FavoritesVC: FavoritesCellDelegate {
+
+    func didToggleFavorite(cell: UITableViewCell) {
+        
+        guard let row = tableView.indexPath(for: cell)?.row,
+            let cell = cell as? FavoritesCell else {
+                return
+        }
+        
+        let source = rowSource[row]
+        
+        do {
+            try Realm().write {
+                source.dancer.favorite = !source.dancer.favorite
+            }
+        }
+        catch let error as NSError {
+            
+        }
+        
+        cell.favoritesButton.setImage(UIImage(asset: source.dancer.favorite ? .Glyphicons_50_Star : .Glyphicons_49_Star_Empty), for: .normal)
+    }
+}
+
+extension FavoritesVC: UIViewControllerTransitioningDelegate {
     
     internal func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
         
@@ -191,7 +191,7 @@ extension CompetitorsVC: UIViewControllerTransitioningDelegate {
     }
 }
 
-extension CompetitorsVC: UINavigationControllerDelegate {
+extension FavoritesVC: UINavigationControllerDelegate {
     
     func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
         let pan = UIPanGestureRecognizer(target: self, action: #selector(handleNVCPopPanGesture(_:)))
@@ -215,7 +215,7 @@ extension CompetitorsVC: UINavigationControllerDelegate {
 
 // Navigation Controller pop pan gesture
 
-extension CompetitorsVC {
+extension FavoritesVC {
     
     func handleNVCPopPanGesture(_ recognizer: UIPanGestureRecognizer) {
         let coords = recognizer.translation(in: view)
@@ -259,34 +259,14 @@ extension CompetitorsVC {
     }
 }
 
-extension CompetitorsVC: FavoritesCellDelegate {
-
-    func didToggleFavorite(cell: UITableViewCell) {
-        
-        guard let row = tableView.indexPath(for: cell)?.row,
-            let cell = cell as? CompetitorsCell else {
-                return
-        }
-        
-        let source = results[row]
-        
-        do {
-            try Realm().write {
-                source.favorite = !source.favorite
-            }
-        }
-        catch let error as NSError {
-            
-        }
-        
-        cell.favoritesButton.setImage(UIImage(asset: source.favorite ? .Glyphicons_50_Star : .Glyphicons_49_Star_Empty), for: .normal)
-    }
+protocol FavoritesCellDelegate: class {
+    func didToggleFavorite(cell: UITableViewCell)
 }
 
-class CompetitorsCell: UITableViewCell {
+class FavoritesCell: UITableViewCell {
     
     weak var delegate: FavoritesCellDelegate?
-
+    
     @IBOutlet weak var favoritesButton: UIButton!
     
     @IBOutlet weak var avatarImageView: UIImageView!
@@ -300,10 +280,6 @@ class CompetitorsCell: UITableViewCell {
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var rankLabel: UILabel!
     @IBOutlet weak var wsdcIdLabel: UILabel!
-    
-    @IBOutlet weak var pointsGroupView: UIView!
-    @IBOutlet var pointsGroupViewZeroWidthConstraint: NSLayoutConstraint!
-    
     @IBOutlet weak var divisionLeadPointsLabel: InsetLabel! {
         didSet {
             divisionLeadPointsLabel.insets = UIEdgeInsets(top: 2, left: 4, bottom: 2, right: 4)

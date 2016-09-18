@@ -17,6 +17,7 @@ class Dancer: Object, StringImport {
     dynamic var name: String = ""
     dynamic fileprivate var _maxRank: String = ""
     dynamic fileprivate var _minRank: String = ""
+    dynamic var favorite: Bool = false
     
     let competitions = List<Competition>()
     
@@ -25,19 +26,6 @@ class Dancer: Object, StringImport {
     var rank: (min: WSDC.DivisionName, max: WSDC.DivisionName) {
         get {
             return calculateRank()
-            
-            /*
-            if !_minRank.isEmpty && !_maxRank.isEmpty {
-                return (
-                    WSDC.DivisionName(abbreviation: _minRank)!,
-                    WSDC.DivisionName(abbreviation: _maxRank)!
-                )
-            }
-            
-            self.rank = calculateRank()
-            
-            return self.rank
-            */
         }
         set {
             _minRank = newValue.min.abbreviation

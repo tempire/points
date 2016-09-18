@@ -107,6 +107,14 @@ class DancerVC: UIViewController {
             dancerNameLabel.text = dancer.name
         }
     }
+    
+    @IBOutlet weak var favoriteButton: UIButton! {
+        didSet {
+            favoriteButton.tintColor = .white
+            favoriteButton.imageView?.image = UIImage(asset: dancer.favorite ? .Glyphicons_50_Star : .Glyphicons_49_Star_Empty)
+        }
+    }
+    
     @IBOutlet weak var wsdcIdLabel: UILabel! {
         didSet {
             wsdcIdLabel.text = "\(dancer.id)"
@@ -324,6 +332,15 @@ class DancerVC: UIViewController {
 // MARK: Actions
 
 extension DancerVC {
+
+    @IBAction func toggleFavorite(_ sender: UIButton) {
+        
+        try! Realm().write {
+            dancer.favorite = !dancer.favorite
+        }
+
+        sender.setImage(UIImage(asset: dancer.favorite ? .Glyphicons_50_Star : .Glyphicons_49_Star_Empty), for: .normal)
+    }
 
     func highlight(button: UIButton) {
         
@@ -623,7 +640,7 @@ extension DancerVC {
                 return true
             }
             
-        case .firstPartner, .secondPartner:
+        case .firstPartner, .secondPartner, .dancer, .importer:
             break
         }
         
@@ -652,7 +669,7 @@ extension DancerVC {
                 vc.division = source.competition.eventYear.divisions[source.competition.divisionName]
             }
             
-        case .firstPartner, .secondPartner:
+        case .firstPartner, .secondPartner, .dancer, .importer:
             break
         }
     }

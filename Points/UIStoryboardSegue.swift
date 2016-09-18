@@ -12,10 +12,12 @@ import UIKit
 extension UIStoryboardSegue {
     
     enum SegueIdentifier: String {
+        case dancer
         case partner
         case firstPartner
         case secondPartner
         case division
+        case importer
         
         init?(_ rawValue: String?) {
             guard let rawValue = rawValue, let value = SegueIdentifier(rawValue: rawValue) else {

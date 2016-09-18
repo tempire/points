@@ -12,6 +12,13 @@ import UIKit
 private struct RowSource {
     var type: WSDC.Competition.Result
     var partners: [Competition]
+    
+    var lead: Competition?
+    var follow: Competition?
+    
+    func partner(for role: WSDC.Competition.Role) -> Competition? {
+        return partners.filter({ $0.role == role }).first
+    }
 }
 
 class CompetitionVC: UIViewController {
@@ -20,32 +27,54 @@ class CompetitionVC: UIViewController {
     
     var division: EventYear.Division! {
         didSet {
-            print("---")
             
             division.placements.enumerated().forEach { index, placement in
-                //print("INDEX: \(index), RESULT: \(placement.result), PARTNER COUNT: \(placement.partners.count), PARTNERS: \(placement.partners.first?.dancer.first?.name) - \(placement.partners.last?.dancer.first?.name)")
-                rowSource.append(RowSource(type: placement.result, partners: placement.partners))
+                rowSource.append(
+                    RowSource(
+                        type: placement.result,
+                        partners: placement.partners,
+                        lead: placement.partners.filter({ $0.role == .Lead }).first,
+                        follow: placement.partners.filter({ $0.role == .Follow }).first
+                    )
+                )
             }
             
-            division.finalists.enumerated().forEach { index, finalist in
-                //print("INDEX: \(index), RESULT: \(finalist.result)")
-                rowSource.append(RowSource(type: finalist.result, partners: [finalist]))
+            division.finalists.sorted
+                { c1, c2 in
+                    return AppSettings.order(for: c1.role) < AppSettings.order(for: c2.role)
+                }
+                .enumerated()
+                .forEach { index, finalist in
+                    rowSource.append(
+                        RowSource(
+                            type: finalist.result,
+                            partners: [finalist],
+                            lead: finalist.role == .Lead ? finalist : .none,
+                            follow: finalist.role == .Follow ? finalist : .none
+                        )
+                    )
             }
-            
-            rowSource.enumerated().forEach { index, source in
-                //print("INDEX: \(index), RESULT: \(source.type), PARTNER COUNT: \(source.partners.count), PARTNERS: \(soure.partners.first?.dancer.first?.name) - \(source.partners.last?.dancer.first?.name)")
-            }
-            
-            print("---")
         }
     }
     
     var peek: Bool = false
     var suspendScrollingHeaderHighlighting = false
     
-    @IBOutlet weak var conventionDateLabel: UILabel!
-    @IBOutlet weak var conventionNameLabel: UILabel!
-    @IBOutlet weak var divisionNameLabel: UILabel!
+    @IBOutlet weak var conventionDateLabel: UILabel! {
+        didSet {
+            conventionDateLabel.text = rowSource.first?.partners.first?.eventYear.shortDateString
+        }
+    }
+    @IBOutlet weak var conventionNameLabel: UILabel! {
+        didSet {
+            conventionNameLabel.text = rowSource.first?.partners.first?.eventYear.event.name
+        }
+    }
+    @IBOutlet weak var divisionNameLabel: UILabel! {
+        didSet {
+            divisionNameLabel.text = rowSource.first?.partners.first?.divisionName.description
+        }
+    }
     @IBOutlet weak var competitionTypeLabel: UILabel!
 
     @IBOutlet weak var backgroundHeaderViewHeightConstraint: NSLayoutConstraint!
@@ -115,24 +144,44 @@ extension CompetitionVC: UITableViewDataSource {
         let source = rowSource[indexPath.row]
         cell.rowSource = source
         
-        print("INDEXPATH: \(indexPath.row), NAME: \(source.partners.first?.dancer.first?.name), RESULT: \(source.partners.first?.result)")
-
+        if source.type == .final,
+            let finalist = source.partners.first,
+            let competitionId = division.finalists.first?.id {
+            
+            if finalist.id == competitionId {
+                cell.placementViewZeroHeightConstraint.isActive = false
+            }
+            else {
+                cell.placementViewZeroHeightConstraint.isActive = true
+            }
+        }
+        else {
+            cell.placementViewZeroHeightConstraint.isActive = false
+        }
+        
         cell.selectionStyle = .none
         
         cell.placementLabel.text = source.partners.first?.result.description
         
-        cell.firstPartnerLabel.text = source.partners.first?.dancer.first?.name
-        cell.firstPartnerRoleLabel.text = source.partners.first?.role.tinyRaw.uppercased()
-        cell.firstPartnerPointsLabel.text = "\(source.partners.first?.points ?? 0)"
+        let firstPartner = source.type == .final ? source.partners.first : AppSettings.leadOrFollowFirst == .Lead ? source.lead : source.follow
+        let secondPartner = AppSettings.leadOrFollowFirst == .Follow ? source.lead : source.follow
+        
+        cell.firstPartnerRoleCircleView.backgroundColor = firstPartner?.role.color
+        cell.firstPartnerLabel.text = firstPartner?.dancer.first?.name
+        cell.firstPartnerRoleLabel.text = firstPartner?.role.tinyRaw.uppercased()
+        cell.firstPartnerRoleLabel.backgroundColor = firstPartner?.role.color
+        cell.firstPartnerPointsLabel.text = "\(firstPartner?.points ?? 0)"
         
         if source.partners.count <= 1 {
             cell.secondPartnerGroupViewHeightConstraint.constant = 0
         }
         else {
+            cell.secondPartnerRoleCircleView.backgroundColor = secondPartner?.role.color
             cell.secondPartnerGroupViewHeightConstraint.constant = 60
-            cell.secondPartnerLabel.text = source.partners.last?.dancer.first?.name
-            cell.secondPartnerRoleLabel.text = source.partners.last?.role.tinyRaw.uppercased()
-            cell.secondPartnerPointsLabel.text = "\(source.partners.last?.points ?? 0)"
+            cell.secondPartnerLabel.text = secondPartner?.dancer.first?.name
+            cell.secondPartnerRoleLabel.text = secondPartner?.role.tinyRaw.uppercased()
+            cell.secondPartnerRoleLabel.backgroundColor = secondPartner?.role.color
+            cell.secondPartnerPointsLabel.text = "\(secondPartner?.points ?? 0)"
         }
         
         cell.detailsGroupViewZeroHeightConstraint.constant = 0
@@ -241,12 +290,16 @@ extension CompetitionVC {
         case .firstPartner, .secondPartner:
             if let vc = segue.destination as? DancerVC,
                 let source = rowSourceForCell(containingView: cell) {
+                
+                let firstPartner = source.type == .final ? source.partners.first : AppSettings.leadOrFollowFirst == .Lead ? source.lead : source.follow
+                let secondPartner = AppSettings.leadOrFollowFirst == .Follow ? source.lead : source.follow
+
                 vc.dancer = identifier == .firstPartner
-                    ? source.partners.first?.dancer.first
-                    : source.partners.last?.dancer.first
+                    ? firstPartner?.dancer.first
+                    : secondPartner?.dancer.first
             }
             
-        case .division, .partner:
+        case .division, .partner, .dancer, .importer:
             break
         }
     }
@@ -355,19 +408,36 @@ class CompetitionCell: UITableViewCell {
     fileprivate var rowSource: RowSource!
     
     @IBOutlet weak var placementLabel: UILabel!
-    
+    @IBOutlet var placementViewZeroHeightConstraint: NSLayoutConstraint!
+
     @IBOutlet weak var firstParterButton: UIButton!
-    @IBOutlet weak var firstPartnerRoleCircleView: UIView!
+    @IBOutlet weak var firstPartnerRoleCircleView: UIView! {
+        didSet {
+            firstPartnerRoleCircleView.layer.cornerRadius = 36 / 2
+        }
+    }
     @IBOutlet weak var firstPartnerRoleLabel: UILabel!
     @IBOutlet weak var firstPartnerLabel: UILabel!
-    @IBOutlet weak var firstPartnerPointsCircleView: UIView!
+    @IBOutlet weak var firstPartnerPointsCircleView: UIView! {
+        didSet {
+            firstPartnerPointsCircleView.layer.cornerRadius = 36 / 2
+        }
+    }
     @IBOutlet weak var firstPartnerPointsLabel: UILabel!
     
     @IBOutlet weak var secondPartnerButton: UIButton!
-    @IBOutlet weak var secondPartnerRoleCircleView: UIView!
+    @IBOutlet weak var secondPartnerRoleCircleView: UIView! {
+        didSet {
+            secondPartnerRoleCircleView.layer.cornerRadius = 36 / 2
+        }
+    }
     @IBOutlet weak var secondPartnerRoleLabel: UILabel!
     @IBOutlet weak var secondPartnerLabel: UILabel!
-    @IBOutlet weak var secondPartnerPointsCircleView: UIView!
+    @IBOutlet weak var secondPartnerPointsCircleView: UIView! {
+        didSet {
+            secondPartnerPointsCircleView.layer.cornerRadius = 36 / 2
+        }
+    }
     @IBOutlet weak var secondPartnerPointsLabel: UILabel!
     
     @IBOutlet weak var secondPartnerGroupViewHeightConstraint: NSLayoutConstraint!
