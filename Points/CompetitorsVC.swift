@@ -166,7 +166,7 @@ extension CompetitorsVC: UITableViewDataSource {
             vc.modalPresentationStyle = .custom
             vc.transitioningDelegate = self
             
-        case .partner, .firstPartner, .secondPartner, .division:
+        case .partner, .firstPartner, .secondPartner, .division, .event:
             break
         }
     }
@@ -276,7 +276,7 @@ extension CompetitorsVC: FavoritesCellDelegate {
             }
         }
         catch let error as NSError {
-            
+            print(error)
         }
         
         cell.favoritesButton.setImage(UIImage(asset: source.favorite ? .Glyphicons_50_Star : .Glyphicons_49_Star_Empty), for: .normal)

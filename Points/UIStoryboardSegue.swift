@@ -18,6 +18,7 @@ extension UIStoryboardSegue {
         case secondPartner
         case division
         case importer
+        case event
         
         init?(_ rawValue: String?) {
             guard let rawValue = rawValue, let value = SegueIdentifier(rawValue: rawValue) else {

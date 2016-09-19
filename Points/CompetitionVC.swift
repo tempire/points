@@ -117,10 +117,6 @@ class CompetitionVC: UIViewController {
 
 extension CompetitionVC: UITableViewDataSource {
     
-    var heightForHeader: CGFloat {
-        return tableView(tableView, heightForHeaderInSection: 0)
-    }
-    
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 56
     }
@@ -299,7 +295,7 @@ extension CompetitionVC {
                     : secondPartner?.dancer.first
             }
             
-        case .division, .partner, .dancer, .importer:
+        case .division, .partner, .dancer, .importer, .event:
             break
         }
     }
@@ -319,89 +315,9 @@ extension CompetitionVC: UIScrollViewDelegate {
         if tableView.contentOffset.y > 0-50 && tableView.contentOffset.y < 500 { // (300-56) {
             backgroundHeaderViewHeightConstraint.constant = max(max(conventionNameLabel.bounds.height, 56), 300 - self.tableView.contentOffset.y)
         }
-        
-        /*
-        if suspendScrollingHeaderHighlighting {
-            return
-        }
-        
-
-        let pointImmediatelyBelowTableViewHeader = CGPoint(
-            x: 5,
-            y: tableView.contentOffset.y + heightForHeader
-        )
-        
-        let title = rowTitle(
-            firstVisibleRow(
-                scrollView: scrollView,
-                indexPath: tableView.indexPathForRow(at: pointImmediatelyBelowTableViewHeader)
-            )
-        )
-        
-        for case let button as UIButton in headerScrollView.subviews where button.currentTitle == title {
-            highlight(button: button)
-            return
-        }
-         */
     }
-    
-    /*
-    func cellTitleIsVisible(_ rect: CGRect) -> Bool {
-        return rect.origin.y < 97
-    }
-    
-    func cellTitleIsHidden(_ rect: CGRect) -> Bool {
-        return rect.origin.y > 105
-    }
-    
-    fileprivate func rowTitle(_ source: RowSource?) -> String? {
-        
-        switch sort {
-            
-        case .divisionName:
-            return source?.divisionName.description
-            
-        case .placement:
-            return source?.result.description
-            
-        case .date:
-            return String(source?.eventDate.year())
-        }
-    }
-    
-    fileprivate func row(forIndexPath indexPath: IndexPath) -> RowSource {
-        return rowSource[(indexPath as NSIndexPath).row]
-        //return rowSource[Int(floor(Float(indexPath.row / 2)))]
-    }
-    
-    fileprivate func firstVisibleRow(scrollView: UIScrollView, indexPath tmp: IndexPath?) -> RowSource? {
-        
-        guard let indexPath = tmp else {
-            return .none
-        }
-        
-        let cellRectWithinTableView = tableView.convert(tableView.rectForRow(at: indexPath), to: tableView.superview)
-        
-        if scrollView.scrolledAboveContentView {
-            return rowSource.first
-        }
-            
-        else if scrollView.atBottomOfContentView {
-            return rowSource.last
-        }
-            
-        else if cellTitleIsHidden(cellRectWithinTableView) {
-            return row(forIndexPath: indexPath)
-        }
-            
-        else if cellTitleIsVisible(cellRectWithinTableView) {
-            return row(forIndexPath: indexPath.nextRow)
-        }
-        
-        return .none
-    }
-    */
 }
+
 
 class CompetitionCell: UITableViewCell {
     

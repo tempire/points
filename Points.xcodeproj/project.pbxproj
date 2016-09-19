@@ -26,6 +26,8 @@
 		F17762CE1D3FFEAB00ACB9A7 /* ModalPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F17762CD1D3FFEAB00ACB9A7 /* ModalPresentationController.swift */; };
 		F17762D01D3FFEED00ACB9A7 /* ModalAnimationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F17762CF1D3FFEED00ACB9A7 /* ModalAnimationController.swift */; };
 		F17762D21D40290500ACB9A7 /* Spotlight.swift in Sources */ = {isa = PBXBuildFile; fileRef = F17762D11D40290500ACB9A7 /* Spotlight.swift */; };
+		F17E51F01D8F67AE009469B1 /* EventsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F17E51EF1D8F67AE009469B1 /* EventsVC.swift */; };
+		F17E51F91D8F6802009469B1 /* EventVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F17E51F81D8F6802009469B1 /* EventVC.swift */; };
 		F17FA7C21D336D46001B99AF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F17FA7C11D336D46001B99AF /* AppDelegate.swift */; };
 		F17FA7C41D336D46001B99AF /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F17FA7C31D336D46001B99AF /* ViewController.swift */; };
 		F17FA7C71D336D46001B99AF /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F17FA7C51D336D46001B99AF /* Main.storyboard */; };
@@ -200,6 +202,8 @@
 		F17762CD1D3FFEAB00ACB9A7 /* ModalPresentationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModalPresentationController.swift; sourceTree = "<group>"; };
 		F17762CF1D3FFEED00ACB9A7 /* ModalAnimationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModalAnimationController.swift; sourceTree = "<group>"; };
 		F17762D11D40290500ACB9A7 /* Spotlight.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Spotlight.swift; sourceTree = "<group>"; };
+		F17E51EF1D8F67AE009469B1 /* EventsVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventsVC.swift; sourceTree = "<group>"; };
+		F17E51F81D8F6802009469B1 /* EventVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventVC.swift; sourceTree = "<group>"; };
 		F17EEB8D1D33862E00E51C3A /* cli-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "cli-Bridging-Header.h"; sourceTree = "<group>"; };
 		F17FA7BE1D336D46001B99AF /* Points.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Points.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F17FA7C11D336D46001B99AF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -343,6 +347,8 @@
 				F17FA7D31D336D83001B99AF /* NSPredicate.swift */,
 				F17FA7D71D336DB8001B99AF /* WSDC.swift */,
 				F1DDF9741D39B6C800EEB426 /* Points.swift */,
+				F17E51EF1D8F67AE009469B1 /* EventsVC.swift */,
+				F17E51F81D8F6802009469B1 /* EventVC.swift */,
 				F17FA7D91D336DBE001B99AF /* WebService.swift */,
 				F19512DD1D38833100EDC276 /* WSDCGetOperation.swift */,
 				F131A9EA1D3CA0F700B82BB9 /* Notifier.swift */,
@@ -747,6 +753,7 @@
 				F1A9E0191D46B393001A80BF /* Constant.swift in Sources */,
 				F1A9E01A1D46B393001A80BF /* String+ITDAvatarPlaceholder.swift in Sources */,
 				F1DDF98C1D3BFE9E00EEB426 /* CloudKitGetDumpOperation.swift in Sources */,
+				F17E51F01D8F67AE009469B1 /* EventsVC.swift in Sources */,
 				F17FA7E21D336DD3001B99AF /* NSURL.swift in Sources */,
 				F1A9E01B1D46B393001A80BF /* UIColor+ITDAvatarPlaceholder.swift in Sources */,
 				F17FA7DA1D336DBE001B99AF /* WebService.swift in Sources */,
@@ -768,6 +775,7 @@
 				F131A9FD1D3DC58C00B82BB9 /* Dancer.swift in Sources */,
 				F131A9FA1D3D970100B82BB9 /* UIViewController.swift in Sources */,
 				F1BB63141D3C1D2A00A1CC9D /* UITableView.swift in Sources */,
+				F17E51F91D8F6802009469B1 /* EventVC.swift in Sources */,
 				F1C81D5E1D8E25A600CE5D5C /* FavoritesVC.swift in Sources */,
 				F19512F11D38D6AB00EDC276 /* DumpVC.swift in Sources */,
 				F17FA7D61D336D87001B99AF /* CloudKit.swift in Sources */,

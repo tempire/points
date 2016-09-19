@@ -640,7 +640,7 @@ extension DancerVC {
                 return true
             }
             
-        case .firstPartner, .secondPartner, .dancer, .importer:
+        case .firstPartner, .secondPartner, .dancer, .importer, .event:
             break
         }
         
@@ -669,7 +669,7 @@ extension DancerVC {
                 vc.division = source.competition.eventYear.divisions[source.competition.divisionName]
             }
             
-        case .firstPartner, .secondPartner, .dancer, .importer:
+        case .firstPartner, .secondPartner, .dancer, .importer, .event:
             break
         }
     }

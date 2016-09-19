@@ -151,6 +151,8 @@ class Event: Object {
     dynamic var id: Int = 0
     dynamic var name: String = ""
     dynamic var location: String?
+    dynamic var favorite: Bool = false
+    dynamic var yearsString: String = ""
     
     let years = LinkingObjects(fromType: EventYear.self, property: "event")
     

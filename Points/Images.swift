@@ -9,6 +9,7 @@
 #endif
 
 enum Asset: String {
+  case _563_Calendar = "563-calendar"
   case _889_Sort_Descending_Selected = "889-sort-descending-selected"
   case Apple = "apple"
   case Cloud = "cloud"

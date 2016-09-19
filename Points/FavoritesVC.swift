@@ -71,7 +71,7 @@ class FavoritesVC: UIViewController {
             tableView.reloadData()
         }
         catch let error as NSError {
-            
+            print(error)
         }
     }
 }
@@ -138,11 +138,10 @@ extension FavoritesVC: UITableViewDataSource {
             
             vc.dancer = rowSource[indexPath.row].dancer
             vc.peek = segue.identifier == "peek"
-            print("SETTING PEEK TO \(vc.peek)")
             
             tableView.deselectRow(at: indexPath, animated: true)
 
-        case .partner, .firstPartner, .secondPartner, .division, .importer:
+        case .partner, .firstPartner, .secondPartner, .division, .importer, .event:
             break
         }
     }
@@ -166,7 +165,7 @@ extension FavoritesVC: FavoritesCellDelegate {
             }
         }
         catch let error as NSError {
-            
+            print(error)
         }
         
         cell.favoritesButton.setImage(UIImage(asset: source.dancer.favorite ? .Glyphicons_50_Star : .Glyphicons_49_Star_Empty), for: .normal)

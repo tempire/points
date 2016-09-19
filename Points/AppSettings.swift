@@ -11,7 +11,12 @@ import Foundation
 enum AppSettings {
 
     static var leadOrFollowFirst: WSDC.Competition.Role {
-        return WSDC.Competition.Role(UserDefaults.standard.string(forKey: "lead_or_follow_first")!)!
+        guard let value = UserDefaults.standard.string(forKey: "lead_or_follow_first"),
+            let role = WSDC.Competition.Role(value) else {
+                return .Lead
+        }
+        
+        return role
     }
     
     static func order(for role: WSDC.Competition.Role) -> Int {

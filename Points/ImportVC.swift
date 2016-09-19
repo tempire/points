@@ -41,10 +41,6 @@ class ImportVC: UIViewController {
         
         preferredContentSize = CGSize(width: 300, height: 300)
         
-        //if let dump = dump {
-        //    //importDump()
-        //}
-        
         getDumpFromCloudKit()
     }
     
@@ -67,11 +63,8 @@ class ImportVC: UIViewController {
                     self.progressView.setProgress(1, animated: true)
                     
                     ui(.async) {
-                        //self.presentingViewController?.dismissViewControllerAnimated(true, completion: .None)
                         self.dismiss(animated: true, completion: .none)
                     }
-                    
-                    //self.progressView.performAction(M13ProgressViewActionSuccess, animated: true)
                 }
             }
             catch let error as NSError {
@@ -93,8 +86,8 @@ class ImportVC: UIViewController {
             self.progress.totalUnitCount = 1
             
             let op = CKFetchRecordsOperation(recordIDs: [record.recordID])
+            
             op.perRecordProgressBlock = { recordID, progress in
-                print("DUMP DOWNLOAD PROGRESS: \(progress)")
                 self.progress.completedUnitCount = Int64(progress)
             }
             
@@ -161,7 +154,6 @@ class ImportVC: UIViewController {
                 
                 ui(.async) {
                     self.progressView.setProgress(Float(progress.fractionCompleted), animated: true)
-                    //progressView.setProgress(CGFloat(progress.fractionCompleted), animated: true)
                 }
             }
             

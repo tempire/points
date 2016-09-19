@@ -87,12 +87,17 @@ enum Points {
             case "events":
                 let eventYears = try EventYear.createEvents(string.components(separatedBy: "^"))
                 
-                eventYears.forEach {
-                    objects.append($0)
-                    let key = [String($0.event.id), String($0.year)].joined(separator: "^")
-                    eventYearsByIdAndYear[key] = $0
+                eventYears.sorted {
+                    $0.year > $1.year
+                    }
+                    .forEach {
+                        $0.event.yearsString = eventYears.map { "\($0.year)" }.joined(separator: ", ")
+                        objects.append($0)
+                        let key = [String($0.event.id), String($0.year)].joined(separator: "^")
+                        eventYearsByIdAndYear[key] = $0
                 }
                 
+                print(eventYears.first?.event.yearsString)
                 progress.completedUnitCount += 1
                 
             case "competitions":
