@@ -176,7 +176,7 @@ extension EventsVC {
                     return
             }
             
-            vc.event = rowSource[indexPath.row].event
+            vc.eventYear = rowSource[indexPath.row].event.years.first
             vc.peek = segue.identifier == "peek"
             
             tableView.deselectRow(at: indexPath, animated: true)
